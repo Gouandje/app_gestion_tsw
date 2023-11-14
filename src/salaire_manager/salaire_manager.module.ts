@@ -19,7 +19,7 @@ import { MoisanneeModule } from 'src/moisannee/moisannee.module';
     MoisanneeModule,
     MongooseModule.forFeature(
       [
-        
+      
         { 
           name: SalaireManager.name, 
           schema: SalaireManagerSchema 

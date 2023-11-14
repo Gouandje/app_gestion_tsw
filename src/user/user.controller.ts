@@ -42,7 +42,7 @@ export class UserController {
 
   @Post('newAdmin')
   create(@Body() createUserDto: CreateUserDto) {
-    
+
     // if(!file){
     //   throw new BadRequestException('le format du fichier choisi n\'est pas acceptable');
 
@@ -136,7 +136,7 @@ export class UserController {
     }
     console.log(`${req.protocol}://${req.get('Host')}${req.originalUrl}`);
 
-    const avatar = `https://appgestiontsw-production.up.railway.app/api/v1/admins/avatar/${file.filename}`;
+    const avatar = ` https://appgestiontsw-production.up.railway.app/api/v1/admins/avatar/${file.filename}`;
     console.log( params.adminId);
     return this.userService.uploadAvatar(avatar, params.adminId);
   }
