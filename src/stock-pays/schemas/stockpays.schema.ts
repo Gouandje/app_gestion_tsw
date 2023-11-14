@@ -29,6 +29,13 @@ export class StockPays {
     })
     quantity: number;
 
+    @Prop({ required: true })
+    @ApiProperty({
+        example: '30000',
+        description: 'The quantity product',
+    })
+    qtyalerte: number;
+
 }
 export const StockPaysSchema = SchemaFactory.createForClass(StockPays);
 

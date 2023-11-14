@@ -3,7 +3,7 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Schema as MongooseSchema } from 'mongoose';
 
 export class CreateStockPaysDto {
-    
+
     @ApiProperty({
         example: '5efvbe54edfgbknjlh45',
         description: 'The country id ',
@@ -27,4 +27,12 @@ export class CreateStockPaysDto {
     @IsNumber()
     @IsNotEmpty()
     quantity: number;
+
+    @ApiProperty({
+        example: '30000',
+        description: 'The quantity product',
+    })
+    @IsNumber()
+    @IsNotEmpty()
+    qtyalerte: number;
 }

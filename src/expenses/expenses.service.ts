@@ -23,7 +23,10 @@ export class ExpensesService {
 
   async create(createExpenseDto: CreateExpenseDto) {
     const createdExpense = await this.expenseModel.create(createExpenseDto);
+    console.log('createExpenseDto',createExpenseDto);
     if(createdExpense){
+
+
       
        const getcaisse = await this.caisseService.findAll();
        if(createdExpense.typetransaction =='entrée'){

@@ -12,7 +12,7 @@ import { StockPaysService } from 'src/stock-pays/stock-pays.service';
 
 @Injectable()
 export class StockService {
-  
+
   constructor(
     @InjectModel(Stock.name) private readonly stockModel: Model<StockDocument>,
     private readonly produitService: ProduitService,
@@ -31,7 +31,8 @@ export class StockService {
           const createstockPaysDto = {
             paysId: createStockDto.paysId,
             productId: createStockDto.productId,
-            quantity: createStockDto.quantity
+            quantity: createStockDto.quantity,
+            qtyalerte:createStockDto.alertQty
     
           };
           await this.stockpaysService.createstockPays(createstockPaysDto);
@@ -41,7 +42,8 @@ export class StockService {
           const updateProduitDto: CreateStockPaysDto = {
             paysId: createStockDto.paysId,
             productId: createStockDto.productId,
-            quantity: product.quantity + createStockDto.quantity
+            quantity: product.quantity + createStockDto.quantity,
+            qtyalerte: createStockDto.alertQty
     
           };
 
