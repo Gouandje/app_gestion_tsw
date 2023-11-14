@@ -6,6 +6,7 @@ export type TauxDocument = HydratedDocument<Taux>;
 
 @Schema()
 export class Taux {
+    
     @Prop({ required: true })
     @ApiProperty({
         example: '10',

@@ -7,6 +7,7 @@ export type ExpenseDocument = HydratedDocument<Expense>;
 
 @Schema()
 export class Expense {
+    
     @Prop({type: MongooseSchema.Types.ObjectId, required: false, ref: Category.name })
     @ApiProperty({
         example: '5efvbe54edfgjkhklh45',

@@ -3,6 +3,7 @@ import { IsArray, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-valida
 
 
 export class CreateUserDto {
+    
     @ApiProperty({
         example: 'Gouandje Bi boris Sylvanus',
         description: 'The name of the admin',

@@ -6,6 +6,7 @@ import {Schema as MongooseSchema} from 'mongoose';
 
 @Controller('stockagence')
 export class StockagenceController {
+  
   constructor(private readonly stockagenceService: StockagenceService) {}
 
   @Post("addstockagence")

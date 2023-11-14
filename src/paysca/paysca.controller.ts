@@ -12,11 +12,11 @@ export class PayscaController {
     return this.payscaService.findAll(year);
   }
 
+
   @Get('allCapaysmois')
   findAllMois() {
     return this.payscaService.findPaysCamois();
   }
-
 
   @Get('allCaYears')
   findAllCaYear() {

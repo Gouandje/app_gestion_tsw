@@ -7,6 +7,7 @@ import { UpdateTauxsectionDto } from './dto/update-tauxsection.dto';
 
 @Controller('tauxzone')
 export class TauxzoneController {
+  
   constructor(private readonly tauxzoneService: TauxzoneService) {}
 
   @Post('createTauxZone')

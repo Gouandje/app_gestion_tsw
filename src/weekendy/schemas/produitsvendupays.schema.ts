@@ -9,6 +9,7 @@ export type ProduitvendupaysDocument = HydratedDocument<Produitvendupays>;
 
 @Schema()
 export class Produitvendupays {
+    
     @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Pays.name })
     @ApiProperty({
         example: '5efvbe54edfgbknjlh45',

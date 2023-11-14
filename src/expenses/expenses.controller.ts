@@ -7,6 +7,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 
 @Controller('expenses')
 export class ExpensesController {
+  
   constructor(private readonly expensesService: ExpensesService) {}
 
   @Post('newexpense')

@@ -12,7 +12,7 @@ export class StockController {
   create(@Body() createStockDto: CreateStockDto) {
     return this.stockService.create(createStockDto);
   }
-
+  
   @Get('allstock')
   findAll() {
     return this.stockService.findAll();

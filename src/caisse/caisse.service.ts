@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class CaisseService {
+  
   constructor( @InjectModel(Caisse.name) private readonly caisseModel: Model<CaisseDocument>,
   ){}
   

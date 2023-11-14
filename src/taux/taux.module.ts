@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Taux, TauxSchema } from './schemas/taux.schema';
 
 @Module({
+  
   imports: [    
     HttpModule,
     MongooseModule.forFeature(

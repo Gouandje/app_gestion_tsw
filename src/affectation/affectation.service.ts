@@ -17,6 +17,7 @@ export class AffectationService {
     private agenceService: AgenceService
   ) {}
 
+  
   async create(createAffectationDto: CreateAffectationDto) {
     
     for(let i = 0; i<createAffectationDto.managerId.length; i++){

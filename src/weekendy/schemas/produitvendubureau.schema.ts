@@ -9,6 +9,7 @@ export type ProduitvendubureauDocument = HydratedDocument<Produitvendubureau>;
 
 @Schema()
 export class Produitvendubureau {
+    
     @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Agence.name })
     @ApiProperty({
         example: '5efvbe54edfgbknjlh45',

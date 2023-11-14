@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class SuperviseurzoneService {
+  
   constructor(
     @InjectModel(Superviseurzone.name) private readonly superviseurzoneModel: Model<SuperviseurzoneDocument>,
     // private readonly produitService: ProduitService,

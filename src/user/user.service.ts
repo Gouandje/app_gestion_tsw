@@ -11,6 +11,7 @@ import { UserUpdate } from './dto/user-update.dto';
 
 @Injectable()
 export class UserService {
+  
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     // private readonly httpService: HttpService,

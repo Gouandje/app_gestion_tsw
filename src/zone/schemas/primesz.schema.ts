@@ -10,6 +10,7 @@ export type PrimeszDocument = HydratedDocument<Primesz>;
 
 @Schema()
 export class Primesz {
+    
     @ApiProperty({
         example: 'a2d840f79a0b12f4c6a4b80a',
         description: 'The ID of the angency',

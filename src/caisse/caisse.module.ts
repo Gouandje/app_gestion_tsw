@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Caisse, CaisseSchema } from './schemas/caisse.schema';
 
 @Module({
+  
   imports:[
     HttpModule,
     MongooseModule.forFeature(

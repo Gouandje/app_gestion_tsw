@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber } from "class-validator";
 
 export class CreateTauxDto {
+    
     @ApiProperty({
         example: '10',
         description: 'The 10% of CA',

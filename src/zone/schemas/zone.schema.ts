@@ -8,6 +8,7 @@ export type ZoneDocument = HydratedDocument<Zone>;
 
 @Schema()
 export class Zone {
+    
     @ApiProperty({
         example: 'a2d840f79a0b12f4c6a4b80a',
         description: 'The ID of the angency',

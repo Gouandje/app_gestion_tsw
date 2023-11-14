@@ -5,6 +5,7 @@ import { UpdateCaisseDto } from './dto/update-caisse.dto';
 
 @Controller('caisse')
 export class CaisseController {
+  
   constructor(private readonly caisseService: CaisseService) {}
 
   @Get('solde')

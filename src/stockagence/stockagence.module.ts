@@ -8,6 +8,7 @@ import { AgenceModule } from 'src/angence/agence.module';
 import { ProduitModule } from 'src/produit/produit.module';
 
 @Module({
+  
   imports: [
     ProduitModule,
     AgenceModule, 

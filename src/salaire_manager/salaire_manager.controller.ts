@@ -7,6 +7,7 @@ import { UpdateDetteDto } from './dto/update-dette.dto';
 
 @Controller('salaire-manager')
 export class SalaireManagerController {
+  
   constructor(private readonly salaireManagerService: SalaireManagerService) {}
 
   @Post('addsalaireManager')

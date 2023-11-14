@@ -8,6 +8,7 @@ import { Model, Schema as MongooseSchema } from 'mongoose';
 
 @Injectable()
 export class AgenceService {
+  
   constructor(
     @InjectModel(Agence.name) private readonly agenceModel: Model<AgenceDocument>,
   ) {}

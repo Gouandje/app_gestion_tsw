@@ -6,6 +6,7 @@ import { CreateMoisDto } from './dto/create-mois.dto';
 
 @Controller('moisannee')
 export class MoisanneeController {
+  
   constructor(private readonly moisanneeService: MoisanneeService) {}
 
   @Post('addyear')
@@ -23,6 +24,7 @@ export class MoisanneeController {
   findOne(@Param('id') id: string) {
     return this.moisanneeService.findOne(id);
   }
+
 
   @Get('singleannee/:annee')
   findOneAnnee(@Param('annee') annee: number) {

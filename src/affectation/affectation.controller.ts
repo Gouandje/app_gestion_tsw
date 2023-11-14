@@ -5,6 +5,7 @@ import { UpdateAffectationDto } from './dto/update-affectation.dto';
 
 @Controller('affectation')
 export class AffectationController {
+  
   constructor(private readonly affectationService: AffectationService) {}
 
   @Post('newaffectation')

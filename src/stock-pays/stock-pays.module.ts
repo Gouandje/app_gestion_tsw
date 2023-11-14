@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { StockPays, StockPaysSchema } from './schemas/stockpays.schema';
 
 @Module({
+  
   imports: [   
     ProduitModule,
     PaysModule, 

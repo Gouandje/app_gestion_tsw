@@ -7,9 +7,11 @@ import { Model, Schema as MongooseSchema } from 'mongoose';
 
 @Injectable()
 export class TauxService {
+
   constructor(
     @InjectModel(Taux.name) private readonly tauxModel: Model<TauxDocument>,
   ) {}
+  
   async create(createTauxDto: CreateTauxDto) {
     const taux = await this.tauxModel.find().exec();
     if(taux.length>0){

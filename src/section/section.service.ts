@@ -17,6 +17,7 @@ export class SectionService {
   ) {}
 
   async create(createSectionDto: CreateSectionDto) {
+    
     const alreadyExists = await this.sectionModel.exists({zoneId: createSectionDto.zoneId, section_name: createSectionDto.section_name }).lean();
     if(alreadyExists){
       throw new ConflictException(`cette section existe déjà dans la base de données`);

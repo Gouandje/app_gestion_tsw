@@ -28,6 +28,7 @@ export class Paysca {
     @ApiProperty()
     @Prop({ required: true, type: Number })
     caTotal: number;
+    
 }
 export const PayscaSchema = SchemaFactory.createForClass(Paysca);
 

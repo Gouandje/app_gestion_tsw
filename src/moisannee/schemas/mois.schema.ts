@@ -6,6 +6,7 @@ export type MoisDocument = HydratedDocument<Mois>;
 
 @Schema()
 export class Mois {
+    
     @Prop({ required: true })
     @ApiProperty({
         example: 'janvier',

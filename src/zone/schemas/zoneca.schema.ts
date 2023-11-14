@@ -9,6 +9,7 @@ export type ZonecaDocument = HydratedDocument<Zoneca>;
 
 @Schema()
 export class Zoneca {
+
     @ApiProperty({
         example: 'a2d840f79a0b12f4c6a4b80a',
         description: 'The ID of the angency',
@@ -32,4 +33,5 @@ export class Zoneca {
     })
     annee: string;
 }
+
 export const ZonecaSchema = SchemaFactory.createForClass(Zoneca);

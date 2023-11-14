@@ -5,6 +5,7 @@ import { UpdateSectionDto } from './dto/update-section.dto';
 
 @Controller('section')
 export class SectionController {
+  
   constructor(private readonly sectionService: SectionService) {}
 
   @Post('newsection')

@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class UserUpdate {
+    
     @ApiProperty({
         example: 'Gouandje Bi boris Sylvanus',
         description: 'The name of the admin',

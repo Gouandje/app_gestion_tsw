@@ -14,6 +14,7 @@ export class StockagenceService {
     @InjectModel(Stockagence.name) private readonly stockagenceModel: Model<StockagenceDocument>,
     private readonly produitService: ProduitService,
     private readonly paysService: AgenceService){}
+    
 
   async create(createStockagenceDto: CreateStockagenceDto) {
 

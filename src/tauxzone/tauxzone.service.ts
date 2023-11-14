@@ -10,6 +10,7 @@ import { Tauxsection, TauxsectionDocument } from './schemas/tauxsection.schema';
 
 @Injectable()
 export class TauxzoneService {
+  
   constructor(
     @InjectModel(Tauxzone.name) private readonly tauxzoneModel: Model<TauxzoneDocument>,
   @InjectModel(Tauxsection.name) private readonly tauxsectionModel: Model<TauxsectionDocument>,

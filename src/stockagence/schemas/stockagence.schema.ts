@@ -9,6 +9,7 @@ export type StockagenceDocument = HydratedDocument<Stockagence>;
 
 @Schema()
 export class Stockagence {
+    
     @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Agence.name })
     @ApiProperty({
         example: '5efvbe54edfgbknjlh45',

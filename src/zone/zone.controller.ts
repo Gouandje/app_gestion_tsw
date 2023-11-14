@@ -5,6 +5,7 @@ import { UpdateZoneDto } from './dto/update-zone.dto';
 
 @Controller('zone')
 export class ZoneController {
+  
   constructor(private readonly zoneService: ZoneService) {}
 
   @Post('newzone')

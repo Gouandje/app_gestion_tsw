@@ -9,6 +9,7 @@ import { SectionModule } from 'src/section/section.module';
 import { Tauxsection, TauxsectionSchema } from './schemas/tauxsection.schema';
 
 @Module({
+  
   imports:[
     ZoneModule,  
     SectionModule,  

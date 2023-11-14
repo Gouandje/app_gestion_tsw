@@ -8,6 +8,7 @@ export type SuperviseurzoneDocument = HydratedDocument<Superviseurzone>;
 
 @Schema()
 export class Superviseurzone {
+    
     @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Zone.name })
     @ApiProperty({
         example: '5efvbe54edfgbknjlh45',

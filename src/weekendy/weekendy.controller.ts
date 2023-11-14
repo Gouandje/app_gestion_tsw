@@ -8,6 +8,7 @@ import { CreateDocteurWeekendyDto } from './dto/create-docteur-weekendy.dto';
 
 @Controller('weekendy')
 export class WeekendyController {
+  
   constructor(private readonly weekendyService: WeekendyService) {}
 
   @Post('newWeekendy/:id')

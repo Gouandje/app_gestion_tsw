@@ -14,6 +14,7 @@ import { MoisanneeModule } from 'src/moisannee/moisannee.module';
     MongooseModule.forFeature(
       [
         { 
+          
           name: Paysca.name, 
           schema: PayscaSchema 
         },

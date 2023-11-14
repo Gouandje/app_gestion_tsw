@@ -23,6 +23,7 @@ import { TauxzoneService } from 'src/tauxzone/tauxzone.service';
 
 @Injectable()
 export class WeekendyService {
+
   constructor(
     @InjectModel(Weekendy.name) private readonly weekendyModel: Model<WeekendyDocument>,
     @InjectModel(Produitvendupays.name) private readonly produitvendupaysModel: Model<ProduitvendupaysDocument>,
@@ -116,8 +117,6 @@ export class WeekendyService {
           await this.zoneservice.createprimesz(createDataprime);
 
         }
-
-        
 
       }else{
         const createDatazoneca ={

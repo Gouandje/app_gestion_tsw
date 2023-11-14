@@ -10,7 +10,6 @@ import { json } from 'stream/consumers';
 @Injectable()
 export class PayscaService {
 
-
   constructor(
     @InjectModel(Paysca.name) private readonly payscaModel: Model<PayscaDocument>,
     @InjectModel(Payscayear.name) private readonly payscayearModel: Model<PayscayearDocument>

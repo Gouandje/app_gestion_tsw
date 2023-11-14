@@ -11,6 +11,7 @@ import { AgenceService } from 'src/angence/agence.service';
 
 @Injectable()
 export class SalaireManagerService {
+  
   constructor(@InjectModel(SalaireManager.name) private readonly salaireModel: Model<SalaireManagerDocument>,
   @InjectModel(Cotisation.name) private readonly cotisationModel: Model<CotisationDocument>,
   private readonly agenceservice: AgenceService,

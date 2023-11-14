@@ -8,6 +8,7 @@ import { StockDocument } from 'src/stock/schemas/stock.schema';
 
 @Injectable()
 export class StockPaysService {
+  
   constructor(@InjectModel(StockPays.name) private readonly stockpaysModel: Model<StockDocument>){}
 
   async create(createStockPaysDto) {

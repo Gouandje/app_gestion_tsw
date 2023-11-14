@@ -13,11 +13,13 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class ExpensesService {
+
   constructor(
     @InjectModel(Expense.name) private readonly expenseModel: Model<ExpenseDocument>,
     @InjectModel(Category.name) private readonly categoryModel: Model<CategoryDocument>,
     private readonly caisseService: CaisseService
    ){}
+   
 
   async create(createExpenseDto: CreateExpenseDto) {
     const createdExpense = await this.expenseModel.create(createExpenseDto);

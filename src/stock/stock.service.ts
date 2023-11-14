@@ -12,6 +12,7 @@ import { StockPaysService } from 'src/stock-pays/stock-pays.service';
 
 @Injectable()
 export class StockService {
+  
   constructor(
     @InjectModel(Stock.name) private readonly stockModel: Model<StockDocument>,
     private readonly produitService: ProduitService,

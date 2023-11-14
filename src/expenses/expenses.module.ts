@@ -8,6 +8,7 @@ import { CaisseModule } from 'src/caisse/caisse.module';
 import { Category, CategorySchema } from './schemas/category.schema';
 
 @Module({
+  
   imports: [    
     HttpModule,
     CaisseModule,

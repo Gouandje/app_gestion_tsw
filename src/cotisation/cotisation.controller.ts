@@ -5,6 +5,7 @@ import { UpdateCotisationDto } from './dto/update-cotisation.dto';
 
 @Controller('cotisation')
 export class CotisationController {
+  
   constructor(private readonly cotisationService: CotisationService) {}
 
   @Post()

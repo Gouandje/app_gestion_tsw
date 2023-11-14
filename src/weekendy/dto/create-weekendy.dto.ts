@@ -3,6 +3,7 @@ import { IsArray, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-valid
 import { Schema as MongooseSchema } from 'mongoose';
 
 export class CreateWeekendyDto {
+    
     @ApiProperty({ example: '5efvbe54edfgbknjlh45', description: 'The country id '})
     @IsString()
     @IsNotEmpty()

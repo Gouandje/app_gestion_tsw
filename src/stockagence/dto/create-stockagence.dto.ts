@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Schema as MongooseSchema } from 'mongoose';
 export class CreateStockagenceDto {
+    
     @ApiProperty({
         example: '5efvbe54edfgbknjlh45',
         description: 'The country id ',

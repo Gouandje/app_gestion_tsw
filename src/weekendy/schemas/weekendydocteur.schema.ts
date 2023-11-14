@@ -10,6 +10,7 @@ export type WeekendyDocteurDocument = HydratedDocument<WeekendyDocteur>;
 
 @Schema()
 export class WeekendyDocteur {
+
     
     @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Agence.name })
     @ApiProperty({

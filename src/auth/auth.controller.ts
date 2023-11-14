@@ -6,10 +6,12 @@ import * as crypto from 'crypto';
 
 @Controller('auth')
 export class AuthController {
+  
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
     ) {}
+
 
   @HttpCode(HttpStatus.OK)
   // @UseGuards(LocalAuthGuard)  
