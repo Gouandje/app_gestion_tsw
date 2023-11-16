@@ -22,41 +22,39 @@ export class ExpensesService {
    
 
   async create(createExpenseDto: CreateExpenseDto) {
-    const createdExpense = await this.expenseModel.create(createExpenseDto);
-    console.log('createExpenseDto',createExpenseDto);
-    if(createdExpense){
+    const result ="";
+    const getcaisse = await this.caisseService.findAll();
 
-
-      
-       const getcaisse = await this.caisseService.findAll();
-       if(createdExpense.typetransaction =='entrée'){
-          if(getcaisse.length == 0){
-            const createCaisseDto = {
-              solde: createdExpense.montant
-            };
-            const addtocaisse = this.caisseService.create(createCaisseDto);
-          }else{
-            const id = getcaisse[0]._id.toString('hex');
-            const montantcurrent = createdExpense.montant + getcaisse[0].solde
-            const updatetocaisse = await this.caisseService.update(id, {solde:montantcurrent});
-          }
+    if(createExpenseDto.typetransaction =='entrée'){
+      const createdExpense = await this.expenseModel.create(createExpenseDto);
+        if(getcaisse.length == 0){
+          const createCaisseDto = {
+            solde: createdExpense.montant
+          };
+          const addtocaisse = this.caisseService.create(createCaisseDto);
         }else{
-          if(getcaisse.length == 0){
-            throw new NotFoundException(`Aucun fond disponible`);
-          }else{
-            if(getcaisse[0].solde >= createExpenseDto.montant){
-              const id = getcaisse[0]._id.toString('hex');
-            const montantcurrent = (getcaisse[0].solde - createdExpense.montant);
-            const updatetocaisse = await this.caisseService.update(id, {solde:montantcurrent});
-            }else{
-              throw new NotFoundException(`Solde insufisant. le solde actuel est: ${getcaisse[0].solde}`);
-            }
-            
-          }
-        }   
+          const id = getcaisse[0]._id.toString('hex');
+          const montantcurrent = createdExpense.montant + getcaisse[0].solde
+          const updatetocaisse = await this.caisseService.update(id, {solde:montantcurrent});
+        }
+      }else{
+        if(getcaisse.length == 0){
+          throw new NotFoundException(`Aucun fond disponible`);
+        }else{
+          const createdExpense = await this.expenseModel.create(createExpenseDto);
 
-    }
-      return createdExpense;  
+          if(getcaisse[0].solde >= createExpenseDto.montant){
+            const id = getcaisse[0]._id.toString('hex');
+          const montantcurrent = (getcaisse[0].solde - createdExpense.montant);
+          const updatetocaisse = await this.caisseService.update(id, {solde:montantcurrent});
+          }else{
+            throw new NotFoundException(`Solde insufisant. le solde actuel est: ${getcaisse[0].solde}`);
+          }
+          
+        }
+      }   
+
+      return "créer avec succès";  
     }
 
   async findAll() {
