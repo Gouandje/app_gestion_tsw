@@ -45,9 +45,7 @@ export class StockPaysService {
   }
 
   async findpaysproduit(productId: string, paysId: string){
-    console.log('pays id', paysId);
     const product = await this.stockpaysModel.findOne({productId: productId, paysId: paysId}).exec();
-    console.log('pays product', product);
 
     return product;
 

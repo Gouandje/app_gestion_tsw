@@ -28,11 +28,5 @@ export class CreateStockPaysDto {
     @IsNotEmpty()
     quantity: number;
 
-    @ApiProperty({
-        example: '30000',
-        description: 'The quantity product',
-    })
-    @IsNumber()
-    @IsNotEmpty()
-    qtyalerte: number;
+   
 }

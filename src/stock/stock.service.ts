@@ -43,7 +43,6 @@ export class StockService {
             paysId: createStockDto.paysId,
             productId: createStockDto.productId,
             quantity: product.quantity + createStockDto.quantity,
-            qtyalerte: createStockDto.alertQty
     
           };
 
