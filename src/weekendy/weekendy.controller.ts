@@ -39,9 +39,9 @@ export class WeekendyController {
     return this.weekendyService.findAll(bureauId);
   }
 
-  @Get('allventepays')
-  allGetAllProduitVendyPays() {
-    return this.weekendyService.allGetAllProduitVendyPays();
+  @Get('allventepays/:id')
+  allGetAllProduitVendyPays(@Param('id') id: string) {
+    return this.weekendyService.allGetAllProduitVendyPays(id);
   }
 
 

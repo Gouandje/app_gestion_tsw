@@ -380,9 +380,9 @@ export class WeekendyService {
     return weekendy;
   }
 
-  async allGetAllProduitVendyPays(){
+  async allGetAllProduitVendyPays(paysId){
     const result=[];
-    const ventes = await this.produitvendupaysModel.find().populate('paysId').populate('productId').populate('annee').exec();
+    const ventes = await this.produitvendupaysModel.find({paysId: paysId}).populate('paysId').populate('productId').populate('annee').exec();
     
     return ventes;                                               
   }
