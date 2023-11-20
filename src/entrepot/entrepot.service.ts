@@ -79,7 +79,7 @@ export class EntrepotService {
       throw new NotFoundException(`Il semble que les informations liées à ce produit que vous souhaitez faire sortir ne sont pas correctes. Veuillez verifier la date de fabrication ou la date de péremption..!`);
     }else{
       const stockproductcurrententrepot = await this.entrepotproduitstockModel.findOne({productId: createSortieStockEntrepotDto.productId}).exec();
-      if(stockproductcurrententrepot !=null && stockproductcurrententrepot.quantity > createSortieStockEntrepotDto.quantity){
+      if(stockproductcurrententrepot !=null && stockproductcurrententrepot.quantity >= createSortieStockEntrepotDto.quantity){
 
         const sortiestockentrepot = await this.sortieproduitentrepotModel.create(createSortieStockEntrepotDto);
         if(sortiestockentrepot){
