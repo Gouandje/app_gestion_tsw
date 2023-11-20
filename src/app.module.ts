@@ -46,15 +46,15 @@ import { DelecountryModule } from './delecountry/delecountry.module';
       load: configs,
       isGlobal: true,
     }),
-     MongooseModule.forRoot(
-       // `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_CLUSTER}.ftyqrzd.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`,
-     `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}.railway.app:6692/${process.env.MONGODB_DATABASE}?authSource=admin`,
-    ),
-    // MongooseModule.forRootAsync({
-    //  inject: [DatabaseService],
-    //  imports: [DatabaseModule],
-    //  useFactory: (databaseService: DatabaseService) => databaseService.createMongooseOptions(),
-    // }),
+    //  MongooseModule.forRoot(
+    //    // `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_CLUSTER}.ftyqrzd.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`,
+    //  `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}.railway.app:6692/${process.env.MONGODB_DATABASE}?authSource=admin`,
+    // ),
+    MongooseModule.forRootAsync({
+     inject: [DatabaseService],
+     imports: [DatabaseModule],
+     useFactory: (databaseService: DatabaseService) => databaseService.createMongooseOptions(),
+    }),
     UserModule,
     ManagerModule, 
     ProduitModule, 

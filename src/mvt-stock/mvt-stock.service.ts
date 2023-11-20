@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateMvtStocPaysEntrepotkDto } from './dto/create-mvt-stock.dto';
 import { UpdateMvtStockDto } from './dto/update-mvt-stock.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,6 +9,7 @@ import { StockPaysService } from 'src/stock-pays/stock-pays.service';
 import { StockService } from 'src/stock/stock.service';
 import { PaysService } from 'src/pays/pays.service';
 import { CreateStockPaysDto } from 'src/stock-pays/dto/create-stock-pay.dto';
+import { CreateEntrepotDto } from 'src/entrepot/dto/create-entrepot.dto';
 
 @Injectable()
 export class MvtStockService {
@@ -22,20 +23,37 @@ export class MvtStockService {
 
   }
   async create(createMvtStockDto: CreateMvtStocPaysEntrepotkDto) {
-    const createdentrepot = await this.mvtstockpaysentrepotModel.create(createMvtStockDto);
+    const productpays = await this.stockpaysService.findpaysproduit(createMvtStockDto.productId, createMvtStockDto.paysId);
+    if(createMvtStockDto.quantity <= productpays.quantity){
+      const createdentrepot = await this.mvtstockpaysentrepotModel.create(createMvtStockDto);
+      if(createdentrepot){
+        const createEntrepotDto: CreateEntrepotDto = {
+          productId: createMvtStockDto.productId,
+          quantity: createMvtStockDto.quantity,
+          enterDate: createMvtStockDto.sortieDate,
+          fabDate: createMvtStockDto.fabDate,
+          expirDate: createMvtStockDto.expirDate,
+          alertDate: createMvtStockDto.alertDate,
+  
+        };
+        const sendentrepot = this.entrepotService.create(createEntrepotDto);
+        console.log('sendentrepot', sendentrepot);
+  
+               const updateProduitDto: CreateStockPaysDto = {
+                paysId: createMvtStockDto.paysId,
+                productId: createMvtStockDto.productId,
+                quantity: productpays.quantity - createMvtStockDto.quantity,
+              };
+  
+              await this.stockpaysService.updatepaysStock(updateProduitDto.paysId, updateProduitDto.productId, updateProduitDto);
+      }
 
-    if(createdentrepot){
-      this.entrepotService.create(createMvtStockDto);
-      const productpays = await this.stockpaysService.findpaysproduit(createMvtStockDto.productId, createMvtStockDto.paysId);
+    }else{
+      throw new InternalServerErrorException('impossible car la quantité de produit que vous souhaitez faire sortie du magasin du pays n\'est pas suffisante');
 
-             const updateProduitDto: CreateStockPaysDto = {
-              paysId: createMvtStockDto.paysId,
-              productId: createMvtStockDto.productId,
-              quantity: productpays.quantity - createMvtStockDto.quantity,
-            };
-
-            await this.stockpaysService.updatepaysStock(updateProduitDto.paysId, updateProduitDto.productId, updateProduitDto);
     }
+
+   
   }
 
   async findAll() {

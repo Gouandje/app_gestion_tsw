@@ -34,7 +34,7 @@ export class MvtStockPaysEntrepot {
         example: '01-05-2023',
         description: 'The date of the stock register',
     })
-    enterDate: string;
+    sortieDate: string;
 
     @Prop({ required: true })
     @ApiProperty({

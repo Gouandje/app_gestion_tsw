@@ -34,7 +34,7 @@ export class CreateMvtStocPaysEntrepotkDto {
     })
     @IsString()
     @IsNotEmpty()
-    enterDate: string;
+    sortieDate: string;
 
     @ApiProperty({
         example: '30-12-2023',
