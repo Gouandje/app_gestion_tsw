@@ -3,6 +3,8 @@ import { StockPaysService } from './stock-pays.service';
 import { CreateStockPaysDto } from './dto/create-stock-pay.dto';
 import { UpdateStockPaysDto } from './dto/update-stock-pay.dto';
 import { Schema as MongooseSchema } from 'mongoose';
+import { CreateStockAlerteEntrepotDto } from 'src/entrepot/dto/create-stock-alerte.dto';
+import { UpdateEntrepotDto } from 'src/entrepot/dto/update-entrepot.dto';
 
 @Controller('stockpays')
 export class StockPaysController {
@@ -45,4 +47,6 @@ export class StockPaysController {
   remove(@Param('id') id: string) {
     return this.stockPaysService.remove(id);
   }
+
+  
 }

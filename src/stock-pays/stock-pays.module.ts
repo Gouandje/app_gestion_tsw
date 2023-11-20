@@ -6,6 +6,9 @@ import { PaysModule } from 'src/pays/pays.module';
 import { HttpModule } from '@nestjs/axios';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StockPays, StockPaysSchema } from './schemas/stockpays.schema';
+import { PaysStockAlert, PaysStockAlertSchema } from './schemas/stockalertpays.schema';
+import { StockAlertPaysController } from './stockalert.controller';
+import { StockAlertPaysService } from './stockalert.service';
 
 @Module({
   
@@ -18,12 +21,16 @@ import { StockPays, StockPaysSchema } from './schemas/stockpays.schema';
         { 
           name: StockPays.name, 
           schema: StockPaysSchema 
+        },
+        { 
+          name: PaysStockAlert.name, 
+          schema: PaysStockAlertSchema 
         }
       ]
       )
   ],
-  controllers: [StockPaysController],
-  providers: [StockPaysService],
-  exports: [StockPaysService]
+  controllers: [StockPaysController,StockAlertPaysController],
+  providers: [StockPaysService,StockAlertPaysService],
+  exports: [StockPaysService,StockAlertPaysService]
 })
 export class StockPaysModule {}

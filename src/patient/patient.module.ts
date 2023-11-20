@@ -14,6 +14,7 @@ import { Caissecarnet, CaissecarnetSchema } from './schemas/caissecarnet.schema'
 import { Caissecarnetsolde, CaissecarnetsoldeSchema } from './schemas/caissecarnetsolde.schema';
 import { AgenceModule } from 'src/angence/agence.module';
 import { Demande, DemandeSchema } from './schemas/demande.schema';
+import { Seance, SeanceSchema } from './schemas/seancepatientkine.schema';
 
 @Module({
   imports:[
@@ -60,7 +61,11 @@ import { Demande, DemandeSchema } from './schemas/demande.schema';
         { 
           name: Demande.name, 
           schema: DemandeSchema
-        }
+        },
+        { 
+          name: Seance.name, 
+          schema: SeanceSchema
+        },
 
       ]
       )

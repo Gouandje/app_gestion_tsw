@@ -9,6 +9,7 @@ import { SalaireModule } from 'src/salaire/salaire.module';
 import { Cotisation, CotisationSchema } from './schemas/cotisation.schema';
 import { AgenceModule } from 'src/angence/agence.module';
 import { MoisanneeModule } from 'src/moisannee/moisannee.module';
+import { CotisationPaye, CotisationPayeSchema } from './schemas/cotisation_paye.schema';
 
 @Module({
   imports: [   
@@ -27,6 +28,10 @@ import { MoisanneeModule } from 'src/moisannee/moisannee.module';
         { 
           name: Cotisation.name, 
           schema: CotisationSchema 
+        },
+        {
+          name:CotisationPaye.name,
+          schema:CotisationPayeSchema
         }
       ]
       )

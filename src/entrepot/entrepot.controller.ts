@@ -3,6 +3,7 @@ import { EntrepotService } from './entrepot.service';
 import { CreateEntrepotDto } from './dto/create-entrepot.dto';
 import { UpdateEntrepotDto } from './dto/update-entrepot.dto';
 import { CreateSortieStockEntrepot } from './dto/create-sortie-stock-entrepot.dto';
+import { CreateStockAlerteEntrepotDto } from './dto/create-stock-alerte.dto';
 
 @Controller('entrepot')
 export class EntrepotController {
@@ -50,5 +51,30 @@ export class EntrepotController {
   @Delete('deletestockentrepot/:id')
   remove(@Param('id') id: string) {
     return this.entrepotService.remove(id);
+  }
+
+  @Post('newstockalerteentrepot')
+  createstockalerte(@Body() createstockalerteEntrepotDto: CreateStockAlerteEntrepotDto) {
+    return this.entrepotService.createstockalert(createstockalerteEntrepotDto);
+  }
+
+  @Get('allstockalertentrepot')
+  findalertAll() {
+    return this.entrepotService.findAllstockalert();
+  }
+
+  @Get('singlestockalertentrepot/:id')
+  findalertOne(@Param('id') id: string) {
+    return this.entrepotService.findOnestockalert(id);
+  }
+
+  @Patch('updatestockalertentrepot/:id')
+  updatealert(@Param('id') id: string, @Body() updateEntrepotDto: UpdateEntrepotDto) {
+    return this.entrepotService.updatestockalert(id, updateEntrepotDto);
+  }
+
+  @Delete('deletestockalertentrepot/:id')
+  removestockalert(@Param('id') id: string) {
+    return this.entrepotService.removestockalert(id);
   }
 }

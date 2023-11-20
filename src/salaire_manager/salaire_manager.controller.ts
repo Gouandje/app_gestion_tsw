@@ -4,6 +4,7 @@ import { CreateSalaireManagerDto } from './dto/create-salaire_manager.dto';
 import { UpdateSalaireManagerDto } from './dto/update-salaire_manager.dto';
 import { HydratedDocument, Schema as MongooseSchema  } from "mongoose";
 import { UpdateDetteDto } from './dto/update-dette.dto';
+import { CreatecotisationpayDto } from './dto/create-cotisationpay.dto';
 
 @Controller('salaire-manager')
 export class SalaireManagerController {
@@ -13,6 +14,11 @@ export class SalaireManagerController {
   @Post('addsalaireManager')
   create(@Body() createSalaireManagerDto: CreateSalaireManagerDto) {
     return this.salaireManagerService.create(createSalaireManagerDto);
+  }
+
+  @Post('payecotisation')
+  createCotisationpay(@Body() createcotisationpayDto: CreatecotisationpayDto) {
+    return this.salaireManagerService.createCotisationpay(createcotisationpayDto);
   }
 
   @Get('allSalaireManager/:managerId')

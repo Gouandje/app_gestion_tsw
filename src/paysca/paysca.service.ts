@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Payscayear, PayscayearDocument } from './schemas/payscayear.schema';
 import { json } from 'stream/consumers';
+import { QueryDto } from 'src/weekendy/dto/requete.dto';
 
 @Injectable()
 export class PayscaService {
@@ -44,20 +45,20 @@ export class PayscaService {
     }
   }
 
-  async findAll(year: string) {
+  async findAll(query: QueryDto) {
     const result =[];
-    const capays = await this.payscaModel.find().populate('countryId').populate('mois').exec();
-    console.log('capays',capays[0].annee);
-    for(let i=0; i<capays.length; i++){
-      if(capays[i].annee == year){
-        console.log('capays',capays[i])
-        result.push(capays[i]);
-      }
-    }
-    console.log('result',result);
+    const capays = await this.payscaModel.find({countryId: query.paysId, annee: query.anneeId}).populate('countryId').populate('mois').exec();
+    // console.log('capays',capays[0].annee);
+    // for(let i=0; i<capays.length; i++){
+    //   if(capays[i].annee == year){
+    //     console.log('capays',capays[i])
+    //     result.push(capays[i]);
+    //   }
+    // }
+    // console.log('result',result);
     
 
-    return result;
+    return capays;
   }
 
   async findAllCaYear() {
@@ -83,10 +84,10 @@ export class PayscaService {
     return camois;
   }
 
-  async findPaysCamois() {
+  async findPaysCamois(id:string) {
     
 
-    const camois = await this.payscaModel.find().populate('countryId').populate('annee').populate('mois').exec();
+    const camois = await this.payscaModel.find({countryId:id}).populate('countryId').populate('annee').populate('mois').exec();
 
     return camois;
   }

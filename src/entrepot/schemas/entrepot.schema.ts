@@ -51,13 +51,6 @@ export class Entrepot {
     })
     alertDate: string;
 
-    @Prop({ required: true })
-    @ApiProperty({
-        example: '1000',
-        description: 'The alert quantity of the stock',
-    })
-    alertQty: number;
-
 }
 export const EntrepotSchema = SchemaFactory.createForClass(Entrepot);
 

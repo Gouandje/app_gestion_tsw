@@ -20,6 +20,7 @@ import { TauxService } from 'src/taux/taux.service';
 import { ZoneService } from 'src/zone/zone.service';
 import { SectionService } from 'src/section/section.service';
 import { TauxzoneService } from 'src/tauxzone/tauxzone.service';
+import { QueryDto } from './dto/requete.dto';
 
 @Injectable()
 export class WeekendyService {
@@ -380,10 +381,11 @@ export class WeekendyService {
     return weekendy;
   }
 
-  async allGetAllProduitVendyPays(paysId){
+  async allGetAllProduitVendyPays(query: QueryDto){
     const result=[];
-    const ventes = await this.produitvendupaysModel.find({paysId: paysId}).populate('paysId').populate('productId').populate('annee').exec();
-    
+    console.log('query', query);
+    const ventes = await this.produitvendupaysModel.find({paysId: query.paysId, annee: query.anneeId}).populate('paysId').populate('productId').populate('annee').exec();
+    console.log('ventes',ventes);
     return ventes;                                               
   }
 

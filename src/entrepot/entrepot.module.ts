@@ -11,6 +11,7 @@ import { EntrepotOperation, EntrepotOperationSchema } from './schemas/entrepotop
 import { EntrepotProduitStock, EntrepotProduitStockSchema } from './schemas/entrepotproduitstock.schema';
 import { StockPaysModule } from 'src/stock-pays/stock-pays.module';
 import { SortieProduitEntrepot, SortieProduitEntrepotSchema } from './schemas/sortieproduitentrepot.schema';
+import { StockAlerteEntrepot, StockAlerteEntrepotSchema } from './schemas/stockalertentrepot.schema';
 
 @Module({
   imports: [   
@@ -36,6 +37,10 @@ import { SortieProduitEntrepot, SortieProduitEntrepotSchema } from './schemas/so
         {
           name: SortieProduitEntrepot.name,
           schema: SortieProduitEntrepotSchema
+        },
+        {
+          name: StockAlerteEntrepot.name,
+          schema: StockAlerteEntrepotSchema
         }
       ]
     )

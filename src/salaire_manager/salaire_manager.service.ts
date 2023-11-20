@@ -8,12 +8,15 @@ import { Model } from 'mongoose';
 import { UpdateDetteDto } from './dto/update-dette.dto';
 import { Cotisation, CotisationDocument } from './schemas/cotisation.schema';
 import { AgenceService } from 'src/angence/agence.service';
+import { CotisationPaye, CotisationPayeDocument } from './schemas/cotisation_paye.schema';
+import { CreatecotisationpayDto } from './dto/create-cotisationpay.dto';
 
 @Injectable()
 export class SalaireManagerService {
   
   constructor(@InjectModel(SalaireManager.name) private readonly salaireModel: Model<SalaireManagerDocument>,
   @InjectModel(Cotisation.name) private readonly cotisationModel: Model<CotisationDocument>,
+  @InjectModel(CotisationPaye.name) private readonly cotisationpayModel: Model<CotisationPayeDocument>,
   private readonly agenceservice: AgenceService,
 
   ){}
@@ -48,6 +51,27 @@ export class SalaireManagerService {
         
       }
       return createdSalairemanager;
+
+    }
+    
+  }
+
+  async createCotisationpay(createcotisationpayDto: CreatecotisationpayDto){
+
+    const createdpay = await this.cotisationpayModel.create(createcotisationpayDto)
+    if(createdpay){
+      const getcotisation = await this.cotisationModel.findOne({managerId: createcotisationpayDto.managerId}).exec();
+      
+      if(getcotisation !=null){
+        const updatecotisation = {
+          managerId: createcotisationpayDto.managerId,
+          cotisation_totale: createcotisationpayDto.cotisation_totale,
+          statut: "payé"
+        };
+        await this.cotisationModel.findByIdAndUpdate({_id: getcotisation._id},updatecotisation, { new: true,} ).lean();
+
+      }
+      
 
     }
     

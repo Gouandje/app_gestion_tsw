@@ -5,6 +5,7 @@ import { UpdatePatientDto } from './dto/update-patient.dto';
 import { MachineDto } from './dto/machine.dto';
 import { CarnetDto } from './dto/carnet.dto';
 import { DemandeDto } from './dto/demande.dto';
+import { UpdateSeancePatientKineDto } from './dto/update-seance-kine.dto';
 
 @Controller('patient')
 export class PatientController {
@@ -40,9 +41,9 @@ export class PatientController {
     return this.patientService.findAllMachine();
   }
 
-  @Get('allpatientkine/:service')
-  findAllPatientkine(@Param('service') service: string) {
-    return this.patientService.findAllPatientkine(service);
+  @Get('allpatientkine')
+  findAllPatientkine() {
+    return this.patientService.findAllPatientkine();
   }
 
   @Get('allpatientdoctor/:service')
@@ -70,6 +71,7 @@ export class PatientController {
   createDemande(@Body() demandeDto: DemandeDto) {
     return this.patientService.createDemande(demandeDto);
   }
+
   @Get('alldemande')
     findAllDemande() {
       return this.patientService.findAllDemande();
@@ -93,5 +95,29 @@ export class PatientController {
   @Delete('deletedemande/:id')
   removeDemande(@Param('id') id: string) {
     return this.patientService.removeDemande(+id);
+  }
+
+
+  @Post('createseance')
+  createSeance(@Body() demandeDto: DemandeDto) {
+    return this.patientService.createDemande(demandeDto);
+  }
+
+
+  @Get('allseance/:id')
+    findAllSeance(@Param('id') id: string) {
+      return this.patientService.findAllpatientkineseance(id);
+  }
+
+
+  @Patch('changeseancedemande/:id')
+  updateSeance(@Param('id') id: string, @Body() updateseancekine: UpdateSeancePatientKineDto) {
+      return this.patientService.updateseance(id, updateseancekine);
+  }
+
+
+  @Delete('deletedemande/:id')
+  removeSeance(@Param('id') id: string) {
+    return this.patientService.deleteseance(id);
   }
 }

@@ -5,6 +5,7 @@ import { UpdateWeekendyDto } from './dto/update-weekendy.dto';
 import { Weekendy } from './schemas/weekendy.schema';
 import { Schema as MongooseSchema } from 'mongoose';
 import { CreateDocteurWeekendyDto } from './dto/create-docteur-weekendy.dto';
+import { QueryDto } from './dto/requete.dto';
 
 @Controller('weekendy')
 export class WeekendyController {
@@ -38,10 +39,10 @@ export class WeekendyController {
   findAll(@Param('bureauId') bureauId: string) {
     return this.weekendyService.findAll(bureauId);
   }
-
-  @Get('allventepays/:id')
-  allGetAllProduitVendyPays(@Param('id') id: string) {
-    return this.weekendyService.allGetAllProduitVendyPays(id);
+  @Post('allventepays')
+  allGetAllProduitVendyPays(@Body() query: QueryDto) {
+    console.log('query',query);
+    return this.weekendyService.allGetAllProduitVendyPays(query);
   }
 
 

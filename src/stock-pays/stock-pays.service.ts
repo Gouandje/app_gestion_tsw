@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStockPaysDto } from './dto/create-stock-pay.dto';
 import { UpdateStockPaysDto } from './dto/update-stock-pay.dto';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { StockPays } from './schemas/stockpays.schema';
 import { StockDocument } from 'src/stock/schemas/stock.schema';
+import { UpdateStockAlerteEntrepotDto } from 'src/entrepot/dto/update-stock-alerte-entrepot.dto';
+import { CreateStockAlerteEntrepotDto } from 'src/entrepot/dto/create-stock-alerte.dto';
+import { PaysStockAlert, PaysStockAlertDocument } from './schemas/stockalertpays.schema';
 
 @Injectable()
 export class StockPaysService {
   
-  constructor(@InjectModel(StockPays.name) private readonly stockpaysModel: Model<StockDocument>){}
+  constructor(
+    @InjectModel(StockPays.name) private readonly stockpaysModel: Model<StockDocument>){}
 
   async create(createStockPaysDto) {
     const createdstockpaysproduit = await this.stockpaysModel.create(createStockPaysDto);
@@ -75,4 +79,6 @@ export class StockPaysService {
   async remove(id: string) {
     return await this.stockpaysModel.findByIdAndRemove(id);
   }
+
+  
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEntrepotDto } from './dto/create-entrepot.dto';
 import { UpdateEntrepotDto } from './dto/update-entrepot.dto';
 import { Entrepot, EntrepotDocument } from './schemas/entrepot.schema';
@@ -12,25 +12,29 @@ import { PaysService } from 'src/pays/pays.service';
 import { CreateStockDto } from 'src/stock/dto/create-stock.dto';
 import { CreateSortieStockEntrepot } from './dto/create-sortie-stock-entrepot.dto';
 import { SortieProduitEntrepot, SortieProduitEntrepotDocument } from './schemas/sortieproduitentrepot.schema';
+import { StockAlerteEntrepot, StockAlerteEntrepotDocument } from './schemas/stockalertentrepot.schema';
+import { CreateStockAlerteEntrepotDto } from './dto/create-stock-alerte.dto';
+import { UpdateStockAlerteEntrepotDto } from './dto/update-stock-alerte-entrepot.dto';
 
 @Injectable()
 export class EntrepotService {
 
   constructor(
     @InjectModel(Entrepot.name) private readonly entrepotModel: Model<EntrepotDocument>,
+    @InjectModel(StockAlerteEntrepot.name) private readonly stockalertentrepotModel: Model<StockAlerteEntrepotDocument>,
     @InjectModel(EntrepotOperation.name) private readonly entrepotoperationModel: Model<EntrepotOperationDocument>,
     @InjectModel(SortieProduitEntrepot.name) private readonly sortieproduitentrepotModel: Model<SortieProduitEntrepotDocument>,
     @InjectModel(EntrepotProduitStock.name) private readonly entrepotproduitstockModel: Model<EntrepotProduitStockDocument>,
     private readonly stockpaysService: StockPaysService,
     private readonly stockService: StockService,
-    private readonly paysService: PaysService){
+    private readonly paysService: PaysService
+    ){
 
   }
 
   async create(createEntrepotDto: CreateEntrepotDto) {
     const createdentrepot = await this.entrepotModel.create(createEntrepotDto);
     if(createdentrepot){
-
       const operationentrepot = {
         productId:createEntrepotDto.productId,
         quantity:createEntrepotDto.quantity,
@@ -144,12 +148,58 @@ export class EntrepotService {
   }
 
   async remove(id: string) {
-    const entrepot = await this.entrepotoperationModel.find({countryId: id}).exec();
+    const deleted = await this.entrepotoperationModel.findByIdAndRemove(id);
+    return deleted;
+  }
 
-    if(entrepot !=null){
-      for(let i=0; i<entrepot.length; i++){
-        await this.entrepotoperationModel.findByIdAndRemove(entrepot[i]._id);
-      }
+  async createstockalert(createstockalerteEntrepotDto: CreateStockAlerteEntrepotDto){
+    const alreadyExists = await this.stockalertentrepotModel.exists({ productId: createstockalerteEntrepotDto.productId }).lean();
+    if(alreadyExists){
+      throw new ConflictException(`la quantité alerte a été déjà definie pour cet produit`);
     }
+    else{
+    const createstockalert = this.stockalertentrepotModel.create(createstockalerteEntrepotDto)
+
+    }
+
+  }
+
+  async findAllstockalert(){
+    const products = await this.stockalertentrepotModel.find().populate('productId').exec();
+    return products;
+  }
+
+  async findsinglestockalertbyproduct(productId: string){
+    const products = await this.stockalertentrepotModel.findOne({productId:productId}).populate('productId').exec();
+    return products;
+  }
+
+  async findOnestockalert(stockalertId: string){
+    const product = await this.stockalertentrepotModel.findById(stockalertId).populate('productId');
+
+    if (!product) {
+      throw new NotFoundException('Non trouvé');
+    }
+    return product;
+  }
+
+  async updatestockalert(stockalertId: string, updatestockalerteEntrepotDto: UpdateStockAlerteEntrepotDto) {
+    const stockalert = await this.findOne(stockalertId);
+
+    const updatedStockalert = this.stockalertentrepotModel.findOneAndUpdate({_id: stockalertId }, updatestockalerteEntrepotDto, {
+      new: true,
+    }).exec();
+
+
+    return updatedStockalert;
+  }
+
+
+  async removestockalert(stockalertId: string) {
+    await this.stockalertentrepotModel.findByIdAndRemove(stockalertId).catch((err) => {
+      throw new BadRequestException(`une erreur c'est produite lors de la suppression`);
+    });
+
+    return `Produit supprimé avec succès`;
   }
 }

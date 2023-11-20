@@ -13,7 +13,7 @@ export class Seance {
         example: '5efvbe54edfgjkhklh45',
         description: 'The product id',
     })
-    patientId: string;
+    patientkineId: string;
 
     @Prop({ required: true })
     @ApiProperty({

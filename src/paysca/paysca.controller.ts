@@ -2,20 +2,21 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PayscaService } from './paysca.service';
 import { CreatePayscaDto } from './dto/create-paysca.dto';
 import { UpdatePayscaDto } from './dto/update-paysca.dto';
+import { QueryDto } from 'src/weekendy/dto/requete.dto';
 
 @Controller('paysca')
 export class PayscaController {
   constructor(private readonly payscaService: PayscaService) {}
 
-  @Get('allCapays/:year')
-  findAll(@Param('year') year: string) {
-    return this.payscaService.findAll(year);
+  @Post('allCapays')
+  findAll(@Body() query: QueryDto) {
+    return this.payscaService.findAll(query);
   }
 
 
-  @Get('allCapaysmois')
-  findAllMois() {
-    return this.payscaService.findPaysCamois();
+  @Get('allCapaysmois/:id')
+  findAllMois(@Param('id') id: string) {
+    return this.payscaService.findPaysCamois(id);
   }
 
   @Get('allCaYears')

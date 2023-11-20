@@ -16,6 +16,9 @@ import { MachineDto } from './dto/machine.dto';
 import { CarnetDto } from './dto/carnet.dto';
 import { DemandeDto } from './dto/demande.dto';
 import { Demande, DemandeDocument } from './schemas/demande.schema';
+import { Seance, SeanceDocument } from './schemas/seancepatientkine.schema';
+import { CreateSeancePatientKineDto } from './dto/create-seance-kine.dto';
+import { UpdateSeancePatientKineDto } from './dto/update-seance-kine.dto';
 
 @Injectable()
 export class PatientService {
@@ -35,6 +38,7 @@ export class PatientService {
     @InjectModel(Caissecarnet.name) private readonly caissecarnetModel: Model<CaissecarnetDocument>,
     @InjectModel(Caissecarnetsolde.name) private readonly caissecarnetsoldeModel: Model<CaissecarnetsoldeDocument>,
     @InjectModel(Demande.name) private readonly demandeModel: Model<DemandeDocument>,
+    @InjectModel(Seance.name) private readonly seanceModel: Model<SeanceDocument>,
 
     ){}
 
@@ -127,8 +131,8 @@ export class PatientService {
     return await this.caissemachineModel.find().populate('patientId').exec();
   }
 
-  async findAllPatientkine(param: string) {
-    const patientkine = await this.patientModel.find({service: param}).populate('bureauId').exec();
+  async findAllPatientkine() {
+    const patientkine = await this.patienkineModel.find().populate('bureauId').exec();
     return patientkine;
   }
 
@@ -148,8 +152,8 @@ export class PatientService {
   }
 
   async findOnePatientkine(id: string) {
-    console.log('id patient:',id)
     const patient = await this.patienkineModel.findById(id).exec();
+    console.log(patient);
     return patient;
   }
 
@@ -166,7 +170,7 @@ export class PatientService {
   }
 
   async update(id: string, updatePatientDto: UpdatePatientDto) {
-    const updated = await this.patientModel.findByIdAndUpdate({_id: id},updatePatientDto, {new: true}).lean()
+    const updated = await this.patientModel.findByIdAndUpdate({_id: id},updatePatientDto, {new: true}).lean();
     return updated;
   }
 
@@ -187,4 +191,27 @@ export class PatientService {
 
     return ;
   }
+  
+  async createseance(createPatientDto: CreateSeancePatientKineDto) {
+    const createpatient = await this.seanceModel.create(createPatientDto);
+    
+
+    return createpatient;
+  }
+
+  async findAllpatientkineseance(patientkineId) {
+    return await this.caissemachineModel.find({patientkineId:patientkineId}).populate('patientkineId').exec();
+  }
+
+  async updateseance(id, updateseancekine: UpdateSeancePatientKineDto) {
+    const createpatient = await this.seanceModel.findByIdAndUpdate({_id: id},updateseancekine, {new: true}).lean();
+    
+
+    return createpatient;
+  }
+
+  async deleteseance(patientkineId) {
+    return await this.caissemachineModel.find({patientkineId:patientkineId}).populate('patientkineId').exec();
+  }
+  
 }

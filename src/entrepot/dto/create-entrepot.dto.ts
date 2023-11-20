@@ -51,12 +51,4 @@ export class CreateEntrepotDto {
     @IsNotEmpty()
     alertDate: string;
 
-
-    @ApiProperty({
-        example: '1000',
-        description: 'The alert quantity of the stock',
-    })
-    @IsNumber()
-    @IsNotEmpty()
-    alertQty: number;
 }
