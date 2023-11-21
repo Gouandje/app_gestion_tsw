@@ -387,21 +387,21 @@ export class WeekendyService {
                                 .populate('annee')
                                 .exec();
       // cas où le calcul n'est exécuté automatiquement
-    // for(let i=0; i<weekendy.length; i++){
-    //   // console.log('weekendy==>',  weekendy[i]['items']);
-    //   for(let j=0; j<weekendy[i]['items'].length; j++){
-    //     // console.log('elementItem', weekendy[i]['items'][j].quantity);
-    //     const product = await this.stockagenceService.findagenceproduit(bureauId, weekendy[i]['items'][j].productId);
-    //     const updatestockagence: UpdateStockagenceDto = {
-    //       agenceId:bureauId,
-    //       productId: weekendy[i]['items'][j].productId.toString(),
-    //       quantity: product.quantity - (Number(weekendy[i]['items'][j].quantity)),
-    //       quantitytotalenmagasin: product.quantitytotalenmagasin
-    //    };
-    //    console.log('updatestockagence',updatestockagence);
-    //    await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
-    //   }
-    // }
+    for(let i=0; i<weekendy.length; i++){
+      // console.log('weekendy==>',  weekendy[i]['items']);
+      for(let j=0; j<weekendy[i]['items'].length; j++){
+        // console.log('elementItem', weekendy[i]['items'][j].quantity);
+        const product = await this.stockagenceService.findagenceproduit(bureauId, weekendy[i]['items'][j].productId);
+        const updatestockagence: UpdateStockagenceDto = {
+          agenceId:bureauId,
+          productId: weekendy[i]['items'][j].productId.toString(),
+          quantity: product.quantity + (Number(weekendy[i]['items'][j].quantity)),
+          quantitytotalenmagasin: product.quantitytotalenmagasin
+       };
+       console.log('updatestockagence',updatestockagence);
+       await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
+      }
+    }
     // fin 
                                 
     return weekendy;
