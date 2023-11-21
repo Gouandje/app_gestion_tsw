@@ -153,7 +153,6 @@ export class PatientService {
 
   async findOnePatientkine(id: string) {
     const patient = await this.patienkineModel.findById(id).exec();
-    console.log(patient);
     return patient;
   }
 
@@ -199,8 +198,8 @@ export class PatientService {
     return createpatient;
   }
 
-  async findAllpatientkineseance(patientkineId) {
-    return await this.caissemachineModel.find({patientkineId:patientkineId}).populate('patientkineId').exec();
+  async findAllpatientkineseance(patientkineId:string) {
+    return await this.seanceModel.find({patientkineId:patientkineId}).populate('patientkineId').exec();
   }
 
   async updateseance(id, updateseancekine: UpdateSeancePatientKineDto) {

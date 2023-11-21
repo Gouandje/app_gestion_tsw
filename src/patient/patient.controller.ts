@@ -6,6 +6,7 @@ import { MachineDto } from './dto/machine.dto';
 import { CarnetDto } from './dto/carnet.dto';
 import { DemandeDto } from './dto/demande.dto';
 import { UpdateSeancePatientKineDto } from './dto/update-seance-kine.dto';
+import { CreateSeancePatientKineDto } from './dto/create-seance-kine.dto';
 
 @Controller('patient')
 export class PatientController {
@@ -99,8 +100,8 @@ export class PatientController {
 
 
   @Post('createseance')
-  createSeance(@Body() demandeDto: DemandeDto) {
-    return this.patientService.createDemande(demandeDto);
+  createSeance(@Body() createPatientDto: CreateSeancePatientKineDto) {
+    return this.patientService.createseance(createPatientDto);
   }
 
 

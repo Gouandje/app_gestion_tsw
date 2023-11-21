@@ -32,9 +32,11 @@ export class StockagenceService {
     return stockagence;
   }
 
-  async updateagenceStock(agenceId: string, productId, updateStockagenceDto: UpdateStockagenceDto) {
+  async updateagenceStock(id: string, updateStockagenceDto: UpdateStockagenceDto) {
     return this.stockagenceModel
-      .updateOne({ agenceId, productId }, updateStockagenceDto)
+      .findByIdAndUpdate({ _id: id }, updateStockagenceDto,{
+        new: true,
+      })
       .lean();
   }
 
@@ -48,7 +50,7 @@ export class StockagenceService {
     return stockagence;
   }
 
-  async findagenceproduit(agenceId: string, productId: string){
+  async findagenceproduit(agenceId: string, productId){
 
     const product = await this.stockagenceModel.findOne({agenceId: agenceId, productId: productId}).populate('productId').exec();
     return product;

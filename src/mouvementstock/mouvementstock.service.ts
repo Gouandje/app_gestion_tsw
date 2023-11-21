@@ -23,6 +23,12 @@ export class MouvementstockService {
   ){}
 
   async create(createMouvementstockDto: CreateMouvementstockDto): Promise<{any}> {
+
+    const consignedparoduct = {
+      bureauId: createMouvementstockDto.bureauId,
+      date_sortie: createMouvementstockDto.date_sortie,
+      items: createMouvementstockDto.items
+    }
     
     for(let i = 0; i<createMouvementstockDto.items.length; i++){
       const mvtstock = {
@@ -66,7 +72,7 @@ export class MouvementstockService {
             quantitytotalenmagasin: product.quantity + createMouvementstockDto.items[i].quantity,
           };
 
-          const result = await this.agenceStockService.updateagenceStock(updateStockagenceDto.agenceId, updateStockagenceDto.productId, updateStockagenceDto);
+          const result = await this.agenceStockService.updateagenceStock(product._id.toString('hex'),  updateStockagenceDto);
 
           if(result){
             const productpays = await this.stockpaysService.findpaysproduit(createMouvementstockDto.items[i].productId, bureau.countryId);

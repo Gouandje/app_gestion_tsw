@@ -194,8 +194,11 @@ export class WeekendyService {
 
       for(let i=0; i < createWeekendyDto.items.length; i++){
         const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
+        console.log('product',product);
         const productPrice = await this.produitService.findOne(createWeekendyDto.items[i].productId);
         const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createWeekendyDto.items[i].productId,  annee: createWeekendyDto.annee}).exec();
+        console.log('produitvendupays', produitvendupays);
+
         if(produitvendupays == null){
           const createdproduitvenduDto = {
             paysId: bureau.countryId,
@@ -222,7 +225,13 @@ export class WeekendyService {
           const updatedStockagence = {
            quantity: product.quantitytotalenmagasin - (createWeekendyDto.items[i].quantity)
           };
-        const updatestockagence: UpdateStockagenceDto = await this.stockagenceService.updateagenceStock(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId, updatedStockagence);
+          const updatestockagence: UpdateStockagenceDto = {
+            agenceId:createWeekendyDto.bureauId,
+            productId: createWeekendyDto.items[i].productId,
+            quantity: product.quantity - createWeekendyDto.items[i].quantity,
+            quantitytotalenmagasin: product.quantitytotalenmagasin
+         };
+         await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
       }
       }
       const managersbureau = await this.affectationservice.findManager_bureau(createWeekendyDto.bureauId);
@@ -331,7 +340,15 @@ export class WeekendyService {
           const updatedStockagence = {
            quantity: product.quantitytotalenmagasin - (createDocteurWeekendyDto.items[i].quantity)
           };
-        const updatestockagence: UpdateStockagenceDto = await this.stockagenceService.updateagenceStock(createDocteurWeekendyDto.bureauId, createDocteurWeekendyDto.items[i].productId, updatedStockagence);
+          console.log(product._id);
+          const updatestockagence: UpdateStockagenceDto = {
+            agenceId:createDocteurWeekendyDto.bureauId,
+            productId: createDocteurWeekendyDto.items[i].productId,
+            quantity: product.quantitytotalenmagasin - createDocteurWeekendyDto.items[i].quantity,
+            quantitytotalenmagasin: product.quantitytotalenmagasin
+         };
+         await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
+
       }
       }
       
@@ -369,6 +386,24 @@ export class WeekendyService {
                                 .populate('mois')
                                 .populate('annee')
                                 .exec();
+      // cas où le calcul n'est exécuté automatiquement
+    for(let i=0; i<weekendy.length; i++){
+      // console.log('weekendy==>',  weekendy[i]['items']);
+      for(let j=0; j<weekendy[i]['items'].length; j++){
+        // console.log('elementItem', weekendy[i]['items'][j].quantity);
+        const product = await this.stockagenceService.findagenceproduit(bureauId, weekendy[i]['items'][j].productId);
+        const updatestockagence: UpdateStockagenceDto = {
+          agenceId:bureauId,
+          productId: weekendy[i]['items'][j].productId.toString(),
+          quantity: product.quantity - (Number(weekendy[i]['items'][j].quantity)),
+          quantitytotalenmagasin: product.quantitytotalenmagasin
+       };
+       console.log('updatestockagence',updatestockagence);
+       await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
+      }
+    }
+    // fin 
+                                
     return weekendy;
   }
 
