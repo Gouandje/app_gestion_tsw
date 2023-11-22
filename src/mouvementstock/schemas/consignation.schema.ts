@@ -4,7 +4,7 @@ import { HydratedDocument,Schema as MongooseSchema } from "mongoose";
 import { Agence } from "src/angence/schemas/agence.schema";
 import { Products } from "src/produit/schemas/products.shema";
 
-export type ConsignationstockDocument = HydratedDocument<Consignation>;
+export type ConsignationDocument = HydratedDocument<Consignation>;
 
 @Schema()
 export class Consignation {
@@ -21,18 +21,19 @@ export class Consignation {
     })
     items:[
         {
-        quantity: {
-        type: Number,
-        default: 1,
-        }, 
-        productId: {
-        type: string,
-        ref: Products,
+          name: {
+            type: string,
+            ref: Products,
+          },
+          quantity: {
+          type: Number,
+          default: 1,
+          }, 
+          productId: {
+          type: string,
+          ref: Products,
       },
-      name: {
-        type: string,
-        ref: Products,
-      }
+      
     }];
     
     @ApiProperty()

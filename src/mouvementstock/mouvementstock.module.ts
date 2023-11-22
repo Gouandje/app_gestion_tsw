@@ -9,6 +9,7 @@ import { AgenceModule } from 'src/angence/agence.module';
 import { StockagenceModule } from 'src/stockagence/stockagence.module';
 import { StockPaysModule } from 'src/stock-pays/stock-pays.module';
 import { StockModule } from 'src/stock/stock.module';
+import { Consignation, ConsignationSchema } from './schemas/consignation.schema';
 
 @Module({
   imports: [
@@ -23,6 +24,10 @@ import { StockModule } from 'src/stock/stock.module';
         { 
           name: Mouvementstock.name, 
           schema: MouvementstockSchema 
+        },
+        { 
+          name: Consignation.name, 
+          schema: ConsignationSchema 
         }
       ]
     )],

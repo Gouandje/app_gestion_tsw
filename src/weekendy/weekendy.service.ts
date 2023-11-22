@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Weekendy, WeekendyDocument } from './schemas/weekendy.schema';
 import { Model,  Schema as MongooseSchema } from 'mongoose';
@@ -69,8 +69,14 @@ export class WeekendyService {
       chargebureauTotal: createWeekendyDto.chargebureauTotal,
       primetrsportTotal: createWeekendyDto.primetrsportTotal,
       createdAt: createWeekendyDto.createdAt
-    };
-    const weekendy = await  this.weekendyModel.create(createdDataDto);
+    };    const alreadyExists = await this.weekendyModel.findOne({ bureauId: createWeekendyDto.bureauId,
+      mois: createWeekendyDto.mois, }).lean();
+      if(alreadyExists){
+        console.log('alreadyExists', alreadyExists);
+        throw new ConflictException(`Pour ce Bureau il existe déjà un Monthending pour ce mois et pour cette année dans la base de données`);
+      }else{
+
+        const weekendy = await  this.weekendyModel.create(createdDataDto);
     if(weekendy){
       
       const bureau = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
@@ -279,6 +285,9 @@ export class WeekendyService {
     }
     // console.log(weekendy);
     return weekendy;
+
+      }
+     return;
   }
 
   async createVenteDocteur(createDocteurWeekendyDto: CreateDocteurWeekendyDto){

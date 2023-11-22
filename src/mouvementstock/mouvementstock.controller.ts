@@ -32,4 +32,14 @@ export class MouvementstockController {
   remove(@Param('id') id: string) {
     return this.mouvementstockService.remove(+id);
   }
+
+  @Get('allconsignation/:id')
+  findAllConsignation(@Param('id') id: string) {
+    return this.mouvementstockService.findAllConsignation(id);
+  }
+
+  @Get('singleconsignation/:id')
+  findOneConsignation(@Param('id') id: string) {
+    return this.mouvementstockService.findOneConsignation(id);
+  }
 }
