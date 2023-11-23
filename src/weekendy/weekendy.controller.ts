@@ -40,10 +40,10 @@ export class WeekendyController {
     return this.weekendyService.findAll(bureauId);
   }
 
-  @Get('allWeekendies')
-  findWeekendies() {
-    return this.weekendyService.findweekendies();
-  }
+  // @Get('allWeekendies')
+  // findWeekendies() {
+  //   return this.weekendyService.findweekendies();
+  // }
   @Post('allventepays')
   allGetAllProduitVendyPays(@Body() query: QueryDto) {
     console.log('query',query);
