@@ -306,6 +306,7 @@ export class WeekendyService {
 
   async findweekendies(){
     const weekendies = await this.weekendyModel.find().exec();
+    console.log(weekendies);
     for(let i=0; i<weekendies.length; i++){
       const paysinfobyagence = await this.agenceservice.findbureau(weekendies[i].bureauId);
       const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, weekendies[i].mois,weekendies[i].annee);
