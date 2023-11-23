@@ -47,8 +47,9 @@ import { DelecountryModule } from './delecountry/delecountry.module';
       isGlobal: true,
     }),
       MongooseModule.forRoot(
+        `mongodb://mongo:A36fB6EfBcEf-4-hBCf-GaAA6BdGF1G2@viaduct.proxy.rlwy.net:14553`
         // `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_CLUSTER}.ftyqrzd.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`,
-      `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}.viaduct.proxy.rlwy.net:14553/${process.env.MONGODB_DATABASE}?authSource=admin`,
+      // `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}.viaduct.proxy.rlwy.net:14553/${process.env.MONGODB_DATABASE}?authSource=admin`,
      ),
     // MongooseModule.forRootAsync({
     // inject: [DatabaseService],
