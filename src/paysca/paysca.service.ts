@@ -20,29 +20,6 @@ export class PayscaService {
 
   async create(createPayscaDto: any) {
     const weekendy = await  this.payscaModel.create(createPayscaDto);
-    if(weekendy){
-
-      const infoCapaysyear = {
-        countryId: createPayscaDto.countryId,
-        year: createPayscaDto.annee,
-        caTotal: createPayscaDto.caTotal
-      };
-
-      const getPaysCaYear = await this.findOnePaysCaYearExist(infoCapaysyear.countryId, infoCapaysyear.year);
-
-      if(getPaysCaYear !=null){
-        const upadateinfopaysCaYear = {
-          countryId: getPaysCaYear.countryId,
-          year: createPayscaDto.annee,
-          caTotal: createPayscaDto.caTotal + getPaysCaYear.caTotal
-        };
-        await this.payscayearModel.findByIdAndUpdate({_id: getPaysCaYear._id.toString('hex')}, upadateinfopaysCaYear,{new: true}).lean();
-      }else{
-
-        await this.payscayearModel.create(infoCapaysyear)
-      }
-
-    }
   }
 
   async findAll(query: QueryDto) {
@@ -77,9 +54,9 @@ export class PayscaService {
     return camois;
   }
 
-  async findOnePaysCamoisExist(id: string, mois: string) {
+  async findOnePaysCamoisExist(id: string, mois: string, annee:string) {
     
-    const camois = await this.payscaModel.findOne({countryId: id, mois: mois}).populate('countryId').populate('mois');
+    const camois = await this.payscaModel.findOne({countryId: id, mois: mois, annee:annee}).exec();
     
     return camois;
   }
@@ -93,36 +70,22 @@ export class PayscaService {
   }
 
   async findOnePaysCaYearExist(id: string, year: string) {
-    const cayear = await this.payscayearModel.findOne({countryId: id, year: year});
+    const cayear = await this.payscayearModel.findOne({countryId: id, year: year}).exec();
     return cayear;
   }
+  async updateCaPaysMois(id,upadateinfopaysCaMois){
+    const update = await this.payscaModel.findByIdAndUpdate({_id: id}, upadateinfopaysCaMois, {new: true}).lean();
 
-  async update(id: string, updatePayscaDto: any) {
-    const update = await this.payscaModel.findByIdAndUpdate({_id: id}, updatePayscaDto, {new: true}).lean();
-    if(update){
+  }
 
-      const infoCapaysyear = {
-        countryId: updatePayscaDto.countryId,
-        year: updatePayscaDto.annee,
-        caTotal: updatePayscaDto.caTotal
-      };
+  async createCaPaysYear(CapaysYear:any){
 
-      const getPaysCaYear = await this.findOnePaysCaYearExist(infoCapaysyear.countryId, infoCapaysyear.year);
+    await this.payscayearModel.create(CapaysYear)
 
-      if(getPaysCaYear !=null){
-        const upadateinfopaysCaYear = {
-          countryId: getPaysCaYear.countryId,
-          year: updatePayscaDto.annee,
-          caTotal: updatePayscaDto.caTotal + getPaysCaYear.caTotal
-        };
-        await this.payscayearModel.findByIdAndUpdate({_id: getPaysCaYear._id.toString('hex')}, upadateinfopaysCaYear,{new: true}).lean();
-      }else{
+  }
 
-        await this.payscayearModel.create(infoCapaysyear)
-      }
-
-    }
-    return update
+  async updateyear(id: string, updatePayscaDto: any) {
+    const update = await this.payscayearModel.findByIdAndUpdate({_id: id}, updatePayscaDto, {new: true}).lean();
   }
 
   async remove(id: string) {

@@ -98,7 +98,6 @@ export class WeekendyService {
         await this.zoneservice.updatezoneca(zoneca._id.toString('hex'),updateDatazoneca);
 
         const primesz = await this.zoneservice.findprimesz(bureau.zoneId, createWeekendyDto.mois, createWeekendyDto.annee);
-        console.log('primesz', primesz);
 
         if(primesz !=null){
           const updateDataprimesz ={
@@ -107,7 +106,6 @@ export class WeekendyService {
             annee: createWeekendyDto.annee,
             primesz: (createWeekendyDto.caTotal*tauxzone.taux_zone/100 + primesz.primesz),
           }; 
-          console.log('updateDataprimesz', updateDataprimesz)
   
           await this.zoneservice.updateprimesz(primesz._id.toString('hex'),updateDataprimesz);
 
@@ -120,7 +118,6 @@ export class WeekendyService {
             annee: createWeekendyDto.annee,
             primesz: createWeekendyDto.caTotal*tauxzone.taux_zone/100,
           }; 
-          console.log('createDataprime', createDataprime)
           await this.zoneservice.createprimesz(createDataprime);
 
         }
@@ -140,7 +137,7 @@ export class WeekendyService {
           annee: createWeekendyDto.annee,
           primesz: createWeekendyDto.caTotal*tauxzone.taux_zone/100,
         }; 
-        console.log('createDataprime', createDataprime)
+
         await this.zoneservice.createprimesz(createDataprime);
 
 
@@ -200,10 +197,8 @@ export class WeekendyService {
 
       for(let i=0; i < createWeekendyDto.items.length; i++){
         const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
-        console.log('product',product);
         const productPrice = await this.produitService.findOne(createWeekendyDto.items[i].productId);
         const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createWeekendyDto.items[i].productId,  annee: createWeekendyDto.annee}).exec();
-        console.log('produitvendupays', produitvendupays);
 
         if(produitvendupays == null){
           const createdproduitvenduDto = {
@@ -241,7 +236,7 @@ export class WeekendyService {
       }
       }
       const managersbureau = await this.affectationservice.findManager_bureau(createWeekendyDto.bureauId);
-      console.log('managers bureau',managersbureau);
+
       const taux = await this.tauxservice.findAll();
       const createSalaireDto = {
         bureauId:createWeekendyDto.bureauId,
@@ -261,15 +256,8 @@ export class WeekendyService {
 
       const paysinfobyagence = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
 
-      const infoCapays = {
-        countryId: paysinfobyagence.countryId,
-        mois: createWeekendyDto.mois,
-        annee: createWeekendyDto.annee,
-        caTotal: createWeekendyDto.caTotal
-      };
-
-      const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(infoCapays.countryId, infoCapays.mois);
-
+      const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
+      const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, createWeekendyDto.annee)
       if(getPaysCaMois !=null){
         const upadateinfopaysCaMois = {
           countryId: paysinfobyagence.countryId,
@@ -277,10 +265,35 @@ export class WeekendyService {
           annee: createWeekendyDto.annee,
           caTotal: createWeekendyDto.caTotal + getPaysCaMois.caTotal
         };
-        await this.payscaservice.update(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
+        await this.payscaservice.updateCaPaysMois(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
       }else{
 
+        const infoCapays = {
+          countryId: paysinfobyagence.countryId,
+          mois: createWeekendyDto.mois,
+          annee: createWeekendyDto.annee,
+          caTotal: createWeekendyDto.caTotal
+        };
+        
         await this.payscaservice.create(infoCapays)
+      }
+
+      if(getPaysCaAnnee !=null){
+        const upadateinfopaysCaYear = {
+          countryId: paysinfobyagence.countryId,
+          year: createWeekendyDto.annee,
+          caTotal: createWeekendyDto.caTotal + getPaysCaAnnee.caTotal
+        };
+        await this.payscaservice.updateyear(getPaysCaAnnee._id.toString('hex'), upadateinfopaysCaYear);
+      }else{
+
+        const infoCapaysYear = {
+          countryId: paysinfobyagence.countryId,
+          year: createWeekendyDto.annee,
+          caTotal: createWeekendyDto.caTotal
+        };
+
+        await this.payscaservice.createCaPaysYear(infoCapaysYear)
       }
     }
     // console.log(weekendy);
@@ -369,7 +382,7 @@ export class WeekendyService {
         caTotal: createDocteurWeekendyDto.caTotal
       };
 
-      const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(infoCapays.countryId, infoCapays.mois);
+      const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(infoCapays.countryId, createDocteurWeekendyDto.mois, createDocteurWeekendyDto.annee);
 
       if(getPaysCaMois !=null){
         const upadateinfopaysCaMois = {
@@ -377,7 +390,7 @@ export class WeekendyService {
           mois: createDocteurWeekendyDto.mois,
           caTotal: createDocteurWeekendyDto.caTotal + getPaysCaMois.caTotal
         };
-        await this.payscaservice.update(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
+        await this.payscaservice.updateyear(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
       }else{
 
         await this.payscaservice.create(infoCapays)

@@ -35,8 +35,8 @@ export class PayscaController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePayscaDto: UpdatePayscaDto) {
-    return this.payscaService.update(id, updatePayscaDto);
+  updateyear(@Param('id') id: string, @Body() updatePayscaDto: UpdatePayscaDto) {
+    return this.payscaService.updateyear(id, updatePayscaDto);
   }
 
   @Delete(':id')
