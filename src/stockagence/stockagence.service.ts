@@ -27,7 +27,7 @@ export class StockagenceService {
 
     return createStockagenceDto;
   }
-
+// operation directe
   async deledirect(id){
     const stockagence = await this.stockagenceModel.find({agenceId:id}).exec()
     for(let i=0; i<stockagence.length; i++){
@@ -35,6 +35,7 @@ export class StockagenceService {
     }
   }
 
+  
   async directcreate(){
     const items=[
 
@@ -184,6 +185,7 @@ export class StockagenceService {
         await this.stockagenceModel.create({agenceId:items[i].agenceId, productId :items[i].productId, quantity:items[i].quantity,quantitytotalenmagasin:items[i].quantitytotalenmagasin});
       }
   }
+  // fin operationdirecte
 
   async findAll(id: string) {
     const stockagence = await this.stockagenceModel.find({agenceId:id}).populate('productId').populate('agenceId').exec();
