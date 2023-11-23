@@ -4,7 +4,7 @@ import { UpdateMouvementstockDto } from './dto/update-mouvementstock.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Mouvementstock, MouvementstockDocument } from './schemas/mouvementstock.schema';
 import { HydratedDocument, Model, Schema as MongooseSchema } from "mongoose";
-import { StockagenceService } from 'src/stockagence/stockagence.service';
+import { StockagenceService } from 'src/stockagence/StockagenceService';
 import { SalaireService } from 'src/salaire/salaire.service';
 import { CreateStockagenceDto } from 'src/stockagence/dto/create-stockagence.dto';
 import { StockPaysService } from 'src/stock-pays/stock-pays.service';

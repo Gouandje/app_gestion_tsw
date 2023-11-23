@@ -14,6 +14,16 @@ export class StockagenceController {
     return this.stockagenceService.create(createStockagenceDto);
   }
 
+  @Get("createdirect")
+  createdirecte() {
+    return this.stockagenceService.directcreate();
+  }
+
+  @Delete('deletedirecte/:id')
+  removedirecte(@Param('id') id: string) {
+    return this.stockagenceService.deledirect(id);
+  }
+
   @Get('allstock/:id')
   findAll(@Param('id') id: string) {
     return this.stockagenceService.findAll(id);
