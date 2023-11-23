@@ -69,7 +69,8 @@ export class WeekendyService {
       chargebureauTotal: createWeekendyDto.chargebureauTotal,
       primetrsportTotal: createWeekendyDto.primetrsportTotal,
       createdAt: createWeekendyDto.createdAt
-    };    const alreadyExists = await this.weekendyModel.findOne({ bureauId: createWeekendyDto.bureauId,
+    };    
+    const alreadyExists = await this.weekendyModel.findOne({ bureauId: createWeekendyDto.bureauId,
       mois: createWeekendyDto.mois, }).lean();
       if(alreadyExists){
         console.log('alreadyExists', alreadyExists);
@@ -274,7 +275,7 @@ export class WeekendyService {
           annee: createWeekendyDto.annee,
           caTotal: createWeekendyDto.caTotal
         };
-        
+
         await this.payscaservice.create(infoCapays)
       }
 
@@ -301,6 +302,52 @@ export class WeekendyService {
 
       }
      return;
+  }
+
+  async findweekendies(){
+    const weekendies = await this.weekendyModel.find().exec();
+    for(let i=0; i<weekendies.length; i++){
+      const paysinfobyagence = await this.agenceservice.findbureau(weekendies[i].bureauId);
+      const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, weekendies[i].mois,weekendies[i].annee);
+      const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, weekendies[i].annee)
+      if(getPaysCaMois !=null){
+        const upadateinfopaysCaMois = {
+          countryId: paysinfobyagence.countryId,
+          mois: weekendies[i].mois,
+          annee: weekendies[i].annee,
+          caTotal: weekendies[i].caTotal + getPaysCaMois.caTotal
+        };
+        await this.payscaservice.updateCaPaysMois(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
+      }else{
+
+        const infoCapays = {
+          countryId: paysinfobyagence.countryId,
+          mois: weekendies[i].mois,
+          annee: weekendies[i].annee,
+          caTotal: weekendies[i].caTotal
+        };
+
+        await this.payscaservice.create(infoCapays)
+      }
+
+      if(getPaysCaAnnee !=null){
+        const upadateinfopaysCaYear = {
+          countryId: paysinfobyagence.countryId,
+          year: weekendies[i].annee,
+          caTotal: weekendies[i].caTotal + getPaysCaAnnee.caTotal
+        };
+        await this.payscaservice.updateyear(getPaysCaAnnee._id.toString('hex'), upadateinfopaysCaYear);
+      }else{
+
+        const infoCapaysYear = {
+          countryId: paysinfobyagence.countryId,
+          year: weekendies[i].annee,
+          caTotal: weekendies[i].caTotal
+        };
+
+        await this.payscaservice.createCaPaysYear(infoCapaysYear)
+      }
+    }
   }
 
   async createVenteDocteur(createDocteurWeekendyDto: CreateDocteurWeekendyDto){
