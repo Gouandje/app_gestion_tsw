@@ -34,6 +34,7 @@ export class MouvementstockService {
     }
     const createconsignation = await this.consignationModel.create(consignedparoduct);
     if(createconsignation){
+
       for(let i = 0; i<createMouvementstockDto.items.length; i++){
         const mvtstock = {
           bureauId: createMouvementstockDto.bureauId,
@@ -46,8 +47,6 @@ export class MouvementstockService {
         if(createdStock){
           const bureau = await this.agenceService.findSingleAgengence(createMouvementstockDto.bureauId);
           const product = await this.agenceStockService.findagenceproduit(createMouvementstockDto.bureauId, createMouvementstockDto.items[i].productId);
-          
-
           if(product == null){
             const createStockagenceDto: CreateStockagenceDto = {
               agenceId: createMouvementstockDto.bureauId,
@@ -73,7 +72,7 @@ export class MouvementstockService {
             const updateStockagenceDto: UpdateStockagenceDto = {
               agenceId: createMouvementstockDto.bureauId,
               productId: createMouvementstockDto.items[i].productId,
-              quantity: createMouvementstockDto.items[i].quantity,
+              quantity: product.quantity = createMouvementstockDto.items[i].quantity,
               quantitytotalenmagasin: product.quantity + createMouvementstockDto.items[i].quantity,
             };
 
