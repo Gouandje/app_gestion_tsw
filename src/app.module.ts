@@ -48,10 +48,9 @@ import { DelecountryModule } from './delecountry/delecountry.module';
     }),
       MongooseModule.forRoot(
         // `mongodb://mongo:bhHE2GE2FBG-cb-CH2-16fGg5b4C3Hbf@monorail.proxy.rlwy.net:24357`,
-      `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@${process.env.MONGOHOST}:24357/${process.env.MONGODB_DATABASE}?authSource=admin`,
-
+        
         // `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_CLUSTER}.ftyqrzd.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`,
-      // `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}.railway.app:24357/${process.env.MONGODB_DATABASE}?authSource=admin`,
+      `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}.railway.app:24357/${process.env.MONGODB_DATABASE}?authSource=admin`,
      ),
     // MongooseModule.forRootAsync({
     // inject: [DatabaseService],
