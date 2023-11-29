@@ -303,6 +303,25 @@ export class WeekendyService {
       }
      return;
   }
+// modification directe
+  async weekendiestockagence(){
+    const weekendies = await this.weekendyModel.find().exec();
+    for(let i=0; i<weekendies.length; i++){
+      for(let j=0; j<weekendies[i].items.length; j++){
+        const product = await this.stockagenceService.findagenceproduit(weekendies[i]['bureauId'], weekendies[i]['items'][j].productId);
+        const updatestockagence: UpdateStockagenceDto = {
+          agenceId:weekendies[i]['bureauId'],
+          productId: weekendies[i]['items'][j].productId.toString(),
+          quantity: product.quantity - (Number(weekendies[i]['items'][j].quantity)),
+          quantitytotalenmagasin: product.quantitytotalenmagasin
+       };
+       console.log('updatestockagence',updatestockagence);
+       await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
+      }
+
+    }
+  }
+  // finde modification directe
 
   async findweekendies(){
     const weekendies = await this.weekendyModel.find().exec();

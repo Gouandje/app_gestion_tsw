@@ -18,6 +18,11 @@ export class MouvementstockController {
     return this.mouvementstockService.findAll();
   }
 
+  // @Get('creationmigration')
+  // findAllMigration() {
+  //   return this.mouvementstockService.creationdirecte();
+  // }
+
   @Get('singlemvtstock/:id')
   findOne(@Param('id') id: string) {
     return this.mouvementstockService.findOne(id);

@@ -40,6 +40,12 @@ export class WeekendyController {
     return this.weekendyService.findAll(bureauId);
   }
 
+  
+  // @Get('allWeekendiesForstock')
+  // findWeekendiesForstock() {
+  //   return this.weekendyService.weekendiestockagence();
+  // }
+
   // @Get('allWeekendies')
   // findWeekendies() {
   //   return this.weekendyService.findweekendies();

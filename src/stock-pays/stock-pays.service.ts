@@ -49,11 +49,23 @@ export class StockPaysService {
   }
 
   async findpaysproduit(productId: string, paysId: string){
+    console.log('productid',productId)
+    console.log('paysid',paysId)
     const product = await this.stockpaysModel.findOne({productId: productId, paysId: paysId}).exec();
 
     return product;
 
   }
+
+  async findpaysproduitmigration(productId){
+    console.log('productid',productId)
+    // console.log('paysid',paysId)
+    const product = await this.stockpaysModel.findOne({productId: productId}).exec();
+
+    return product;
+
+  }
+
 
   async findAllproductbycountry(paysId: string){
    

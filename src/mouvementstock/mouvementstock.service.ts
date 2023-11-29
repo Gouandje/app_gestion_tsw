@@ -25,6 +25,7 @@ export class MouvementstockService {
     private agenceService: AgenceService
   ){}
 
+ 
   async create(createMouvementstockDto: CreateMouvementstockDto): Promise<{any}> {
 
     const consignedparoduct = {
@@ -46,6 +47,7 @@ export class MouvementstockService {
         const createdStock = await this.mvtstockModel.create(mvtstock);
         if(createdStock){
           const bureau = await this.agenceService.findSingleAgengence(createMouvementstockDto.bureauId);
+          console.log(bureau);
           const product = await this.agenceStockService.findagenceproduit(createMouvementstockDto.bureauId, createMouvementstockDto.items[i].productId);
           if(product == null){
             const createStockagenceDto: CreateStockagenceDto = {
@@ -72,7 +74,7 @@ export class MouvementstockService {
             const updateStockagenceDto: UpdateStockagenceDto = {
               agenceId: createMouvementstockDto.bureauId,
               productId: createMouvementstockDto.items[i].productId,
-              quantity: product.quantity = createMouvementstockDto.items[i].quantity,
+              quantity: product.quantity = product.quantity + createMouvementstockDto.items[i].quantity,
               quantitytotalenmagasin: product.quantity + createMouvementstockDto.items[i].quantity,
             };
 
