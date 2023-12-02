@@ -74,7 +74,7 @@ export class MouvementstockService {
             const updateStockagenceDto: UpdateStockagenceDto = {
               agenceId: createMouvementstockDto.bureauId,
               productId: createMouvementstockDto.items[i].productId,
-              quantity: product.quantity = product.quantity + createMouvementstockDto.items[i].quantity,
+              quantity: product.quantity + createMouvementstockDto.items[i].quantity,
               quantitytotalenmagasin: product.quantity + createMouvementstockDto.items[i].quantity,
             };
 
