@@ -136,12 +136,12 @@ export class MouvementstockService {
     return "deleted";
   }
 
-  update(id: number, updateMouvementstockDto: UpdateMouvementstockDto) {
+  update(id: string, updateMouvementstockDto: UpdateMouvementstockDto) {
     return `This action updates a #${id} mouvementstock`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} mouvementstock`;
+  remove(id: string) {
+    return  this.mvtstockModel.findByIdAndRemove(id);
   }
 
   async findAllConsignation(id){

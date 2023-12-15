@@ -30,12 +30,12 @@ export class MouvementstockController {
 
   @Patch('updatemvtstock/:id')
   update(@Param('id') id: string, @Body() updateMouvementstockDto: UpdateMouvementstockDto) {
-    return this.mouvementstockService.update(+id, updateMouvementstockDto);
+    return this.mouvementstockService.update(id, updateMouvementstockDto);
   }
 
   @Delete('deletemvtstock/:id')
   remove(@Param('id') id: string) {
-    return this.mouvementstockService.remove(+id);
+    return this.mouvementstockService.remove(id);
   }
 
   @Get('allconsignation/:id')
