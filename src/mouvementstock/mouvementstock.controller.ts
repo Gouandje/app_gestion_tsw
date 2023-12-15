@@ -18,10 +18,10 @@ export class MouvementstockController {
     return this.mouvementstockService.findAll();
   }
 
-  // @Get('creationmigration')
-  // findAllMigration() {
-  //   return this.mouvementstockService.creationdirecte();
-  // }
+  @Get('getmvtstockbyagence/:bureauId')
+  findAllMigration(@Param('id') id: string) {
+    return this.mouvementstockService.selectmvtstockbureau(id);
+  }
 
   @Get('singlemvtstock/:id')
   findOne(@Param('id') id: string) {
