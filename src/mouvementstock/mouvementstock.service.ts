@@ -108,7 +108,7 @@ export class MouvementstockService {
   }
 
   async selectmvtstockbureau(id){
-    const stock= await this.mvtstockModel.find({bureauId: id}).exec();
+    const stock= await this.mvtstockModel.findOne({bureauId: id}).exec();
     return stock;
 
   }
