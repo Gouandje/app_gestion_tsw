@@ -12,7 +12,6 @@ export class MouvementstockController {
     return this.mouvementstockService.create(createMouvementstockDto);
   }
 
-  
   @Get('allmvtstock')
   findAll() {
     return this.mouvementstockService.findAll();

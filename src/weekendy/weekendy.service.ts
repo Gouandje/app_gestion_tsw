@@ -21,6 +21,7 @@ import { ZoneService } from 'src/zone/zone.service';
 import { SectionService } from 'src/section/section.service';
 import { TauxzoneService } from 'src/tauxzone/tauxzone.service';
 import { QueryDto } from './dto/requete.dto';
+import { SalaireManagerService } from 'src/salaire_manager/salaire_manager.service';
 
 @Injectable()
 export class WeekendyService {
@@ -39,7 +40,8 @@ export class WeekendyService {
     private payscaservice: PayscaService,
     private stockagenceService: StockagenceService,
     private affectationservice: AffectationService,
-    private salaireService: SalaireService
+    private salaireService: SalaireService,
+    private salairemanagerService: SalaireManagerService 
 
   ) {}
 
@@ -81,13 +83,9 @@ export class WeekendyService {
     if(weekendy){
       
       const bureau = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
-      console.log('bureau', bureau);
       const zoneca = await this.zoneservice.findzonecabyZone(bureau.zoneId, createWeekendyDto.annee);
-      console.log('zoneca', zoneca);
 
       const tauxzone = await this.tauxzoneservice.findByzone(bureau.zoneId);
-
-        console.log('tauxzone', tauxzone)
 
       // zone prime and ca
       if(zoneca !=null){
@@ -143,59 +141,6 @@ export class WeekendyService {
 
 
       }
-
-      // end
-
-      // section prime and ca (pour plutard)
-     
-      // const sectionca = await this.sectionservice.findSectioncaforAgence(bureau.sectionId, createWeekendyDto.annee);
-      // console.log('sectionca', sectionca)
-
-      // if(sectionca !=null){
-      //   const updateDatasectionca ={
-      //     sectionId: bureau.sectionId,
-      //     casection:(createWeekendyDto.caTotal + sectionca.casection),
-      //     mois:createWeekendyDto.mois,
-      //     annee: createWeekendyDto.annee
-      //   }; 
-      //   await this.sectionservice.updatesectionca(sectionca._id.toString('hex'),updateDatasectionca);
-
-      // }else{
-      //   const createDatasectionca ={
-      //     sectionId: bureau.sectionId,
-      //     casection:createWeekendyDto.caTotal,
-      //     mois:createWeekendyDto.mois,
-      //     annee: createWeekendyDto.annee
-      //   }; 
-      //   await this.sectionservice.createcasection(createDatasectionca);
-      // }
-      // const tauxsection = await this.tauxzoneservice.findBysection(bureau.zoneId);
-      // const primechefsection = await this.sectionservice.findprimechefsection(bureau.sectionId, createWeekendyDto.mois, createWeekendyDto.annee);
-
-      // if(primechefsection !=null){
-      //   const updateDataprimechefsection ={
-      //     sectionId: bureau.sectionId,
-      //     casection:(createWeekendyDto.caTotal + primechefsection.casection),
-      //     mois:createWeekendyDto.mois,
-      //     annee: createWeekendyDto.annee,
-      //     Chefsectionprime: (createWeekendyDto.caTotal*tauxsection.taux_section/100 + primechefsection.casection),
-      //   }; 
-      //   await this.sectionservice.updateprimechefsection(primechefsection._id.toString('hex'),updateDataprimechefsection);
-
-      // }else{
-      //   const createDataprimechefsection ={
-      //     sectionId: bureau.sectionId,
-      //     casection:createWeekendyDto.caTotal,
-      //     mois:createWeekendyDto.mois,
-      //     annee: createWeekendyDto.annee,
-      //     Chefsectionprime: (createWeekendyDto.caTotal*tauxsection.taux_section/100),
-      //   }; 
-      //   await this.sectionservice.createprimechefsection(createDataprimechefsection);
-      // }
-
-      // end
-     
-
       for(let i=0; i < createWeekendyDto.items.length; i++){
         const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
         const productPrice = await this.produitService.findOne(createWeekendyDto.items[i].productId);
@@ -301,7 +246,6 @@ export class WeekendyService {
     return weekendy;
 
       }
-     return;
   }
 // modification directe
   async weekendiestockagence(){
@@ -437,8 +381,7 @@ export class WeekendyService {
             quantitytotalenmagasin: product.quantitytotalenmagasin
          };
          await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
-
-      }
+        }
       }
       
       const paysinfobyagence = await this.agenceservice.findbureau(createDocteurWeekendyDto.bureauId);
@@ -531,7 +474,99 @@ export class WeekendyService {
     return updatedWeekedy;
   }
 
-  async remove(weekedyId: MongooseSchema.Types.ObjectId) {
+  async remove(weekedyId: string) {
+    const weekendy = await this.weekendyModel.findById(weekedyId).exec();
+    if(weekendy !=null){
+      const bureau = await this.agenceservice.findbureau(weekendy.bureauId);
+      const zoneca = await this.zoneservice.findzonecabyZone(bureau.zoneId, weekendy.annee);
+
+      const tauxzone = await this.tauxzoneservice.findByzone(bureau.zoneId);
+
+      // zone prime and ca
+      if(zoneca !=null){
+        const updateDatazoneca ={
+          zoneId: bureau.zoneId,
+          cazone: zoneca['cazone'] - weekendy.caTotal,
+          annee: weekendy.annee
+        }; 
+        await this.zoneservice.updatezoneca(zoneca._id.toString('hex'),updateDatazoneca);
+
+        const primesz = await this.zoneservice.findprimesz(bureau.zoneId, weekendy.mois, weekendy.annee);
+
+        
+          const updateDataprimesz ={
+            zoneId: bureau.zoneId,
+            cazone:(weekendy.caTotal + primesz.cazone),
+            annee: weekendy.annee,
+            primesz: primesz.primesz - (weekendy.caTotal*tauxzone.taux_zone/100),
+          }; 
+  
+          await this.zoneservice.updateprimesz(primesz._id.toString('hex'),updateDataprimesz);
+
+       
+
+      
+      for(let i=0; i < weekendy.items.length; i++){
+        const product = await this.stockagenceService.findagenceproduit(weekendy.bureauId, weekendy.items[i].productId);
+        const productPrice = await this.produitService.findOne(weekendy.items[i].productId);
+        const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: weekendy.items[i].productId,  annee: weekendy.annee}).exec();
+        
+        const updatedproduitvenduDto = {
+          paysId: bureau.countryId,
+          productId: weekendy.items[i].productId,
+          quantity: produitvendupays.quantity - weekendy.items[i].quantity,
+          annee: weekendy.annee,
+          chiffreaffaire: produitvendupays.chiffreaffaire - weekendy.items[i].quantity*productPrice.price 
+        };
+        await this.produitvendupaysModel.findByIdAndUpdate({_id: produitvendupays._id}, updatedproduitvenduDto, {new: true}).lean();
+
+        if(product !=null){
+          const updatedStockagence = {
+           quantity: product.quantitytotalenmagasin - (weekendy.items[i].quantity)
+          };
+          const updatestockagence: UpdateStockagenceDto = {
+            agenceId:weekendy.bureauId,
+            productId: weekendy.items[i].productId,
+            quantity: product.quantity + weekendy.items[i].quantity,
+            quantitytotalenmagasin: product.quantitytotalenmagasin
+         };
+         await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
+      }
+      }
+      const managersbureau = await this.affectationservice.findManager_bureau(weekendy.bureauId);
+
+      const salaireBureau = await this.salaireService.findsailairebureaumoisannee(weekendy.bureauId, weekendy.mois, weekendy.annee)
+      if(salaireBureau){
+        this.salaireService.remove(salaireBureau._id.toString('hex'));
+        const salairemanager = await this.salairemanagerService.findsailairemanager(salaireBureau._id.toString('hex'));
+        if(salairemanager){
+          this.salairemanagerService.remove(salairemanager._id.toString('hex'));
+        }
+      }
+      const taux = await this.tauxservice.findAll();
+     
+      const paysinfobyagence = await this.agenceservice.findbureau(weekendy.bureauId);
+
+      const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, weekendy.mois,weekendy.annee);
+      const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, weekendy.annee)
+      
+        const upadateinfopaysCaMois = {
+          countryId: paysinfobyagence.countryId,
+          mois: weekendy.mois,
+          annee: weekendy.annee,
+          caTotal: getPaysCaMois.caTotal - weekendy.caTotal
+        };
+        await this.payscaservice.updateCaPaysMois(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
+      
+        const upadateinfopaysCaYear = {
+          countryId: paysinfobyagence.countryId,
+          year: weekendy.annee,
+          caTotal: getPaysCaAnnee.caTotal - weekendy.caTotal
+        };
+        await this.payscaservice.updateyear(getPaysCaAnnee._id.toString('hex'), upadateinfopaysCaYear);
+      
+      }
+    }
     await this.weekendyModel.findByIdAndRemove(weekedyId).catch((err) => {
       throw new BadRequestException(`une erreur c'est produite lors de la suppression`);
     });

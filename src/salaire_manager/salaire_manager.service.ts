@@ -184,8 +184,29 @@ export class SalaireManagerService {
   }
   
 
-  async remove(id: number) {
-    await this.salaireModel.deleteOne({ _id: id });
-    return {};
+  // async remove(id: number) {
+  //   await this.salaireModel.deleteOne({ _id: id });
+  //   return {};
+  // }
+
+  async remove(id: string){
+    return await this.salaireModel.findByIdAndRemove(id)
+  }
+
+  async findsailairemanager(salaireId: string) {
+    
+    const salairemanager=  await this.salaireModel.findOne({salaireId: salaireId}).exec();
+    const getcotisation = await this.cotisationModel.findOne({managerId: salairemanager.managerId}).exec(); 
+    const updatecotisation = {
+      managerId: salairemanager.managerId,
+      cotisation_totale: getcotisation.cotisation_totale -  salairemanager.garantie_manager,
+      statut: "impayé"
+    };
+    const updated =  await this.cotisationModel.findByIdAndUpdate({_id: getcotisation._id},updatecotisation, { new: true,} ).lean();
+    if(updated){
+      await this.cotisationModel.findByIdAndUpdate({_id: getcotisation._id},updatecotisation, { new: true,} ).lean();
+      return await this.salaireModel.findByIdAndRemove(salairemanager._id)
+    }
+    
   }
 }

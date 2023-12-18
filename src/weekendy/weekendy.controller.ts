@@ -68,7 +68,7 @@ export class WeekendyController {
   }
 
   @Delete('deleteWeekendy/:id')
-  remove(@Param('id') id: MongooseSchema.Types.ObjectId) {
+  remove(@Param('id') id: string) {
     return this.weekendyService.remove(id);
   }
 }

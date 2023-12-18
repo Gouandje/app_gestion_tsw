@@ -32,7 +32,7 @@ export class ProduitService {
     return products;
   }
 
-  async findOne(productId: string){
+  async findOne(productId:string){
     const product = await this.productModel.findById(productId);
 
     if (!product) {

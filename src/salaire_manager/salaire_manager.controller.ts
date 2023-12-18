@@ -59,6 +59,6 @@ export class SalaireManagerController {
 
   @Delete('deletesalairemanager/:id')
   remove(@Param('id') id: string) {
-    return this.salaireManagerService.remove(+id);
+    return this.salaireManagerService.remove(id);
   }
 }

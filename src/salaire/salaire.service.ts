@@ -36,7 +36,12 @@ export class SalaireService {
   }
 
   async remove(id: string){
-    
+    return await this.salaireModel.findByIdAndRemove(id)
+  }
+
+  async findsailairebureaumoisannee(bureauId: string, mois: string, annee: string) {
+    return  await this.salaireModel.findOne({bureauId: bureauId, mois: mois, annee: annee}).exec();
+    // return await this.salaireModel.findByIdAndRemove(salaire._id)
   }
 
 

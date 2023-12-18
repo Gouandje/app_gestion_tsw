@@ -18,6 +18,7 @@ import { MoisanneeModule } from 'src/moisannee/moisannee.module';
 import { TauxzoneModule } from 'src/tauxzone/tauxzone.module';
 import { ZoneModule } from 'src/zone/zone.module';
 import { SectionModule } from 'src/section/section.module';
+import { SalaireManagerModule } from 'src/salaire_manager/salaire_manager.module';
 
 @Module({
   
@@ -29,6 +30,7 @@ import { SectionModule } from 'src/section/section.module';
     AffectationModule,
     HttpModule,
     SalaireModule,
+    SalaireManagerModule,
     PayscaModule,
     TauxModule,
     TauxzoneModule,

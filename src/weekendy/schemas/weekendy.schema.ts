@@ -35,19 +35,11 @@ export class Weekendy {
     })
     items: [
         {
-        quantity: {
-        type: Number,
-        default: 1,
-        }, 
-        productId: {
-        type: string,
-        ref: Products,
-      },
-      name: {
-        type: string,
-        ref: Products,
-      }
-    }];
+        quantity: number, 
+        productId: string,
+        name: string,
+       }
+      ];
   
     @ApiProperty()
     @Prop({ required: true, type: Number })
