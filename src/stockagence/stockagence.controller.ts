@@ -3,6 +3,7 @@ import { StockagenceService } from './stockagence.service';
 import { CreateStockagenceDto } from './dto/create-stockagence.dto';
 import { UpdateStockagenceDto } from './dto/update-stockagence.dto';
 import {Schema as MongooseSchema} from 'mongoose';
+import { UpdateProductStockagenceDto } from './dto/updateProductStock.dto';
 
 @Controller('stockagence')
 export class StockagenceController {
@@ -32,6 +33,11 @@ export class StockagenceController {
   @Get('singlestockagence/:id')
   findOne(@Param('id') id: string) {
     return this.stockagenceService.findOne(id);
+  }
+
+  @Post('updateBureauProductstoct')
+  updateBureauProductstoct(@Body() updateStockagence: UpdateProductStockagenceDto) {
+    return this.stockagenceService.updateproduitagentstock(updateStockagence.id, updateStockagence);
   }
 
   @Patch('updatestockagence/:id')

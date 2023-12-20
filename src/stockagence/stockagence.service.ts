@@ -7,6 +7,7 @@ import { Stockagence, StockagenceDocument } from './schemas/stockagence.schema';
 import { ProduitService } from 'src/produit/produit.service';
 import { AgenceService } from 'src/angence/agence.service';
 import { it } from 'node:test';
+import { UpdateProductStockagenceDto } from './dto/updateProductStock.dto';
 
 @Injectable()
 export class StockagenceService {
@@ -220,6 +221,38 @@ export class StockagenceService {
   async update(id: string, updateStockagenceDto: UpdateStockagenceDto) {
     const stockagence = await this.findOne(id);
     return stockagence;
+  }
+
+  async updateproduitagentstock(id: string, updateStockagence: UpdateProductStockagenceDto) {
+    const fundata = await this.stockagenceModel.findById(id).exec();
+    if(fundata !=null){
+      const updated= await this.stockagenceModel.findOneAndUpdate({ _id: id }, updateStockagence, {
+        new: true,
+      }).lean();
+
+      if(updated){
+        const response = {
+          'data': updated,
+          'success': true,
+          'status':200
+        };
+        return response;
+      }else{
+        const response = {
+          'message': 'Echec de mis à jour!!',
+          'success': false,
+          'status':500
+        };
+        return response;
+      }
+    }else{
+      const response = {
+        'message': 'Aucune information trouvée',
+        'success': false,
+        'status':404
+      };
+      return response;
+    }
   }
 
   async updateStockagence(bureauId, productId, qty){
