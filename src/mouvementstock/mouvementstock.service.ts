@@ -114,7 +114,7 @@ export class MouvementstockService {
   }
 
   async findAll() {
-    const mvtstock = await this.mvtstockModel.find().populate('bureauId').populate('productId').exec();
+    const mvtstock = await this.mvtstockModel.find().populate('bureauId').populate('productId').sort({date_sortie: 'desc'}).exec();
     if(mvtstock){
 
     }

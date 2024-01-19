@@ -21,7 +21,7 @@ export class SalaireManagerService {
 
   ){}
 
-  async create(createSalaireManagerDto: CreateSalaireManagerDto) {
+  async create(createSalaireManagerDto) {
 
     const alreadyExists = await this.salaireModel.findOne({managerId:createSalaireManagerDto.managerId, salaireId: createSalaireManagerDto.salaireId }).lean();
     if(alreadyExists !=null){

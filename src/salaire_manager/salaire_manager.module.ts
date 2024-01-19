@@ -13,7 +13,7 @@ import { CotisationPaye, CotisationPayeSchema } from './schemas/cotisation_paye.
 
 @Module({
   imports: [   
-    SalaireModule,
+    // SalaireModule,
     AgenceModule,
     ManagerModule, 
     HttpModule,

@@ -8,6 +8,9 @@ import { AgenceModule } from 'src/angence/agence.module';
 import { MouvementstockModule } from 'src/mouvementstock/mouvementstock.module';
 import { PaysModule } from 'src/pays/pays.module';
 import { MoisanneeModule } from 'src/moisannee/moisannee.module';
+import { AffectationModule } from 'src/affectation/affectation.module';
+import { SalaireManagerModule } from 'src/salaire_manager/salaire_manager.module';
+import { TauxModule } from 'src/taux/taux.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { MoisanneeModule } from 'src/moisannee/moisannee.module';
     MouvementstockModule,
     PaysModule,
     MoisanneeModule,
+    AffectationModule,
+    SalaireManagerModule,
+    TauxModule,
     MongooseModule.forFeature(
       [
         { 

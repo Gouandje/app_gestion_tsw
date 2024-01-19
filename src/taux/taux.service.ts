@@ -22,7 +22,7 @@ export class TauxService {
     return createdTaux;
   }
 
-  async findAll(): Promise<Taux[]> {
+  async findAll(){
     const taux = await this.tauxModel.find().exec();
     return taux;
   }
