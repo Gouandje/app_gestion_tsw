@@ -4,6 +4,7 @@ import { CreateStockagenceDto } from './dto/create-stockagence.dto';
 import { UpdateStockagenceDto } from './dto/update-stockagence.dto';
 import {Schema as MongooseSchema} from 'mongoose';
 import { UpdateProductStockagenceDto } from './dto/updateProductStock.dto';
+import { MvtStockagencePaysDto } from './dto/mvtstockagencepays.dto';
 
 @Controller('stockagence')
 export class StockagenceController {
@@ -28,6 +29,16 @@ export class StockagenceController {
   @Get('allstock/:id')
   findAll(@Param('id') id: string) {
     return this.stockagenceService.findAll(id);
+  }
+
+  @Get('allmvtstockforback')
+  findAllStockforBack() {
+    return this.stockagenceService.findAllMvtAgencePays();
+  }
+
+  @Post('createmvtstockagencepays')
+  createmvtstockagencepays(@Body() mvtStockagencepaysDto: MvtStockagencePaysDto){
+    return this.stockagenceService.mvtStockForBack(mvtStockagencepaysDto)
   }
 
   @Get('singlestockagence/:id')

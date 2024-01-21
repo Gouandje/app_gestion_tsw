@@ -10,6 +10,8 @@ import { Cotisation, CotisationDocument } from './schemas/cotisation.schema';
 import { AgenceService } from 'src/angence/agence.service';
 import { CotisationPaye, CotisationPayeDocument } from './schemas/cotisation_paye.schema';
 import { CreatecotisationpayDto } from './dto/create-cotisationpay.dto';
+import { DetteBureauDto } from './dto/dette_bureau.dto';
+import { DetteBureau, DetteBureauDocument } from './schemas/dette_bureau.schema';
 
 @Injectable()
 export class SalaireManagerService {
@@ -17,6 +19,7 @@ export class SalaireManagerService {
   constructor(@InjectModel(SalaireManager.name) private readonly salaireModel: Model<SalaireManagerDocument>,
   @InjectModel(Cotisation.name) private readonly cotisationModel: Model<CotisationDocument>,
   @InjectModel(CotisationPaye.name) private readonly cotisationpayModel: Model<CotisationPayeDocument>,
+  @InjectModel(DetteBureau.name) private readonly dettebureauModel: Model<DetteBureauDocument>,
   private readonly agenceservice: AgenceService,
 
   ){}
@@ -112,6 +115,43 @@ export class SalaireManagerService {
                     .exec();
     return cotisationtotale;
 
+  }
+
+  async createDetteBureau(detteBureaudto: DetteBureauDto){
+
+    const created = await this.dettebureauModel.create(detteBureaudto)
+    if(created){
+      const findsalairemanager = await this.salaireModel.find({salaireId: detteBureaudto.salaireId});
+      console.log('findsalairemanager',findsalairemanager);
+      for(let i=0; i<findsalairemanager.length; i++){
+        const updateData: UpdateSalaireManagerDto = {
+          salaire_manager:findsalairemanager[i].salaire_manager,
+          dette_manager:findsalairemanager[i].dette_manager,
+          garantie_manager:findsalairemanager[i].garantie_manager,
+          mois:findsalairemanager[i].mois,
+          annee:findsalairemanager[i].annee,
+          managerId: findsalairemanager[i].managerId,
+          salaireId: findsalairemanager[i].salaireId,
+          salaire_net_manager: findsalairemanager[i].salaire_net_manager - detteBureaudto.montantdette/findsalairemanager.length
+        };
+        console.log('updateValue',updateData);
+
+        const updated = this.salaireModel.findOneAndReplace({_id: findsalairemanager[i]._id}, updateData).exec();
+        console.log('updated',updated);
+
+      }
+    
+      return {status: 200, message: 'enregistrer avec succès'};
+    }   
+    
+
+  }
+
+  async getDetteBureau(salaireId){
+    const dettebureau = await this.dettebureauModel
+                    .find({salaireId: salaireId})
+                    .exec();
+    return dettebureau;                
   }
 
   async findAllCotisationManager(managerId: string) {

@@ -57,6 +57,14 @@ export class StockPaysService {
 
   }
 
+  async updateStockpaysproduit(id: string, updateStockPaysDto: UpdateStockPaysDto){
+    
+    const product = await this.stockpaysModel.findOneAndReplace({_id: id}, updateStockPaysDto).exec();
+
+    return product;
+
+  }
+
   async findpaysproduitmigration(productId){
     console.log('productid',productId)
     // console.log('paysid',paysId)
@@ -76,7 +84,7 @@ export class StockPaysService {
 
   async update(id: string, updateStockPaysDto: UpdateStockPaysDto) {
     return this.stockpaysModel
-      .findOneAndUpdate({ id }, updateStockPaysDto, {
+      .findOneAndUpdate({ _id: id }, updateStockPaysDto, {
         new: true,
       })
       .lean();

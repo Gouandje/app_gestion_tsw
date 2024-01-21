@@ -6,6 +6,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { HttpModule } from '@nestjs/axios';
 import { AgenceModule } from 'src/angence/agence.module';
 import { ProduitModule } from 'src/produit/produit.module';
+import { StockPaysModule } from 'src/stock-pays/stock-pays.module';
+import { MvtStockagencePays, MvtStockagencePaysSchema } from './schemas/mvtbackpays.schema';
 
 @Module({
   
@@ -13,11 +15,16 @@ import { ProduitModule } from 'src/produit/produit.module';
     ProduitModule,
     AgenceModule, 
     HttpModule,
+    StockPaysModule,
     MongooseModule.forFeature(
       [
         { 
           name: Stockagence.name, 
           schema: StockagenceSchema 
+        },
+        { 
+          name: MvtStockagencePays.name, 
+          schema: MvtStockagencePaysSchema 
         }
       ]
       )

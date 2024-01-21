@@ -8,14 +8,19 @@ import { ProduitService } from 'src/produit/produit.service';
 import { AgenceService } from 'src/angence/agence.service';
 import { it } from 'node:test';
 import { UpdateProductStockagenceDto } from './dto/updateProductStock.dto';
+import { MvtStockagencePays, MvtStockagencePaysDocument } from './schemas/mvtbackpays.schema';
+import { MvtStockagencePaysDto } from './dto/mvtstockagencepays.dto';
+import { StockPaysService } from 'src/stock-pays/stock-pays.service';
+import { UpdateStockPaysDto } from 'src/stock-pays/dto/update-stock-pay.dto';
 
 @Injectable()
 export class StockagenceService {
 
   constructor(
     @InjectModel(Stockagence.name) private readonly stockagenceModel: Model<StockagenceDocument>,
-    private readonly produitService: ProduitService,
-    private readonly paysService: AgenceService){}
+    @InjectModel(MvtStockagencePays.name) private readonly mvtstockagencepaysModel: Model<MvtStockagencePaysDocument>,
+    private readonly stockPaysService: StockPaysService,
+    private readonly agengeService: AgenceService){}
     
 
   async create(createStockagenceDto: CreateStockagenceDto) {
@@ -191,6 +196,42 @@ export class StockagenceService {
   async findAll(id: string) {
     const stockagence = await this.stockagenceModel.find({agenceId:id}).populate('productId').populate('agenceId').exec();
     return stockagence;
+  }
+
+  async findAllMvtAgencePays() {
+    const stockagence = await this.mvtstockagencepaysModel.find().populate('productId').populate('agenceId').exec();
+    return stockagence;
+  }
+
+  async mvtStockForBack(mvtStockagencepaysDto: MvtStockagencePaysDto) {
+    const createmvtstockagencepays = await this.mvtstockagencepaysModel.create(mvtStockagencepaysDto);
+    if(createmvtstockagencepays){
+      const stockagence = await this.stockagenceModel.findOne({agenceId: mvtStockagencepaysDto.agenceId, productId: mvtStockagencepaysDto.productId});
+      const updateStockagenceDto: UpdateStockagenceDto = {
+        agenceId: mvtStockagencepaysDto.agenceId,
+        productId: mvtStockagencepaysDto.productId,
+        quantity: stockagence.quantity,
+        quantitytotalenmagasin: stockagence.quantitytotalenmagasin - mvtStockagencepaysDto.quantity
+      };
+
+      const update = await this.stockagenceModel.findByIdAndUpdate(stockagence._id, updateStockagenceDto,{
+        new: true,
+      })
+      .lean();
+      console.log(update);
+
+      const paysagence = await this.agengeService.findbureau(mvtStockagencepaysDto.agenceId);
+      const stockProduitpays = await this.stockPaysService.findpaysproduit(mvtStockagencepaysDto.productId, paysagence.countryId);
+      const updateStockpays:UpdateStockPaysDto = {
+        paysId: paysagence.countryId,
+        productId: mvtStockagencepaysDto.productId,
+        quantity: stockProduitpays.quantity + mvtStockagencepaysDto.quantity
+
+      };
+      this.stockPaysService.updateStockpaysproduit(stockProduitpays._id.toString('hex'), updateStockpays);
+
+    }
+    return createmvtstockagencepays;
   }
 
   async updateagenceStock(id: string, updateStockagenceDto: UpdateStockagenceDto) {
