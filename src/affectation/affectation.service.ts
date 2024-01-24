@@ -45,10 +45,18 @@ export class AffectationService {
   async findAll() {
     const affectation = await this.affectationModel.find()
                               .populate('bureauId')
-                              .populate('managerId')
+                              // .populate('managerId')
                               .exec();
     return affectation;
   }
+
+  // async findAll() {
+  //   const affectation = await this.affectationModel.find()
+  //                             .populate('bureauId')
+  //                             .populate('managerId')
+  //                             .exec();
+  //   return affectation;
+  // }
 
   async findOne(id: string) {
     const affectation = await this.affectationModel.findById(id);
