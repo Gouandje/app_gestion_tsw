@@ -12,6 +12,8 @@ import { CotisationPaye, CotisationPayeDocument } from './schemas/cotisation_pay
 import { CreatecotisationpayDto } from './dto/create-cotisationpay.dto';
 import { DetteBureauDto } from './dto/dette_bureau.dto';
 import { DetteBureau, DetteBureauDocument } from './schemas/dette_bureau.schema';
+import { RemboursementDto } from './dto/remboursement.dto';
+import { Remboursement, RemboursementDocument } from './schemas/remboursement.schema';
 
 @Injectable()
 export class SalaireManagerService {
@@ -20,6 +22,7 @@ export class SalaireManagerService {
   @InjectModel(Cotisation.name) private readonly cotisationModel: Model<CotisationDocument>,
   @InjectModel(CotisationPaye.name) private readonly cotisationpayModel: Model<CotisationPayeDocument>,
   @InjectModel(DetteBureau.name) private readonly dettebureauModel: Model<DetteBureauDocument>,
+  @InjectModel(Remboursement.name) private readonly remboursementModel: Model<RemboursementDocument>,
   private readonly agenceservice: AgenceService,
 
   ){}
@@ -147,11 +150,45 @@ export class SalaireManagerService {
 
   }
 
+  async createRemboursementBureau(remboursementdto: RemboursementDto){
+
+    const created = await this.remboursementModel.create(remboursementdto)
+    if(created){
+      const findsalairemanager = await this.salaireModel.find({salaireId: remboursementdto.salaireId});
+      for(let i=0; i<findsalairemanager.length; i++){
+        const updateData: UpdateSalaireManagerDto = {
+          salaire_manager:findsalairemanager[i].salaire_manager,
+          dette_manager:findsalairemanager[i].dette_manager,
+          garantie_manager:findsalairemanager[i].garantie_manager,
+          mois:findsalairemanager[i].mois,
+          annee:findsalairemanager[i].annee,
+          managerId: findsalairemanager[i].managerId,
+          salaireId: findsalairemanager[i].salaireId,
+          salaire_net_manager: findsalairemanager[i].salaire_net_manager + remboursementdto.montantajout/findsalairemanager.length
+        };
+
+        const updated = this.salaireModel.findOneAndReplace({_id: findsalairemanager[i]._id}, updateData).exec();
+
+      }
+    
+      return {status: 200, message: 'enregistrer avec succès'};
+    }   
+    
+
+  }
+
   async getDetteBureau(salaireId){
     const dettebureau = await this.dettebureauModel
                     .find({salaireId: salaireId})
                     .exec();
     return dettebureau;                
+  }
+
+  async getRemboursement(salaireId){
+    const remboursement = await this.remboursementModel
+                    .find({salaireId: salaireId})
+                    .exec();
+    return remboursement;                
   }
 
   async findAllCotisationManager(managerId: string) {

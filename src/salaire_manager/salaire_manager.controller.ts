@@ -6,6 +6,7 @@ import { HydratedDocument, Schema as MongooseSchema  } from "mongoose";
 import { UpdateDetteDto } from './dto/update-dette.dto';
 import { CreatecotisationpayDto } from './dto/create-cotisationpay.dto';
 import { DetteBureauDto } from './dto/dette_bureau.dto';
+import { RemboursementDto } from './dto/remboursement.dto';
 
 @Controller('salaire-manager')
 export class SalaireManagerController {
@@ -25,6 +26,16 @@ export class SalaireManagerController {
   @Get('alldettebureau/:salaireId')
   getdettebureau(@Param('salaireId') salaireId: string) {
     return this.salaireManagerService.getDetteBureau(salaireId);
+  }
+
+  @Post('adddremboursement')
+  createremboursement(@Body() remboursementdto: RemboursementDto) {
+    return this.salaireManagerService.createRemboursementBureau(remboursementdto);
+  }
+
+  @Get('allremboursement/:salaireId')
+  getremboursement(@Param('salaireId') salaireId: string) {
+    return this.salaireManagerService.getRemboursement(salaireId);
   }
 
   @Post('payecotisation')

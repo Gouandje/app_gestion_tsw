@@ -11,6 +11,7 @@ import { AgenceModule } from 'src/angence/agence.module';
 import { MoisanneeModule } from 'src/moisannee/moisannee.module';
 import { CotisationPaye, CotisationPayeSchema } from './schemas/cotisation_paye.schema';
 import { DetteBureau, DetteBureauSchema } from './schemas/dette_bureau.schema';
+import { Remboursement, RemboursementSchema } from './schemas/remboursement.schema';
 
 @Module({
   imports: [   
@@ -37,6 +38,10 @@ import { DetteBureau, DetteBureauSchema } from './schemas/dette_bureau.schema';
         {
           name:DetteBureau.name,
           schema:DetteBureauSchema
+        },
+        {
+          name:Remboursement.name,
+          schema:RemboursementSchema
         }
       ]
       )
