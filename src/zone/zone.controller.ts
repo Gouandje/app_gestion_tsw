@@ -23,6 +23,11 @@ export class ZoneController {
     return this.zoneService.findOne(id);
   }
 
+  @Get('singleeditzone/:id')
+  findSingle(@Param('id') id: string) {
+    return this.zoneService.findSingle(id);
+  }
+
   @Get('getZonebyCountry/:id')
   findByCountry(@Param('id') id: string) {
     return this.zoneService.findpays(id);

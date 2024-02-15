@@ -85,7 +85,16 @@ export class ZoneService {
 
   async findOne(id: string) {
     const zone = await this.zoneModel.findOne({countryId:id}).populate('countryId').exec();
+    console.log(zone);
+    if (!zone) {
+      throw new NotFoundException('zone non trouvée');
+    }
+    return zone;
+  }
 
+  async findSingle(id: string) {
+    const zone = await this.zoneModel.findById(id).populate('countryId').exec();
+    console.log(zone);
     if (!zone) {
       throw new NotFoundException('zone non trouvée');
     }
@@ -102,8 +111,9 @@ export class ZoneService {
   }
 
   async update(id: string, updateZoneDto: UpdateZoneDto) {
+    console.log('updateZoneDto',updateZoneDto);
     return this.zoneModel
-      .findOneAndUpdate({ id }, updateZoneDto, {
+      .findByIdAndUpdate(id , {$set: updateZoneDto}, {
         new: true,
       })
       .lean();

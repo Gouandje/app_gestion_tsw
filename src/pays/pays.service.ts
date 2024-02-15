@@ -39,6 +39,15 @@ export class PaysService {
     return pays;
   }
 
+  async findpays(paysId: string){
+    const pays = (await this.paysModel.findById(paysId)).isSelected('country_name');
+
+    if (!pays) {
+      throw new NotFoundException('Pays non trouvé');
+    }
+    return pays;
+  }
+
   async update(paysId: string, updatePayDto: UpdatePaysDto) {
     return this.paysModel
       .findOneAndUpdate({ paysId }, updatePayDto, {

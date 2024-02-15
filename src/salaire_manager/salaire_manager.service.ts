@@ -125,7 +125,6 @@ export class SalaireManagerService {
     const created = await this.dettebureauModel.create(detteBureaudto)
     if(created){
       const findsalairemanager = await this.salaireModel.find({salaireId: detteBureaudto.salaireId});
-      console.log('findsalairemanager',findsalairemanager);
       for(let i=0; i<findsalairemanager.length; i++){
         const updateData: UpdateSalaireManagerDto = {
           salaire_manager:findsalairemanager[i].salaire_manager,
@@ -137,10 +136,8 @@ export class SalaireManagerService {
           salaireId: findsalairemanager[i].salaireId,
           salaire_net_manager: findsalairemanager[i].salaire_net_manager - detteBureaudto.montantdette/findsalairemanager.length
         };
-        console.log('updateValue',updateData);
 
-        const updated = this.salaireModel.findOneAndReplace({_id: findsalairemanager[i]._id}, updateData).exec();
-        console.log('updated',updated);
+        const updated = this.salaireModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true}).lean();
 
       }
     
@@ -164,11 +161,11 @@ export class SalaireManagerService {
           annee:findsalairemanager[i].annee,
           managerId: findsalairemanager[i].managerId,
           salaireId: findsalairemanager[i].salaireId,
-          salaire_net_manager: findsalairemanager[i].salaire_net_manager + remboursementdto.montantajout/findsalairemanager.length
+          salaire_net_manager: findsalairemanager[i].salaire_net_manager + (remboursementdto.montantajout/findsalairemanager.length)
         };
 
-        const updated = this.salaireModel.findOneAndReplace({_id: findsalairemanager[i]._id}, updateData).exec();
-
+        const updated = await this.salaireModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true, }).lean();
+        console.log(updated);
       }
     
       return {status: 200, message: 'enregistrer avec succès'};

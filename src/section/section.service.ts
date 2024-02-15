@@ -96,10 +96,7 @@ export class SectionService {
 
 
   async findOne(id: string) {
-    const section = (await this.sectionModel.findById(id))
-                                            .populated('countryId')
-                                            .populated('zoneId')
-                                            .exec();
+    const section = await this.sectionModel.findOne({_id:id}).exec();
 
     if (!section) {
       throw new NotFoundException('Pays non trouvé');

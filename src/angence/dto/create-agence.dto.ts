@@ -1,3 +1,4 @@
+import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
@@ -24,6 +25,7 @@ export class CreateAgenceDto {
          description: 'The name of the country',
      })
      @IsString()
+     @Optional()
      sectionId: string;
  
 

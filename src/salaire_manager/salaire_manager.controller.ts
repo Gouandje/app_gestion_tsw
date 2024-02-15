@@ -28,7 +28,7 @@ export class SalaireManagerController {
     return this.salaireManagerService.getDetteBureau(salaireId);
   }
 
-  @Post('adddremboursement')
+  @Post('addremboursement')
   createremboursement(@Body() remboursementdto: RemboursementDto) {
     return this.salaireManagerService.createRemboursementBureau(remboursementdto);
   }
