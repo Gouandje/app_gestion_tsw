@@ -26,7 +26,7 @@ export class MouvementstockService {
   ){}
 
  
-  async create(createMouvementstockDto: CreateMouvementstockDto): Promise<{any}> {
+  async create(createMouvementstockDto: CreateMouvementstockDto){
 
     const consignedparoduct = {
       bureauId: createMouvementstockDto.bureauId,
@@ -100,7 +100,7 @@ export class MouvementstockService {
         
       }
     }
-    return ;
+    return createconsignation;
   }
 
   async findOne(id: string){

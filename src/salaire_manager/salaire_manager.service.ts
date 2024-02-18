@@ -161,7 +161,7 @@ export class SalaireManagerService {
           annee:findsalairemanager[i].annee,
           managerId: findsalairemanager[i].managerId,
           salaireId: findsalairemanager[i].salaireId,
-          salaire_net_manager: findsalairemanager[i].salaire_net_manager + (remboursementdto.montantajout/findsalairemanager.length)
+          salaire_net_manager: findsalairemanager[i].salaire_net_manager + Math.round(remboursementdto.montantajout/findsalairemanager.length)
         };
 
         const updated = await this.salaireModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true, }).lean();

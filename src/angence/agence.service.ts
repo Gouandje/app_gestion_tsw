@@ -45,6 +45,16 @@ export class AgenceService {
     return {agences, sections};
   }
 
+  async findAllForMvt(){
+    const agences = await this.agenceModel.find()
+                              .populate('countryId')
+                              .populate('zoneId')
+                              .exec();
+
+    // const sections = await this.sectionService.findAll()
+    return agences;
+  }
+
   async findAllagenceByCountry(id: string){
     const agences = await this.agenceModel.find({countryId: id})
                               .populate('countryId')

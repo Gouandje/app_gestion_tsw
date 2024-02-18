@@ -19,6 +19,11 @@ export class AngenceController {
     return this.agenceService.findAll();
   }
 
+  @Get('allagences')
+  findAllForMvt() {
+    return this.agenceService.findAllForMvt();
+  }
+
   @Get('allagencepays/:id')
   findAllagengeByCountry(@Param('id') id: string) {
     return this.agenceService.findAllagenceByCountry(id);

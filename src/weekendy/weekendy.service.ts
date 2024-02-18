@@ -450,9 +450,9 @@ export class WeekendyService {
 
   async allGetAllProduitVendyPays(query: QueryDto){
     const result=[];
-    console.log('query', query);
+    // console.log('query', query);
     const ventes = await this.produitvendupaysModel.find({paysId: query.paysId, annee: query.anneeId}).populate('paysId').populate('productId').populate('annee').exec();
-    console.log('ventes',ventes);
+    // console.log('ventes',ventes);
     return ventes;                                               
   }
 
