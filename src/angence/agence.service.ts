@@ -121,8 +121,7 @@ export class AgenceService {
                                         //  .populate('sectionId')
                                          .exec();
       const section = await this.sectionService.findOne(agence.sectionId);
-      console.log(section);
-      console.log({agences, section});
+
 
       return {agences, section};
     }else{
@@ -140,16 +139,16 @@ export class AgenceService {
    return agence;
   }
 
-  async update(bureauId: MongooseSchema.Types.ObjectId, updateAgenceDto: UpdateAgenceDto) {
+  async update(bureauId: string, updateAgenceDto: UpdateAgenceDto) {
     console.log(updateAgenceDto);
     if(updateAgenceDto.sectionId ==''){
       const updateagenceDto = {
         countryId:updateAgenceDto.countryId,
         zoneId:updateAgenceDto.zoneId,
-        // sectionId: updateAgenceDto.sectionId,
+        sectionId: updateAgenceDto.sectionId,
         bureau_name:updateAgenceDto.bureau_name,
       };
-      const agency: Agence = await this.agenceModel.findByIdAndUpdate(bureauId, {$set: updateagenceDto }, { new: true }).lean();
+      const agency: Agence = await this.agenceModel.findByIdAndUpdate(bureauId, {$set: updateagenceDto }, { new: true }).exec();
       if (!agency) {
         throw new NotFoundException(`The agency with id #${bureauId} was not found.`);
       }
@@ -166,6 +165,36 @@ export class AgenceService {
     
   }
 
+  async update(bureauId: string, updateAgenceDto: UpdateAgenceDto) {
+    console.log(updateAgenceDto);
+    const agency = await this.agenceModel.findByIdAndUpdate({_id: bureauId}, {$set: updateAgenceDto }, { new: true }).exec();
+    if (!agency) {
+      throw new NotFoundException(`The agency with id #${bureauId} was not found.`);
+    }
+    return agency;
+    // if(updateAgenceDto.sectionId ==''){
+    //   const updateagenceDto = {
+    //     countryId:updateAgenceDto.countryId,
+    //     zoneId:updateAgenceDto.zoneId,
+    //     sectionId: updateAgenceDto.sectionId,
+    //     bureau_name:updateAgenceDto.bureau_name,
+    //   };
+    //   const agency = await this.agenceModel.findByIdAndUpdate(bureauId, {$set: updateagenceDto }, { new: true }).exec();
+    //   if (!agency) {
+    //     throw new NotFoundException(`The agency with id #${bureauId} was not found.`);
+    //   }
+    //   return agency;
+    // }else{
+    //   const agency: Agence = await this.agenceModel
+    //   .findByIdAndUpdate(bureauId, { updateAgenceDto }, { new: true })
+    //   .exec();
+    // if (!agency) {
+    //   throw new NotFoundException(`The agency with id #${bureauId} was not found.`);
+    // }
+    // return agency;
+    // }
+    
+  }
   async remove(bureauId: string) {
     // console.log('bureauId', bureauId);
     await this.agenceModel.findByIdAndRemove(bureauId).catch((err) => {

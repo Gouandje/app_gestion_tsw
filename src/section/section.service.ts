@@ -99,7 +99,7 @@ export class SectionService {
     const section = await this.sectionModel.findOne({_id:id}).exec();
 
     if (!section) {
-      throw new NotFoundException('Pays non trouvé');
+      throw new NotFoundException('section non trouvé');
     }
     return section;
   }
