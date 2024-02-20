@@ -139,31 +139,31 @@ export class AgenceService {
    return agence;
   }
 
-  async update(bureauId: string, updateAgenceDto: UpdateAgenceDto) {
-    console.log(updateAgenceDto);
-    if(updateAgenceDto.sectionId ==''){
-      const updateagenceDto = {
-        countryId:updateAgenceDto.countryId,
-        zoneId:updateAgenceDto.zoneId,
-        sectionId: updateAgenceDto.sectionId,
-        bureau_name:updateAgenceDto.bureau_name,
-      };
-      const agency: Agence = await this.agenceModel.findByIdAndUpdate(bureauId, {$set: updateagenceDto }, { new: true }).exec();
-      if (!agency) {
-        throw new NotFoundException(`The agency with id #${bureauId} was not found.`);
-      }
-      return agency;
-    }else{
-      const agency: Agence = await this.agenceModel
-      .findByIdAndUpdate(bureauId, { updateAgenceDto }, { new: true })
-      .exec();
-    if (!agency) {
-      throw new NotFoundException(`The agency with id #${bureauId} was not found.`);
-    }
-    return agency;
-    }
+  // async update(bureauId: string, updateAgenceDto: UpdateAgenceDto) {
+  //   console.log(updateAgenceDto);
+  //   if(updateAgenceDto.sectionId ==''){
+  //     const updateagenceDto = {
+  //       countryId:updateAgenceDto.countryId,
+  //       zoneId:updateAgenceDto.zoneId,
+  //       sectionId: updateAgenceDto.sectionId,
+  //       bureau_name:updateAgenceDto.bureau_name,
+  //     };
+  //     const agency: Agence = await this.agenceModel.findByIdAndUpdate(bureauId, {$set: updateagenceDto }, { new: true }).exec();
+  //     if (!agency) {
+  //       throw new NotFoundException(`The agency with id #${bureauId} was not found.`);
+  //     }
+  //     return agency;
+  //   }else{
+  //     const agency: Agence = await this.agenceModel
+  //     .findByIdAndUpdate(bureauId, { updateAgenceDto }, { new: true })
+  //     .exec();
+  //   if (!agency) {
+  //     throw new NotFoundException(`The agency with id #${bureauId} was not found.`);
+  //   }
+  //   return agency;
+  //   }
     
-  }
+  // }
 
   async update(bureauId: string, updateAgenceDto: UpdateAgenceDto) {
     console.log(updateAgenceDto);
