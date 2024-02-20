@@ -45,7 +45,7 @@ export class AngenceController {
   }
 
   @Patch('updadeagence/:bureauid')
-  update(@Param('bureauid') bureauid: MongooseSchema.Types.ObjectId, @Body() updateAgenceDto: UpdateAgenceDto) {
+  update(@Param('bureauid') bureauid: string, @Body() updateAgenceDto: UpdateAgenceDto) {
     return this.agenceService.update(bureauid, updateAgenceDto);
   }
 
