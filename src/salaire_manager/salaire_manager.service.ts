@@ -134,10 +134,13 @@ export class SalaireManagerService {
           annee:findsalairemanager[i].annee,
           managerId: findsalairemanager[i].managerId,
           salaireId: findsalairemanager[i].salaireId,
-          salaire_net_manager: findsalairemanager[i].salaire_net_manager - detteBureaudto.montantdette/findsalairemanager.length
+          salaire_net_manager: findsalairemanager[i].salaire_net_manager - Math.round(detteBureaudto.montantdette/findsalairemanager.length)
         };
+        const updated = await this.salaireModel.findByIdAndUpdate({_id: findsalairemanager[i]._id}, {$set: updateData }, { new: true }).exec();
 
-        const updated = this.salaireModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true}).lean();
+        // const updated = await this.salaireModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true, }).lean();
+        // console.log(updated);
+        // const updated = this.salaireModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true}).lean();
 
       }
     
