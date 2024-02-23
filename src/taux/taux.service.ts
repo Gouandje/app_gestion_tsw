@@ -46,4 +46,9 @@ export class TauxService {
     await this.tauxModel.deleteOne({ _id: id });
     return {};
   }
+
+  async delete(id: string) {
+    await this.tauxModel.findByIdAndDelete({ _id: id });
+    return {};
+  }
 }

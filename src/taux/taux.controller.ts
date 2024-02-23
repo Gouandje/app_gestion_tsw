@@ -29,8 +29,13 @@ export class TauxController {
     return this.tauxService.update(id, updateTauxDto);
   }
 
+  // @Delete('deletetaux/:id')
+  // remove(@Param('id') id: string) {
+  //   return this.tauxService.remove(id);
+  // }
+
   @Delete('deletetaux/:id')
-  remove(@Param('id') id: string) {
-    return this.tauxService.remove(id);
+  delete(@Param('id') id: string) {
+    return this.tauxService.delete(id);
   }
 }

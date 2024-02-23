@@ -67,6 +67,10 @@ return tauxzone;
     return {};
   }
 
+  async delete(id: string){
+    return await this.tauxzoneModel.findByIdAndRemove(id);
+  }
+
   // section service bloc
 
   async createsection(createTauxsectionDto: CreateTauxsectionDto) {

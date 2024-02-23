@@ -37,7 +37,7 @@ export class TauxzoneController {
 
   @Delete('deleteTauxZone/:id')
   remove(@Param('id') id: string) {
-    return this.tauxzoneService.remove(id);
+    return this.tauxzoneService.delete(id);
   }
 
   // tauxsection
