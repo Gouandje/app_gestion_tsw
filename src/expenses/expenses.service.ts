@@ -10,6 +10,7 @@ import { CreateCaisseDto } from 'src/caisse/dto/create-caisse.dto';
 import { Category, CategoryDocument } from './schemas/category.schema';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { ReportData } from './dto/reportData.dto';
 
 @Injectable()
 export class ExpensesService {
@@ -87,6 +88,33 @@ export class ExpensesService {
     // }
     console.log('data',expenses)
     return expenses;
+  }
+
+  async findReportData(reportData: ReportData){
+    const data = [];
+    const report = await this.expenseModel.find({date: {$gte:reportData.dateStart, $lte: reportData.dateEnd}}).populate('categoryId').exec();
+    // // const data = {
+    // //   auteur: String
+
+    // // }
+    // // expenses.date.split('-')[0]
+    // for(let i=0; expenses.length<0; i++){
+    //   // date: expenses[i].date.split('-')[0];
+    // const obj = {
+    //   auteur: expenses[i].auteur,
+    //   date: expenses[i].toString().split('T')[0],
+    //   // date: expenses[i].date.toISOString().split('T')[0],
+    //   montant:expenses[i].montant,
+    //   motif: expenses[i].motif,
+    //   typetransaction: expenses[i].typetransaction
+      
+    // }
+    // data.push(obj)
+
+    // console.log('date',expenses[i].toString().split('T')[0]);
+    // }
+    // console.log('data',report)
+    return report;
   }
 
   async findAllByTypeoperation(typetransaction, annee){

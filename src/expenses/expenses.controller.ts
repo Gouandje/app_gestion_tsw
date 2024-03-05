@@ -4,6 +4,7 @@ import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { Schema as MongooseSchema} from 'mongoose';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { ReportData } from './dto/reportData.dto';
 
 @Controller('expenses')
 export class ExpensesController {
@@ -23,6 +24,11 @@ export class ExpensesController {
   @Get('allexpenseanne/:annee')
   findAllByAnne(@Param('annee') annee: number) {
     return this.expensesService.findAllByAnnee(annee);
+  }
+
+  @Post('report')
+  findReportData(@Body() reportData: ReportData) {
+    return this.expensesService.findReportData(reportData);
   }
 
   @Get('singleexpense/:annee')
