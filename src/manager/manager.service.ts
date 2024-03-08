@@ -1313,6 +1313,10 @@ export class ManagerService {
     
     ];
     for(let i=0; i<data.length; i++){
+      const alreadyExists = await this.managerModel.exists({ telephone: data[i].telephone}).lean();
+    if(alreadyExists){
+      throw new ConflictException(`cet manager existe déjà dans la base de données`);
+    }
       const createdManager = await this.managerModel.create(data[i]);
 
       if (!createdManager) {
@@ -1322,10 +1326,7 @@ export class ManagerService {
       }
       return createdManager;
     }
-    // const alreadyExists = await this.managerModel.exists({ telephone: createManagerDto.telephone}).lean();
-    // if(alreadyExists){
-    //   throw new ConflictException(`cet manager existe déjà dans la base de données`);
-    // }
+    
     
   }
 /*fin insertion directe*/ 
