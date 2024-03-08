@@ -1,3 +1,4 @@
+import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmpty, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
@@ -32,7 +33,7 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @IsNotEmpty()
+    @Optional()
     lieu_naiss: string; 
 
     @ApiProperty({
@@ -40,7 +41,7 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @IsNotEmpty()
+    @Optional()
     piece: string;
 
     @ApiProperty({
@@ -48,6 +49,7 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
+    @Optional()
     num_piece: string;
 
     @ApiProperty({
@@ -63,7 +65,7 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @IsNotEmpty()
+    @Optional()
     situation_matrimonial: string;
 
     @ApiProperty({
@@ -71,7 +73,7 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @IsNotEmpty()
+    @Optional()
     ethnie: string;
 
     @ApiProperty({
@@ -79,7 +81,7 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @IsNotEmpty()
+    @Optional()
     religion: string;
 
     @ApiProperty({
@@ -87,14 +89,15 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsNumber()
-    nbr_enfant: number;
+    @Optional()
+    nbr_enfant?: number;
 
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     @IsString()
-    @IsNotEmpty()
+    @Optional()
     maladie_exist: string;
 
 
@@ -119,7 +122,7 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @IsNotEmpty()
+    @Optional()
     date_naiss: string;
 
 
