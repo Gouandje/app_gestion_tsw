@@ -7,6 +7,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { InfoManagerDto } from './dto/info_manager.dto';
 
+import { exec } from 'child_process';
+import * as nodemailer from 'nodemailer';
+
 @Injectable()
 export class ManagerService {
 
@@ -768,5 +771,58 @@ export class ManagerService {
     return this.managerModel
       .findByIdAndUpdate( managerId , updateStatusDto)
       .lean();
+  }
+
+  async backupAndSendEmail(): Promise<string> {
+    // mongodb://localhost:27017
+    const backupCommand = 'mongodump --uri=`mongodb://${process.env.DATABASE_USER}:${process.env.DATABASEPASSWORD}@${process.env.DATABASEHOST}:32188/${process.env.MONGODB_DATABASE}?authSource=admin` --out="./backup"';
+    // const backupCommand = 'mongodump --uri=`mongodb://${process.env.DATABASE_USER}:${process.env.DATABASEPASSWORD}@${process.env.DATABASEHOST}:32188/${process.env.MONGODB_DATABASE}?authSource=admin` --out="./backup"';
+    const backupFolder = './backup';
+
+    try {
+      // Execute backup command
+      await this.executeCommand(backupCommand);
+
+      // Send e-mail with attachment
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'gouandje@gmail.com',
+          pass: 'Gbbs@1990',
+        },
+      });
+
+      const mailOptions = {
+        from: 'gouandje@gmail.com',
+        to: 'aidteckpro@gmail.com',
+        subject: 'MongoDB Backup',
+        text: 'MongoDB Backup Attached.',
+        attachments: [
+          {
+            path: backupFolder,
+          },
+        ],
+      };
+
+      await transporter.sendMail(mailOptions);
+
+      return 'Backup and email sent successfully.';
+    } catch (error) {
+      return `Backup and email failed: ${error.message}`;
+    }
+  }
+
+  private executeCommand(command: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      exec(command, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error during backup: ${stderr}`);
+          reject(error);
+        } else {
+          console.log(`Backup successful:\n${stdout}`);
+          resolve();
+        }
+      });
+    });
   }
 }
