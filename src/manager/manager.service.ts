@@ -702,8 +702,21 @@ export class ManagerService {
     return manager;
   }
   async findAllMnager(infomanagerDto: InfoManagerDto){
-    const results = await this.managerModel.find({nom: infomanagerDto.nom}).exec();
-    return results;
+    const results = await this.managerModel.find({telephone: infomanagerDto.nom}).exec();
+    if(results.length>0){
+      const respone = {
+        data : results,
+        status: 200
+      };
+      return respone;
+    }else{
+       const respone = {
+        message: 'Désolé vos informations ne figurent pas encore dans notre base de données cliquez sur le button suivant pour nous envoyer vos informations!!! ',
+        status:404
+       };
+       return respone;
+    }
+    
   }
 
   async findAllManagersNonAffectes() {
