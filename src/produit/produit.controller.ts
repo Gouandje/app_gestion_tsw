@@ -17,6 +17,11 @@ export class ProduitController {
     return this.produitService.create(createProduitDto);
   }
 
+  @Get('ajoutproduit')
+  createDierect(){
+    return this.produitService.createDirec();
+  }
+
   @Get('allproduit')
   findAll() {
     return this.produitService.findAll();
