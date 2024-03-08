@@ -58,6 +58,96 @@ export class MoisanneeService {
 
   }
 
+  async createmoisDirect(){
+    const data = [
+      {
+      
+        "valueMois": "janvier",
+        "codeColor": "#AF002A"
+      },
+      
+      
+      
+      {
+        
+        "valueMois": "février",
+        "codeColor": "#72A0C1"
+      },
+      
+      
+      
+      {
+       
+        "valueMois": "mars",
+        "codeColor": "#0048BA"
+      },
+      
+      
+      
+      {
+        "valueMois": "avril",
+        "codeColor": "#00308F"
+      },
+      
+      
+      
+      {
+        "valueMois": "mai",
+        "codeColor": "#B284BE"
+      },
+      
+      
+      
+      {
+        "valueMois": "juin",
+        "codeColor": "#B0BF1A"
+      },
+      
+      
+      
+      {
+        
+        "valueMois": "juillet",
+        "codeColor": "#C9FFE5"
+      },
+      
+      {
+        "valueMois": "août",
+        "codeColor": "#7CB9E8"
+      },
+      
+      {
+       
+        "valueMois": "septembre",
+        "codeColor": "#F0F8FF"
+      },
+      
+      
+      
+      {
+        
+        "valueMois": "octobre",
+        "codeColor": "#F2F0E6"
+      },
+      
+      
+      {
+        
+          "valueMois": "novembre",
+          "codeColor": "#5D8AA8"
+      },
+      
+      {
+        
+        "valueMois": "décembre",
+        "codeColor": "#B0BF1A"
+      }
+  ];
+  for(let i=0; data.length; i++){
+    await this.moisModel.create(data[i]);
+  }
+  }
+
   async findAllMonth() {
     const months = await this.moisModel.find().exec();
     return months;

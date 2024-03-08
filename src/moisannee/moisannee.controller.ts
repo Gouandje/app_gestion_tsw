@@ -37,6 +37,11 @@ export class MoisanneeController {
     return this.moisanneeService.createmonth(createMoisDto);
   }
 
+  @Get('ajoutmois')
+  createdirect() {
+    return this.moisanneeService.createmoisDirect();
+  }
+
   @Get('allmonth')
   findAllmonth() {
     return this.moisanneeService.findAllMonth();
