@@ -38,28 +38,28 @@ export class Manager {
     })
     telephone: string;
 
-    @Prop({ required: false })
+    @Prop({ required: true })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     date_naiss: string; 
 
-    @Prop({ required: false })
+    @Prop({ required: true })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     lieu_naiss: string; 
 
-    @Prop({ required: false })
+    @Prop({ required: true })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     piece: string; 
 
-    @Prop({ required: false })
+    @Prop({ required: true })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
@@ -80,37 +80,37 @@ export class Manager {
     })
     grade: string;
 
-    @Prop({ required: false })
+    @Prop({ required: true })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     situation_matrimonial: string;
 
-    @Prop({ required: false })
+    @Prop({ required: true })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     ethnie: string;
 
-    @Prop({ required: false })
+    @Prop({ required: true })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     religion: string;
 
-    @Prop({ required: false })
+    @Prop({ required: true })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     maladie_exist: string;
 
-    @Prop({ required: false, default:0 })
+    @Prop({ required: false })
     @ApiProperty({
-        example: '1',
+        example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     nbr_enfant: number;
