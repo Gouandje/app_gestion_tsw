@@ -35,13 +35,16 @@ export class ManagerService {
         "fullnamemanager": "LAWSON TOKPALO Akueteh Wodeh",
         "telephone" : "01.53.15.28.40/05.75.33.49.48",
         "genre" : "Masculin",
-        "date_naiss" : "le 05/01/1965",
+        "date_naiss" : "le 05-01-1965",
         "lieu_naiss" : "Atakpamé ( P/OGOU) - TOGO",
         "piece" : "CNI ( En cours)",
         "num_piece" :"(En cours)",
         "situation_matrimonial" : "MARIÉ",
         "grade" : "Manager",
-        "ethnie" : "Mina ( togolais)"  
+        "ethnie" : "Mina ( togolais)",
+        "religion": "Chrétienne Catholique",
+        "maladie_exist": "Neant",  
+        "nbr_enfant": 3
       },
       { 
         "nom": "KORÉ",
