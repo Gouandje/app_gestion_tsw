@@ -1,3 +1,4 @@
+# Stage 1: Development
 FROM node:alpine AS development
 
 WORKDIR /usr/src/app
@@ -8,10 +9,12 @@ COPY package*.json ./
 RUN apk --no-cache add mongodb-tools \
     && npm install --only=development
 
-COPY . . 
+COPY . .
 
+# Build the application
 RUN npm run build
 
+# Stage 2: Production
 FROM node:alpine as production
 
 ARG NODE_ENV=production
@@ -21,9 +24,8 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
+# Installez seulement les dépendances de production
 RUN npm install --only=prod
-
-COPY . .
 
 # Copiez les fichiers construits à partir de la phase de développement
 COPY --from=development /usr/src/app/dist ./dist
