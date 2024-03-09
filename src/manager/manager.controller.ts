@@ -65,9 +65,6 @@ export class ManagerController {
     return this.managerService.remove(id);
   }
 
-  @Get('backup')
-  async backupAndSendEmail(): Promise<string> {
-    return await this.managerService.backupAndSendEmail();
-  }
+
   
 }

@@ -39,6 +39,7 @@ import { PayscaModule } from './paysca/paysca.module';
 import { MoisanneeModule } from './moisannee/moisannee.module';
 import { PatientModule } from './patient/patient.module';
 import { DelecountryModule } from './delecountry/delecountry.module';
+import { BackupModule } from './backup/backup.module';
 
 @Module({
   imports: [
@@ -64,7 +65,7 @@ import { DelecountryModule } from './delecountry/delecountry.module';
     SalaireModule, 
     AgenceModule, 
     PaysModule, 
-    AuthModule, ExpensesModule, StockModule, AssignmentModule, TauxModule, AffectationModule, CotisationModule, SalaireManagerModule, StockagenceModule, MouvementstockModule, ZoneModule, SectionModule, EmployerModule, CongeModule, StockPaysModule, MvtStockModule, RoleModule, TauxzoneModule, SuperviseurzoneModule, ChefsectionModule, CaisseModule, EntrepotModule, PayscaModule, MoisanneeModule, PatientModule, DelecountryModule
+    AuthModule, ExpensesModule, StockModule, AssignmentModule, TauxModule, AffectationModule, CotisationModule, SalaireManagerModule, StockagenceModule, MouvementstockModule, ZoneModule, SectionModule, EmployerModule, CongeModule, StockPaysModule, MvtStockModule, RoleModule, TauxzoneModule, SuperviseurzoneModule, ChefsectionModule, CaisseModule, EntrepotModule, PayscaModule, MoisanneeModule, PatientModule, DelecountryModule, BackupModule
   ],
   controllers: [AppController],
   providers: [AppService],
