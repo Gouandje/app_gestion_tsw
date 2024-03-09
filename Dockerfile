@@ -11,6 +11,8 @@ RUN apk --no-cache add mongodb-tools \
 
 COPY . .
 
+RUN ls -la  # Ajoutez cette ligne pour afficher le contenu du répertoire de travail
+
 # Build the application
 RUN npm run build
 
