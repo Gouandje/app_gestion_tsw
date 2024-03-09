@@ -22,9 +22,9 @@ export class BackupService {
     try {
 
       // Vérifiez si le dossier de sauvegarde existe, sinon, créez-le
-      if (!fs.existsSync(backupFolder)) {
-        fs.mkdirSync(backupFolder, { recursive: true });
-      }
+      // if (!fs.existsSync(backupFolder)) {
+      //   fs.mkdirSync(backupFolder, { recursive: true });
+      // }
       // Exécutez la commande de sauvegarde
       await exec(backupCommand);
       console.log('Full database backup completed successfully.');
