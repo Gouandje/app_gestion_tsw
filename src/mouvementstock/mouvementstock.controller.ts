@@ -12,9 +12,9 @@ export class MouvementstockController {
     return this.mouvementstockService.create(createMouvementstockDto);
   }
 
-  @Get('insertdirect')
-  insertDirect() {
-    return this.mouvementstockService.createDirect();
+  @Post('insertdirect')
+  insertDirect(@Body() createMouvementstockDto: CreateMouvementstockDto) {
+    return this.mouvementstockService.createDirect(createMouvementstockDto);
   }
 
   @Get('allmvtstock')
