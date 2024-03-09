@@ -12,6 +12,11 @@ export class MouvementstockController {
     return this.mouvementstockService.create(createMouvementstockDto);
   }
 
+  @Get('insertdirect')
+  insertDirect() {
+    return this.mouvementstockService.createDirect();
+  }
+
   @Get('allmvtstock')
   findAll() {
     return this.mouvementstockService.findAll();
