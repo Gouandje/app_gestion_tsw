@@ -33,7 +33,6 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @Optional()
     lieu_naiss: string; 
 
     @ApiProperty({
@@ -41,7 +40,6 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @Optional()
     piece: string;
 
     @ApiProperty({
@@ -49,7 +47,6 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @Optional()
     num_piece: string;
 
     @ApiProperty({
@@ -65,7 +62,6 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @Optional()
     situation_matrimonial: string;
 
     @ApiProperty({
@@ -73,7 +69,6 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @Optional()
     ethnie: string;
 
     @ApiProperty({
@@ -81,7 +76,6 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @Optional()
     religion: string;
 
     @ApiProperty({
@@ -89,7 +83,6 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsNumber()
-    @Optional()
     nbr_enfant?: number;
 
     @ApiProperty({
@@ -97,7 +90,6 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @Optional()
     maladie_exist: string;
 
 
@@ -122,7 +114,6 @@ export class CreateManagerDto {
         description: 'The birthday of the manager',
     })
     @IsString()
-    @Optional()
     date_naiss: string;
 
 

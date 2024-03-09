@@ -38,28 +38,28 @@ export class Manager {
     })
     telephone: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     date_naiss: string; 
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     lieu_naiss: string; 
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     piece: string; 
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
@@ -80,28 +80,28 @@ export class Manager {
     })
     grade: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     situation_matrimonial: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     ethnie: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
     religion: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
