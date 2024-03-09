@@ -17,7 +17,7 @@ export class BackupService {
 
   async performFullBackup(): Promise<void> {
     const backupFolder = '/mnt/data'; // Railway monte les volumes de la base de données à cet emplacement
-    const backupCommand = `mongodump --uri="mongodb://${process.env.DATABASE_USER}:${process.env.DATABASEPASSWORD}@${process.env.DATABASEHOST}:32188" --out="${backupFolder}"`;
+    const backupCommand = `mongodump --uri=mongodb://${process.env.DATABASE_USER}:${process.env.DATABASEPASSWORD}@${process.env.DATABASEHOST}:32188/${process.env.MONGODB_DATABASE}?authSource=admin --out="${backupFolder}"`;
 
     try {
 
