@@ -17,10 +17,10 @@ export class BackupService {
 
   async performFullBackup(): Promise<void> {
     const backupFolder = '/mnt/data'; // Railway monte les volumes de la base de données à cet emplacement
-    const backupCommand = `mongodump --uri="mongodb://mongo:ag4ed13D1gBhAfBcDHBfb1e1cFD1261b@roundhouse.proxy.rlwy.net:32188" --out="${backupFolder}"`;
+    const backupCommand = `mongodump --uri="mongodb://${process.env.DATABASE_USER}:${process.env.DATABASEPASSWORD}@${process.env.DATABASEHOST}:32188" --out="${backupFolder}"`;
 
     try {
-      
+
       // Vérifiez si le dossier de sauvegarde existe, sinon, créez-le
       if (!fs.existsSync(backupFolder)) {
         fs.mkdirSync(backupFolder, { recursive: true });
