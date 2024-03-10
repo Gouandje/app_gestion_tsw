@@ -84,17 +84,105 @@ export class WeekendyService {
       
       const bureau = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
       const zoneca = await this.zoneservice.findzonecabyZone(bureau.zoneId, createWeekendyDto.annee);
+      const zonecamois = await this.zoneservice.findzonecamoisbyZone(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
 
       const tauxzone = await this.tauxzoneservice.findByzone(bureau.zoneId);
 
+      // section prime and ca
+      if(bureau.sectionId !=""){
+        const sectionca = await this.sectionservice.findsectioncabySection(bureau.sectionId, createWeekendyDto.annee);
+        const sectioncamois = await this.sectionservice.findsectioncamoisbySection(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
+        const tauxsection = await this.tauxzoneservice.findBysection(bureau.sectionId);
+
+        if(sectionca !=null && sectioncamois !=null){
+          const updateDatasectionca ={
+            sectionId: bureau.sectionId,
+            casection: (createWeekendyDto.caTotal + sectionca.casection),
+            annee: createWeekendyDto.annee
+          }; 
+  
+          const updateDatasectioncamois ={
+            sectionId: bureau.sectionId,
+            casection:(createWeekendyDto.caTotal + sectioncamois.casection),
+            mois: createWeekendyDto.mois,
+            annee: createWeekendyDto.annee
+          };
+          await this.sectionservice.updatesectionca(sectionca._id.toString('hex'), updateDatasectionca);
+          await this.sectionservice.updateprimechefsection(sectioncamois._id.toString('hex'), updateDatasectioncamois);
+  
+          const primecs = await this.sectionservice.findprimechefsection(bureau.sectionId, createWeekendyDto.mois, createWeekendyDto.annee);
+  
+          if(primecs !=null){
+            const updateDataprimecs ={
+              sectionId: bureau.sectionId,
+              casection:(createWeekendyDto.caTotal + primecs.casection),
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              Chefsectionprime: (createWeekendyDto.caTotal*tauxsection.taux_section/100 + primecs.Chefsectionprime),
+            }; 
+    
+            await this.sectionservice.updateprimechefsection(primecs._id.toString('hex'),updateDataprimecs);
+  
+          }
+          else{
+  
+            const createDataprimecs ={
+              sectionId: bureau.sectionId,
+              casection: createWeekendyDto.caTotal,
+              Chefsectionprime:createWeekendyDto.caTotal*tauxsection.taux_section/100,
+              mois:createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+            }; 
+            await this.sectionservice.createprimechefsection(createDataprimecs);
+  
+          }
+  
+        }else{
+          const createDatasectionca ={
+            sectionId: bureau.sectionId,
+            casection:createWeekendyDto.caTotal,
+            annee: createWeekendyDto.annee
+          }; 
+          await this.sectionservice.createcasection(createDatasectionca);
+  
+          const createDatasectioncamois ={
+            sectionId: bureau.sectionId,
+            casection:createWeekendyDto.caTotal,
+            mois: createWeekendyDto.mois,
+            annee: createWeekendyDto.annee
+          }; 
+          await this.sectionservice.createcasection(createDatasectioncamois);
+          
+          const createDataprime ={
+            sectionId: bureau.sectionId,
+            casection: createWeekendyDto.caTotal,
+            Chefsectionprime:createWeekendyDto.caTotal*tauxsection.taux_section/100,
+            mois:createWeekendyDto.mois,
+            annee: createWeekendyDto.annee,
+          }; 
+  
+          await this.sectionservice.createprimechefsection(createDataprime);
+  
+        }
+
+      }
+
       // zone prime and ca
-      if(zoneca !=null){
+      if(zoneca !=null && zonecamois !=null){
         const updateDatazoneca ={
           zoneId: bureau.zoneId,
-          cazone:(createWeekendyDto.caTotal + zoneca['cazone']),
+          cazone:(createWeekendyDto.caTotal + zoneca.cazone),
           annee: createWeekendyDto.annee
         }; 
+
+        const updateDatazonecamois ={
+          zoneId: bureau.zoneId,
+          cazone:(createWeekendyDto.caTotal + zonecamois.cazone),
+          mois: createWeekendyDto.mois,
+          annee: createWeekendyDto.annee
+        };
         await this.zoneservice.updatezoneca(zoneca._id.toString('hex'),updateDatazoneca);
+        await this.zoneservice.updatezonecamois(zonecamois._id.toString('hex'), updateDatazonecamois);
 
         const primesz = await this.zoneservice.findprimesz(bureau.zoneId, createWeekendyDto.mois, createWeekendyDto.annee);
 
@@ -102,6 +190,7 @@ export class WeekendyService {
           const updateDataprimesz ={
             zoneId: bureau.zoneId,
             cazone:(createWeekendyDto.caTotal + primesz.cazone),
+            mois: createWeekendyDto.mois,
             annee: createWeekendyDto.annee,
             primesz: (createWeekendyDto.caTotal*tauxzone.taux_zone/100 + primesz.primesz),
           }; 
@@ -128,6 +217,14 @@ export class WeekendyService {
           annee: createWeekendyDto.annee
         }; 
         await this.zoneservice.createzoneca(createDatazoneca);
+
+        const createDatazonecamois ={
+          zoneId: bureau.zoneId,
+          cazone:createWeekendyDto.caTotal,
+          mois: createWeekendyDto.mois,
+          annee: createWeekendyDto.annee
+        }; 
+        await this.zoneservice.createzonecamois(createDatazonecamois);
         
         const createDataprime ={
           zoneId: bureau.zoneId,

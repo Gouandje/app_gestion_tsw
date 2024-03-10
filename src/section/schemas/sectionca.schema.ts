@@ -25,14 +25,6 @@ export class Sectionca {
     })
     casection: number;
 
-    @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Mois.name,
-    })
-    @ApiProperty({
-        example: 'Marcory Américain 1',
-        description: 'The name of the zone',
-    })
-    mois: string;
-
     @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Annee.name,
     })
     @ApiProperty({

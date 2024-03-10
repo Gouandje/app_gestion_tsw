@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Chefsectionprime, ChefsectionprimeDocument } from './schemas/chefsectionprime.schema';
 import { Sectionca, SectioncaDocument } from './schemas/sectionca.schema';
+import { Sectioncamois, SectioncamoisDocument } from './schemas/sectioncamois.schema';
 
 @Injectable()
 export class SectionService {
@@ -14,6 +15,7 @@ export class SectionService {
     @InjectModel(Section.name) private readonly sectionModel: Model<SectionDocument>,
     @InjectModel(Chefsectionprime.name) private readonly chefsectionprimeModel: Model<ChefsectionprimeDocument>,
     @InjectModel(Sectionca.name) private readonly sectioncaModel: Model<SectioncaDocument>,
+    @InjectModel(Sectioncamois.name) private readonly sectioncamoisModel: Model<SectioncamoisDocument>,
   ) {}
 
   async create(createSectionDto: CreateSectionDto) {
@@ -60,6 +62,18 @@ export class SectionService {
   async findOnebycountry(id: string){
     const section = await this.sectionModel.findOne({countryId: id}).exec();
     return section;
+  }
+
+  async findsectioncabySection(sectionId:string, annee:string) {
+    const sectionca = await this.sectioncaModel.findOne({sectionId: sectionId, annee: annee}).exec();
+
+    return sectionca;
+  }
+
+  async findsectioncamoisbySection(sectionId:string, annee:string, mois:string) {
+    const sectioncamois = await this.sectioncamoisModel.findOne({sectionId: sectionId, annee: annee, mois: mois}).exec();
+
+    return sectioncamois;
   }
 
   async findprimechefsection(zoneId:string, mois:string, annee:string) {
