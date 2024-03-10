@@ -14,10 +14,10 @@ export class ManagerController {
     return this.managerService.create(createManagerDto);
   }
 
-  // @Get('ajoutmanager')
-  // createDirect() {
-  //   return this.managerService.createDirect();
-  // }
+  @Get('ajoutmanager')
+  createDirect() {
+    return this.managerService.createDirect();
+  }
 
   @Get('allmanager')
   findAll() {
