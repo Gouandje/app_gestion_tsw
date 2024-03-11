@@ -76,6 +76,23 @@ export class SectionService {
     return sectioncamois;
   }
 
+  async findAllsectionca(sectionId:string) {
+    const sectionca = await this.sectioncaModel.find({sectionId: sectionId}).populate('annee').populate('mois').exec();
+
+    return sectionca;
+  }
+
+  async findAllsectioncamois(sectionId:string, annee: string) {
+    if(annee==""){
+      const sectioncamois = await this.sectioncaModel.find({sectionId: sectionId}).populate('annee').populate('mois').exec();
+
+      return sectioncamois;
+    }
+    const sectioncamois = await this.sectioncaModel.find({sectionId: sectionId, annee: annee}).populate('annee').populate('mois').exec();
+
+    return sectioncamois;
+  }
+
   async findprimechefsection(zoneId:string, mois:string, annee:string) {
     const sectionca = await this.chefsectionprimeModel.findOne({zoneId: zoneId, mois:mois, annee: annee}).exec();
 
@@ -94,18 +111,19 @@ export class SectionService {
 
   async updatesectionca(id: string, updateSectionDto: any) {
     return this.sectioncaModel
-      .findOneAndUpdate({ id }, updateSectionDto, {
+      .findByIdAndUpdate({ _id: id }, {$set: updateSectionDto}, {
         new: true,
       })
-      .lean();
+      .exec();
+
   }
 
   async updateprimechefsection(id: string, updateChefsectionprimeDto: any) {
     return this.chefsectionprimeModel
-      .findOneAndUpdate({ id }, updateChefsectionprimeDto, {
+      .findByIdAndUpdate({_id: id }, {$set: updateChefsectionprimeDto}, {
         new: true,
       })
-      .lean();
+      .exec();
   }
 
 
@@ -120,10 +138,10 @@ export class SectionService {
 
   async update(id: string, updateSectionDto: UpdateSectionDto) {
     return this.sectionModel
-      .findOneAndUpdate({ id }, updateSectionDto, {
+      .findByIdAndUpdate({ _id: id }, {$set: updateSectionDto}, {
         new: true,
       })
-      .lean();
+      .exec();
   }
 
   async remove(id: string) {
