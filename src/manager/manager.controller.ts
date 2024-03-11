@@ -34,6 +34,11 @@ export class ManagerController {
     return this.managerService.findAllSupervisor();
   }
 
+  @Get('allmanagerChefsection')
+  findAllChefsection() {
+    return this.managerService.findAllChefsection();
+  }
+
   @Get('allmanagers')
   findAllManager() {
     return this.managerService.findAllManager();

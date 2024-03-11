@@ -701,6 +701,12 @@ export class ManagerService {
     return manager;
   }
 
+  async findAllChefsection() {
+    const grade: string = "Manager Chef de section";
+    const manager = await this.managerModel.find({grade: grade}).exec();
+    return manager;
+  }
+
   async findAllManager() {
     const grade: string = "Manager";
     const manager = await this.managerModel.find({grade: grade}).exec();
