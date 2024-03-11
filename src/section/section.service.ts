@@ -82,7 +82,7 @@ export class SectionService {
     return sectionca;
   }
 
-  async findAllsectioncamois(sectionId:string, annee: string) {
+  async findAllsectioncamois(sectionId, annee) {
     
     const sectioncamois = await this.sectioncamoisModel.find({sectionId: sectionId, annee: annee}).populate('annee').populate('mois').exec();
 

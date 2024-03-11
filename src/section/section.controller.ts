@@ -14,10 +14,10 @@ export class SectionController {
     return this.sectionService.create(createSectionDto);
   }
 
-  @Post('filtersectioncaannee')
-  recherchecaSection(@Body() recherchecaDto: RecherchecaDto) {
-    return this.sectionService.findAllsectioncamois(recherchecaDto.param1, recherchecaDto.param2);
-  }
+  // @Post('filtersectioncaannee')
+  // recherchecaSection(@Body() recherchecaDto: RecherchecaDto) {
+  //   return this.sectionService.findAllsectioncamois(recherchecaDto.param1, recherchecaDto.param2);
+  // }
 
   @Get('allsectionca/:id')
   findAllsectionca(@Param('id') id: string) {
