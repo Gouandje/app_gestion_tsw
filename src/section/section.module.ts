@@ -9,6 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Sectionca, SectioncaSchema } from './schemas/sectionca.schema';
 import { Chefsectionprime, ChefsectionprimeSchema } from './schemas/chefsectionprime.schema';
 import { MoisanneeModule } from 'src/moisannee/moisannee.module';
+import { Sectioncamois, SectioncamoisSchema } from './schemas/sectioncamois.schema';
 
 @Module({
   
@@ -26,6 +27,10 @@ import { MoisanneeModule } from 'src/moisannee/moisannee.module';
         { 
           name: Sectionca.name, 
           schema: SectioncaSchema 
+        },
+        { 
+          name: Sectioncamois.name, 
+          schema: SectioncamoisSchema 
         },
         { 
           name: Chefsectionprime.name, 

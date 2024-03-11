@@ -65,6 +65,7 @@ export class SectionService {
   }
 
   async findsectioncabySection(sectionId:string, annee:string) {
+    
     const sectionca = await this.sectioncaModel.findOne({sectionId: sectionId, annee: annee}).exec();
 
     return sectionca;
@@ -83,7 +84,11 @@ export class SectionService {
   }
 
   async findAllsectioncamois(sectionId, annee) {
-    
+    if(annee =''){
+      const sectioncamois = await this.sectioncamoisModel.find({sectionId: sectionId}).populate('annee').populate('mois').exec();
+
+      return sectioncamois;
+    }
     const sectioncamois = await this.sectioncamoisModel.find({sectionId: sectionId, annee: annee}).populate('annee').populate('mois').exec();
 
     return sectioncamois;

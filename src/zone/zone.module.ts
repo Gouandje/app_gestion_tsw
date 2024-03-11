@@ -8,6 +8,7 @@ import { PaysModule } from 'src/pays/pays.module';
 import { Zoneca, ZonecaSchema } from './schemas/zoneca.schema';
 import { Primesz, PrimeszSchema } from './schemas/primesz.schema';
 import { MoisanneeModule } from 'src/moisannee/moisannee.module';
+import { Zonecamois, ZonecamoisSchema } from './schemas/zonecamois.schema';
 
 @Module({
   
@@ -24,6 +25,10 @@ import { MoisanneeModule } from 'src/moisannee/moisannee.module';
         { 
           name: Zoneca.name, 
           schema: ZonecaSchema 
+        },
+        { 
+          name: Zonecamois.name, 
+          schema: ZonecamoisSchema 
         },
         { 
           name: Primesz.name, 
