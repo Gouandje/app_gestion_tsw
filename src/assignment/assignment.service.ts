@@ -8,7 +8,9 @@ import { Model, Schema as MongooseSchema } from 'mongoose';
 @Injectable()
 export class AssignmentService {
 
-  constructor(@InjectModel(Mission.name) private readonly missionModel: Model<MissionDocument>){}
+  constructor(
+    @InjectModel(Mission.name) private readonly missionModel: Model<MissionDocument>
+    ){}
 
   async create(ceratemissionDto: CreateAssignmentDto) {
     const mission = await  this.missionModel.create(ceratemissionDto);
@@ -54,4 +56,11 @@ export class AssignmentService {
 
     return `Mission supprimé avec succès`;
   }
+
+  async missionbackup() {
+    const missions = await this.missionModel.find().exec();
+    return missions;
+  }
+
+
 }

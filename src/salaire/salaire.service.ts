@@ -99,4 +99,8 @@ export class SalaireService {
     }
     return;
   }
+
+  async salairebackup(){
+    return await this.salaireModel.find().exec();
+  }
 }

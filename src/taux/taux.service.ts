@@ -51,4 +51,8 @@ export class TauxService {
     await this.tauxModel.findByIdAndDelete({ _id: id });
     return {};
   }
+
+  async tauxbackup(){
+    return await this.tauxModel.find().exec();
+  }
 }

@@ -8,7 +8,8 @@ import { Model } from 'mongoose';
 @Injectable()
 export class CaisseService {
   
-  constructor( @InjectModel(Caisse.name) private readonly caisseModel: Model<CaisseDocument>,
+  constructor( 
+    @InjectModel(Caisse.name) private readonly caisseModel: Model<CaisseDocument>,
   ){}
   
   async create(createCaisseDto: any) {
@@ -33,5 +34,9 @@ export class CaisseService {
 
   remove(id: string) {
     return `This action removes a #${id} caisse`;
+  }
+
+  async caissebackup() {
+    return await this.caisseModel.find().exec();
   }
 }

@@ -292,4 +292,12 @@ export class MouvementstockService {
     const consignations = await this.consignationModel.findById(id).exec();
     return consignations;
   }
+
+  async mouvementstockbackup(){
+    return await this.mvtstockModel.find().exec()
+  }
+
+  async consignationbackup(){
+    return await this.consignationModel.find().exec();
+  }
 }

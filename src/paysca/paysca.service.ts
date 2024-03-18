@@ -75,7 +75,7 @@ export class PayscaService {
   }
   async updateCaPaysMois(id,upadateinfopaysCaMois){
     const update = await this.payscaModel.findByIdAndUpdate({_id: id}, upadateinfopaysCaMois, {new: true}).lean();
-
+    return update;
   }
 
   async createCaPaysYear(CapaysYear:any){
@@ -96,5 +96,11 @@ export class PayscaService {
         await this.payscaModel.findByIdAndRemove(paysca[i]._id);
       }
     }
+  }
+
+  async findAllCabackup() {
+    const result = await this.payscayearModel.find().exec();
+
+    return result;
   }
 }

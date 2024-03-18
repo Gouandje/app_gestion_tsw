@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, InternalServerError
 import { CreateZoneDto } from './dto/create-zone.dto';
 import { UpdateZoneDto } from './dto/update-zone.dto';
 import { Zone, ZoneDocument } from './schemas/zone.schema';
-import { Model } from 'mongoose';
+import { Model, isObjectIdOrHexString } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Primesz, PrimeszDocument } from './schemas/primesz.schema';
 import { Zoneca, ZonecaDocument } from './schemas/zoneca.schema';
@@ -112,6 +112,19 @@ export class ZoneService {
     return zone;
   }
 
+  async findOneZonebyId(id: string) {
+    const zone = await this.zoneModel.findById(id).exec();
+    if (!zone) {
+      console.log('test', {
+        "$oid": id
+      });
+    const zone2 = await this.zoneModel.findById({"$oid": id}).exec();
+      console.log(zone2);
+      throw new NotFoundException('zone non trouvée');
+    }
+    return zone;
+  }
+
   async findSingle(id: string) {
     const zone = await this.zoneModel.findById(id).populate('countryId').exec();
     console.log(zone);
@@ -156,6 +169,10 @@ export class ZoneService {
      }
     }
     return;
+   }
+
+   async zonebackup(){
+    return await this.zoneModel.find().exec();
    }
 
 

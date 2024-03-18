@@ -72,4 +72,8 @@ export class ChefsectionService {
     await this.chefsectionModel.findOneAndRemove({ sectionId: id });
     return {};
   }
+
+  async chefsectionbackup() {
+    return await this.chefsectionModel.find().exec();
+  }
 }

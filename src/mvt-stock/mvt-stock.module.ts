@@ -28,6 +28,7 @@ import { MvtStockPaysEntrepot, MvtStockPaysEntrepotSchema } from './schemas/mvt-
 
   ],
   controllers: [MvtStockController],
-  providers: [MvtStockService]
+  providers: [MvtStockService],
+  exports: [MvtStockService]
 })
 export class MvtStockModule {}

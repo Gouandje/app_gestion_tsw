@@ -102,7 +102,7 @@ export class EntrepotService {
               quantity: finalquantity
             };
             const id = stockproductcurrententrepot._id;
-            this.entrepotproduitstockModel.findByIdAndUpdate({_id: id}, stockentrepot, {new: true}).exec();
+            await this.entrepotproduitstockModel.findByIdAndUpdate({_id: id}, {$set:stockentrepot}, {new: true}).exec();
           }
 
         }
@@ -116,6 +116,18 @@ export class EntrepotService {
       
     }
     return {message: "created"};
+  }
+
+  async findproduitstockentrepot(productId:string){
+    const stockproductcurrententrepot = await this.entrepotproduitstockModel.findOne({productId: productId}).exec();
+    return stockproductcurrententrepot;
+
+  }
+
+  async updatestockentrepot(id, updateData: any){
+
+    return await this.entrepotproduitstockModel.findByIdAndUpdate({_id: id}, {$set:updateData}, {new: true}).exec();
+
   }
 
   async findAll() {
@@ -159,9 +171,7 @@ export class EntrepotService {
     }
     else{
     const createstockalert = this.stockalertentrepotModel.create(createstockalerteEntrepotDto)
-
     }
-
   }
 
   async findAllstockalert(){
@@ -190,7 +200,6 @@ export class EntrepotService {
       new: true,
     }).exec();
 
-
     return updatedStockalert;
   }
 
@@ -201,5 +210,30 @@ export class EntrepotService {
     });
 
     return `Produit supprimé avec succès`;
+  }
+
+  async entrepotbackup() {
+    const entrepot = await this.entrepotModel.find().exec();
+    return entrepot;
+  }
+
+  async operationentrepotbackup() {
+    const entrepot = await this.entrepotoperationModel.find().exec();
+    return entrepot;
+  }
+
+  async entrepotstockbackup() {
+    const entrepot = await this.entrepotModel.find().exec();
+    return entrepot;
+  }
+
+  async sortieentrepotbackup() {
+    const entrepot = await this.sortieproduitentrepotModel.find().exec();
+    return entrepot;
+  }
+
+  async stockalertbackup() {
+    const entrepot = await this.stockalertentrepotModel.find().exec();
+    return entrepot;
   }
 }

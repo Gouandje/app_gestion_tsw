@@ -17,6 +17,11 @@ export class PaysController {
     return this.paysService.findAll();
   }
 
+  @Get('allpaysciv')
+  findAllCIV() {
+    return this.paysService.findAllCIV();
+  }
+
   @Get('singlepays/:id')
   findOne(@Param('id') id: string) {
     return this.paysService.findOne(id);

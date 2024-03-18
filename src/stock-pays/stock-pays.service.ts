@@ -49,8 +49,7 @@ export class StockPaysService {
   }
 
   async findpaysproduit(productId: string, paysId: string){
-    console.log('productid',productId)
-    console.log('paysid',paysId)
+
     const product = await this.stockpaysModel.findOne({productId: productId, paysId: paysId}).exec();
 
     return product;
@@ -59,7 +58,7 @@ export class StockPaysService {
 
   async updateStockpaysproduit(id: string, updateStockPaysDto: UpdateStockPaysDto){
     
-    const product = await this.stockpaysModel.findOneAndReplace({_id: id}, updateStockPaysDto).exec();
+    const product = await this.stockpaysModel.findOneAndUpdate({_id: id}, {$set:updateStockPaysDto}, {new: true}).exec();
 
     return product;
 
@@ -98,6 +97,10 @@ export class StockPaysService {
 
   async remove(id: string) {
     return await this.stockpaysModel.findByIdAndRemove(id);
+  }
+
+  async stockpaybackup(){
+    return await this.stockpaysModel.find().exec(); 
   }
 
   

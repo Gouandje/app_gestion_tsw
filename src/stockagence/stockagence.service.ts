@@ -214,11 +214,10 @@ export class StockagenceService {
         quantitytotalenmagasin: stockagence.quantitytotalenmagasin - mvtStockagencepaysDto.quantity
       };
 
-      const update = await this.stockagenceModel.findByIdAndUpdate(stockagence._id, updateStockagenceDto,{
+      const update = await this.stockagenceModel.findByIdAndUpdate(stockagence._id, {$set: updateStockagenceDto}, {
         new: true,
       })
       .lean();
-      console.log(update);
 
       const paysagence = await this.agengeService.findbureau(mvtStockagencepaysDto.agenceId);
       const stockProduitpays = await this.stockPaysService.findpaysproduit(mvtStockagencepaysDto.productId, paysagence.countryId);
@@ -255,6 +254,13 @@ export class StockagenceService {
   async findagenceproduit(agenceId: string, productId){
 
     const product = await this.stockagenceModel.findOne({agenceId: agenceId, productId: productId}).populate('productId').exec();
+    return product;
+
+  }
+
+  async findagenceproduitendom(agenceId: string, productId:string){
+    console.log('ici test',[agenceId, productId])
+    const product = await this.stockagenceModel.findOne({agenceId: agenceId, productId: productId}).exec();
     return product;
 
   }
@@ -307,5 +313,9 @@ export class StockagenceService {
 
   async remove(id: string) {
     await this.stockagenceModel.findOneAndRemove({agenceId: id});
+  }
+
+  async stockagencebackup(){
+    return await this.stockagenceModel.find().exec(); 
   }
 }

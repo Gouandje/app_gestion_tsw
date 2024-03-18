@@ -116,4 +116,8 @@ export class AffectationService {
   async findaffecteForDelele(id: string){
     return await this.affectationModel.findOneAndRemove({bureauId: id});
   }
+
+  async affectationbackup(){
+    return await this.affectationModel.find().exec();
+  }
 }

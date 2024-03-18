@@ -19,6 +19,11 @@ export class AngenceController {
     return this.agenceService.findAll();
   }
 
+  @Get('updatedirect')
+  updatedirect() {
+    return this.agenceService.updateDirect();
+  }
+
   @Get('allagences')
   findAllForMvt() {
     return this.agenceService.findAllForMvt();

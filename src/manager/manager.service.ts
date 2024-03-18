@@ -671,6 +671,7 @@ export class ManagerService {
     const manager = await this.managerModel.find().exec();
     return manager;
   }
+
   async findAllMnager(infomanagerDto: InfoManagerDto){
     const results = await this.managerModel.find({telephone: infomanagerDto.nom}).exec();
     if(results.length>0){
@@ -714,8 +715,8 @@ export class ManagerService {
   }
 
   async findOne(managerId: string) {
-    const manager = await this.managerModel.findById(managerId);
-
+    console.log('managerId', managerId);
+    const manager = await this.managerModel.findById({_id: managerId});
     if (!manager) {
       throw new NotFoundException('manager non trouvée');
     }
@@ -727,22 +728,30 @@ export class ManagerService {
     .findByIdAndUpdate(managerId, { $set: updateManagerDto }, { new: true })
     .exec();
   if (!mgr) {
-    throw new NotFoundException(`The agency with id #${managerId} was not found.`);
+    throw new NotFoundException(`The manager nom trouvé.`);
   }
   return mgr;
   }
 
   async remove(id: string) {
     // console.log(paysId);
-    await this.managerModel.findByIdAndRemove(id).catch((err) => {
-      throw new BadRequestException(err);
-    });
-    return `manager deleted`;
+    const deleted = await this.managerModel.findByIdAndRemove(id).exec();
+    if(deleted){
+      return 'supprimé avec succès'
+    }else{
+      throw new NotFoundException(`Soif manager n'est pas trouvé soit échec de suppression.`);
+
+    }
   }
 
   async updateStatut(managerId: string, updateStatusDto: UpdateStatusDto) {
     return this.managerModel
       .findByIdAndUpdate( managerId , updateStatusDto)
       .lean();
+  }
+
+  async managersbackup() {
+    const manager = await this.managerModel.find().exec();
+    return manager;
   }
 }

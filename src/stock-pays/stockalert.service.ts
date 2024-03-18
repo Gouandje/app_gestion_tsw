@@ -61,6 +61,10 @@ export class StockAlertPaysService {
         async findAll() {
             const products = await this.alertstockModel.find().populate('productId').exec();
             return products;
+        }
+
+        async stockalertbackup(){
+            return await this.alertstockModel.find().exec(); 
           }
          
 

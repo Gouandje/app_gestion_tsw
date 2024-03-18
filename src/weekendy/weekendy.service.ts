@@ -682,5 +682,9 @@ export class WeekendyService {
     return 'weekedy';
   }
 
+  async weekendybackup(){
+    return this.weekendyModel.find().exec();
+  }
+
   
 }

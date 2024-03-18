@@ -40,6 +40,7 @@ import { MoisanneeModule } from './moisannee/moisannee.module';
 import { PatientModule } from './patient/patient.module';
 import { DelecountryModule } from './delecountry/delecountry.module';
 import { BackupModule } from './backup/backup.module';
+import { ProduitendommageModule } from './produitendommage/produitendommage.module';
 
 @Module({
   imports: [
@@ -65,7 +66,34 @@ import { BackupModule } from './backup/backup.module';
     SalaireModule, 
     AgenceModule, 
     PaysModule, 
-    AuthModule, ExpensesModule, StockModule, AssignmentModule, TauxModule, AffectationModule, CotisationModule, SalaireManagerModule, StockagenceModule, MouvementstockModule, ZoneModule, SectionModule, EmployerModule, CongeModule, StockPaysModule, MvtStockModule, RoleModule, TauxzoneModule, SuperviseurzoneModule, ChefsectionModule, CaisseModule, EntrepotModule, PayscaModule, MoisanneeModule, PatientModule, DelecountryModule, BackupModule
+    BackupModule,
+    AuthModule, 
+    ExpensesModule, 
+    StockModule, 
+    AssignmentModule, 
+    TauxModule,
+    AffectationModule, 
+    CotisationModule, 
+    SalaireManagerModule, 
+    StockagenceModule, 
+    MouvementstockModule, 
+    ZoneModule, 
+    SectionModule, 
+    EmployerModule, 
+    CongeModule, 
+    StockPaysModule, 
+    MvtStockModule, 
+    RoleModule, 
+    TauxzoneModule, 
+    SuperviseurzoneModule, 
+    ChefsectionModule, 
+    CaisseModule, 
+    EntrepotModule, 
+    PayscaModule, 
+    MoisanneeModule, 
+    PatientModule, 
+    DelecountryModule,
+    ProduitendommageModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -73,5 +73,9 @@ export class SuperviseurzoneService {
     await this.superviseurzoneModel.findOneAndRemove({ zoneId: id });
     return {};
   }
+
+  async superviserzonebackup(){
+    return await this.superviseurzoneModel.find().exec(); 
+  }
   
 }

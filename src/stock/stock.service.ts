@@ -109,4 +109,8 @@ export class StockService {
     await this.stockModel.findByIdAndRemove({paysId: id}).exec()
     return `stock supprimé avec succès`;
   }
+
+  async stockbackup(){
+    return await this.stockModel.find().exec(); 
+  }
 }

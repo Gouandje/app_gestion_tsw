@@ -204,4 +204,12 @@ export class ExpensesService {
 
     return updatedCategory;
   }
+
+  async expensesbackup() {
+   return await this.expenseModel.find().exec();
+  }
+
+  async categoriesbackup() {
+    return await this.categoryModel.find().exec();
+  }
 }

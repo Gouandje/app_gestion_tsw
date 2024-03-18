@@ -29,6 +29,7 @@ export class ProduitService {
 
   async findAll(): Promise<Products[]> {
     const products = await this.productModel.find().exec();
+    console.log(products);
     return products;
   }
 
@@ -59,5 +60,9 @@ export class ProduitService {
     });
 
     return `Produit supprimé avec succès`;
+  }
+
+  async productsbackup(){
+    return await this.productModel.find().exec();
   }
 }

@@ -8,13 +8,8 @@ export class BackupController {
   constructor(private readonly backupService: BackupService) {}
 
   @Get('manual')
-  async manualBackup(): Promise<string> {
-    try {
-      await this.backupService.performFullBackup();
-      return 'Manual backup initiated successfully.';
-    } catch (error) {
-      console.error('Manual backup failed:', error.message);
-      throw new Error('Failed to initiate manual backup.');
-    }
+  async manualBackup() {
+    return await this.backupService.processDataAndSendEmail();
+    
   }
 }

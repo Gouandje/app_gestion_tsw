@@ -14,28 +14,31 @@ import { DetteBureauDto } from './dto/dette_bureau.dto';
 import { DetteBureau, DetteBureauDocument } from './schemas/dette_bureau.schema';
 import { RemboursementDto } from './dto/remboursement.dto';
 import { Remboursement, RemboursementDocument } from './schemas/remboursement.schema';
+import { ManagerService } from 'src/manager/manager.service';
 
 @Injectable()
 export class SalaireManagerService {
   
-  constructor(@InjectModel(SalaireManager.name) private readonly salaireModel: Model<SalaireManagerDocument>,
-  @InjectModel(Cotisation.name) private readonly cotisationModel: Model<CotisationDocument>,
-  @InjectModel(CotisationPaye.name) private readonly cotisationpayModel: Model<CotisationPayeDocument>,
-  @InjectModel(DetteBureau.name) private readonly dettebureauModel: Model<DetteBureauDocument>,
-  @InjectModel(Remboursement.name) private readonly remboursementModel: Model<RemboursementDocument>,
+  constructor(
+    @InjectModel(SalaireManager.name) private readonly salairemanagerModel: Model<SalaireManagerDocument>,
+    @InjectModel(Cotisation.name) private readonly cotisationModel: Model<CotisationDocument>,
+    @InjectModel(CotisationPaye.name) private readonly cotisationpayModel: Model<CotisationPayeDocument>,
+    @InjectModel(DetteBureau.name) private readonly dettebureauModel: Model<DetteBureauDocument>,
+    @InjectModel(Remboursement.name) private readonly remboursementModel: Model<RemboursementDocument>,
   private readonly agenceservice: AgenceService,
+  private readonly managerservice: ManagerService,
 
   ){}
 
   async create(createSalaireManagerDto) {
 
-    const alreadyExists = await this.salaireModel.findOne({managerId:createSalaireManagerDto.managerId, salaireId: createSalaireManagerDto.salaireId }).lean();
+    const alreadyExists = await this.salairemanagerModel.findOne({managerId:createSalaireManagerDto.managerId, salaireId: createSalaireManagerDto.salaireId }).lean();
     if(alreadyExists !=null){
       console.log('type de alreadyExists', typeof alreadyExists);
       return this.findAllBymanagerAndSalary(createSalaireManagerDto.managerId, createSalaireManagerDto.salaireId);    
     }else{
       
-      const createdSalairemanager = await this.salaireModel.create(createSalaireManagerDto);
+      const createdSalairemanager = await this.salairemanagerModel.create(createSalaireManagerDto);
 
       if(createSalaireManagerDto){
         const getcotisation = await this.cotisationModel.findOne({managerId: createSalaireManagerDto.managerId}).exec();
@@ -84,7 +87,7 @@ export class SalaireManagerService {
   }
 
   async findAll(managerId: string) {
-    const salairesManager = await this.salaireModel
+    const salairesManager = await this.salairemanagerModel
                     .find({managerId: managerId})
                     .populate('managerId')
                     .populate('salaireId')
@@ -93,16 +96,17 @@ export class SalaireManagerService {
   }
 
   async findAllManagersalaireBySalaireId(salaireId: string) {
-    const salairesManager = await this.salaireModel
+    const salairesManager = await this.salairemanagerModel
                     .find({salaireId: salaireId})
                     .populate('managerId')
                     .populate('salaireId')
                     .exec();
+   
     return salairesManager;
   }
 
   async findAllBymanagerAndSalary(managerId: string, salaireId: string) {
-    const salairesManager = await this.salaireModel
+    const salairesManager = await this.salairemanagerModel
                     .find({managerId: managerId, salaireId:salaireId})
                     .populate('managerId')
                     .populate('salaireId')
@@ -124,7 +128,7 @@ export class SalaireManagerService {
 
     const created = await this.dettebureauModel.create(detteBureaudto)
     if(created){
-      const findsalairemanager = await this.salaireModel.find({salaireId: detteBureaudto.salaireId});
+      const findsalairemanager = await this.salairemanagerModel.find({salaireId: detteBureaudto.salaireId});
       for(let i=0; i<findsalairemanager.length; i++){
         const updateData: UpdateSalaireManagerDto = {
           salaire_manager:findsalairemanager[i].salaire_manager,
@@ -136,11 +140,11 @@ export class SalaireManagerService {
           salaireId: findsalairemanager[i].salaireId,
           salaire_net_manager: findsalairemanager[i].salaire_net_manager - Math.round(detteBureaudto.montantdette/findsalairemanager.length)
         };
-        const updated = await this.salaireModel.findByIdAndUpdate({_id: findsalairemanager[i]._id}, {$set: updateData }, { new: true }).exec();
+        const updated = await this.salairemanagerModel.findByIdAndUpdate({_id: findsalairemanager[i]._id}, {$set: updateData }, { new: true }).exec();
 
-        // const updated = await this.salaireModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true, }).lean();
+        // const updated = await this.salairemanagerModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true, }).lean();
         // console.log(updated);
-        // const updated = this.salaireModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true}).lean();
+        // const updated = this.salairemanagerModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true}).lean();
 
       }
     
@@ -154,7 +158,7 @@ export class SalaireManagerService {
 
     const created = await this.remboursementModel.create(remboursementdto)
     if(created){
-      const findsalairemanager = await this.salaireModel.find({salaireId: remboursementdto.salaireId});
+      const findsalairemanager = await this.salairemanagerModel.find({salaireId: remboursementdto.salaireId});
       for(let i=0; i<findsalairemanager.length; i++){
         const updateData: UpdateSalaireManagerDto = {
           salaire_manager:findsalairemanager[i].salaire_manager,
@@ -167,8 +171,7 @@ export class SalaireManagerService {
           salaire_net_manager: findsalairemanager[i].salaire_net_manager + Math.round(remboursementdto.montantajout/findsalairemanager.length)
         };
 
-        const updated = await this.salaireModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true, }).lean();
-        console.log(updated);
+        const updated = await this.salairemanagerModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true, }).lean();
       }
     
       return {status: 200, message: 'enregistrer avec succès'};
@@ -193,7 +196,7 @@ export class SalaireManagerService {
 
   async findAllCotisationManager(managerId: string) {
     const cotisation: any[] = [];
-    const salairesManager = await this.salaireModel
+    const salairesManager = await this.salairemanagerModel
                     .find({managerId: managerId})
                     .populate('managerId')
                     .populate('salaireId')
@@ -223,7 +226,7 @@ export class SalaireManagerService {
 
   async findAllmois(mois: string) {
     console.log('mois',mois);
-    const salairesManager = await this.salaireModel
+    const salairesManager = await this.salairemanagerModel
                     .find({mois: mois})
                     .populate('managerId')
                     .exec();
@@ -231,7 +234,7 @@ export class SalaireManagerService {
   }
 
   async findOne(id: string) {
-    const salairemanager = await this.salaireModel.find({managerId:id})
+    const salairemanager = await this.salairemanagerModel.find({managerId:id})
                   .populate('managerId').exec();
     if (!salairemanager) {
       throw new NotFoundException('salaire du mois non trouvé');
@@ -241,7 +244,7 @@ export class SalaireManagerService {
 
   async update(id: string, updateDetteDto: UpdateDetteDto) {
    
-    const salaire = await this.salaireModel.findOne({ salaireId: id, managerId: updateDetteDto.managerId });
+    const salaire = await this.salairemanagerModel.findOne({ salaireId: id, managerId: updateDetteDto.managerId });
 
 
     const updateddata = {
@@ -255,24 +258,24 @@ export class SalaireManagerService {
 
     };
 
-    return this.salaireModel.findOneAndUpdate({_id: salaire._id }, updateddata, {
+    return this.salairemanagerModel.findOneAndUpdate({_id: salaire._id }, updateddata, {
       new: true,
     }).lean();
   }
   
 
   // async remove(id: number) {
-  //   await this.salaireModel.deleteOne({ _id: id });
+  //   await this.salairemanagerModel.deleteOne({ _id: id });
   //   return {};
   // }
 
   async remove(id: string){
-    return await this.salaireModel.findByIdAndRemove(id)
+    return await this.salairemanagerModel.findByIdAndRemove(id)
   }
 
   async findsailairemanager(salaireId: string) {
     
-    const salairemanager=  await this.salaireModel.findOne({salaireId: salaireId}).exec();
+    const salairemanager=  await this.salairemanagerModel.findOne({salaireId: salaireId}).exec();
     const getcotisation = await this.cotisationModel.findOne({managerId: salairemanager.managerId}).exec(); 
     const updatecotisation = {
       managerId: salairemanager.managerId,
@@ -282,8 +285,29 @@ export class SalaireManagerService {
     const updated =  await this.cotisationModel.findByIdAndUpdate({_id: getcotisation._id},updatecotisation, { new: true,} ).lean();
     if(updated){
       await this.cotisationModel.findByIdAndUpdate({_id: getcotisation._id},updatecotisation, { new: true,} ).lean();
-      return await this.salaireModel.findByIdAndRemove(salairemanager._id)
+      return await this.salairemanagerModel.findByIdAndRemove(salairemanager._id)
     }
     
   }
+
+
+  async salairemanagerbackup(){
+    return await this.salairemanagerModel.find().exec();
+   }
+   
+   async cotisationbackup(){
+    return await this.cotisationModel.find().exec();
+   }
+
+   async cotisationpayebackup(){
+    return await this.cotisationpayModel.find().exec();
+   }
+
+   async dettebureaubackup(){
+    return await this.dettebureauModel.find().exec();
+   }
+
+   async remboursementbackup(){
+    return await this.remboursementModel.find().exec();
+   }
 }

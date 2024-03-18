@@ -58,4 +58,9 @@ export class CongeService {
     });
     return `employer deleted`;
   }
+
+  async congebackup() {
+    const conges = await this.congeModel.find().exec();
+    return conges;
+  }
 }

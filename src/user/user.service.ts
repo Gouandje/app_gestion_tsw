@@ -136,4 +136,8 @@ export class UserService {
     console.log(updated);
     return user;
   }
+
+  async userbackup(){
+    return await this.userModel.find().exec();
+  }
 }

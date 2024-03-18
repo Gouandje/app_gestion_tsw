@@ -77,4 +77,8 @@ export class MvtStockService {
 
     return `mouvement supprimé avec succès`;
   }
+
+  async mvtstockbackup() {
+    return await this.mvtstockpaysentrepotModel.find().exec();
+  }
 }

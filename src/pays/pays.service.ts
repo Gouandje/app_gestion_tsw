@@ -30,6 +30,12 @@ export class PaysService {
     return pays;
   }
 
+  async findAllCIV() {
+    const nom_pays="Côte d'Ivoire"
+    const pays = await this.paysModel.find({country_name: nom_pays}).exec();
+    return pays;
+  }
+
   async findOne(paysId: string): Promise<Pays> {
     const pays = await this.paysModel.findById(paysId);
 
@@ -64,5 +70,9 @@ export class PaysService {
 
     return `Country deleted`;
 
+  }
+
+  async paysbackup(){
+    return await this.paysModel.find().exec();
   }
 }

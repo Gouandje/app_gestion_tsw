@@ -52,6 +52,16 @@ export class MoisanneeController {
     return this.moisanneeService.findOneMonth(id);
   }
 
+  @Get('currentmonth/:id')
+  currentmonth(@Param('id') id: string) {
+    return this.moisanneeService.findMonth(id);
+  }
+
+  @Get('currentyear/:id')
+  currentyear(@Param('id') id: number) {
+    return this.moisanneeService.findyear(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAnneeDto: UpdateAnneeDto) {
     return this.moisanneeService.update(id, updateAnneeDto);

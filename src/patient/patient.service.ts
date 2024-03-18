@@ -212,5 +212,39 @@ export class PatientService {
   async deleteseance(patientkineId) {
     return await this.caissemachineModel.find({patientkineId:patientkineId}).populate('patientkineId').exec();
   }
+
+  async patientbackup() {
+    return await this.patientModel.find().exec();
+  }
+  async patientdocteurbackup() {
+    return await this.patientdoctorModel.find().exec();
+  }
+  async patientkinebackup() {
+    return await this.patienkineModel.find().exec();
+  }
+  async caissekinebackup() {
+    return await this.caissekineModel.find().exec();
+  }
+  async caissekinesoldebackup() {
+    return await this.caissekinesoldeModel.find().exec();
+  }
+  async caissemachinebackup() {
+    return await this.caissemachineModel.find().exec();
+  }
+  async caissemachinesoldebackup() {
+    return await this.caissemachinesoldeModel.find().exec();
+  }
+  async caissecarnetbackup() {
+    return await this.caissecarnetModel.find().exec();
+  }
+  async caissecarnetsoldebackup() {
+    return await this.caissecarnetsoldeModel.find().exec();
+  }
+  async demandebackup() {
+    return await this.demandeModel.find().exec();
+  }
+  async seancebackup() {
+    return await this.seanceModel.find().exec();
+  }
   
 }

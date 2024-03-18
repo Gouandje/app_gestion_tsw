@@ -173,5 +173,25 @@ export class SectionService {
     return;
    }
 
+   async sectionbackup(){
+    return await this.sectionModel.find().exec();
+   }
+
+   async chefsectionprimebackup(){
+    return await this.chefsectionprimeModel.find().exec();
+   }
+
+   async sectioncabackup(){
+    return await this.sectioncaModel.find().exec();
+   }
+
+   async sectioncamoisbackup(){
+    return await this.sectioncamoisModel.find().exec();
+   }
+
+  
+  
+  
+
   
 }

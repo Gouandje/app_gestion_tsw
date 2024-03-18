@@ -23,7 +23,7 @@ export class Agence {
     example: 'a2d840f79a0b12f4c6a4b80a',
     description: 'The ID of the angency',
   })
-  @Prop({type: MongooseSchema.Types.ObjectId, required: false, ref: Zone.name,
+  @Prop({type:String, required: false, ref: Section.name,
   })
   zoneId: string;
 

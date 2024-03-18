@@ -56,4 +56,8 @@ export class RoleService {
 
   return `Role deleted`;
   }
+
+  async rolebackup(){
+    return await this.roleModel.find().exec();
+  }
 }

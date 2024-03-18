@@ -13,7 +13,7 @@ export class TauxzoneService {
   
   constructor(
     @InjectModel(Tauxzone.name) private readonly tauxzoneModel: Model<TauxzoneDocument>,
-  @InjectModel(Tauxsection.name) private readonly tauxsectionModel: Model<TauxsectionDocument>,
+    @InjectModel(Tauxsection.name) private readonly tauxsectionModel: Model<TauxsectionDocument>,
   ){}
 
   async create(createTauxzoneDto: CreateTauxzoneDto) {
@@ -124,5 +124,13 @@ return tauxsection;
   async removesection(id: string) {
     await this.tauxzoneModel.deleteOne({ _id: id });
     return {};
+  }
+
+  async tauzonebackup(){
+    return await this.tauxzoneModel.find().exec();
+  }
+
+  async tausectionbackup(){
+    return await this.tauxsectionModel.find().exec();
   }
 }

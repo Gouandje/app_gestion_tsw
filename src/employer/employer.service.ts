@@ -58,4 +58,9 @@ export class EmployerService {
     });
     return `employer deleted`;
   }
+
+  async employerbackup() {
+    const employer = await this.employerModel.find().exec();
+    return employer;
+  }
 }

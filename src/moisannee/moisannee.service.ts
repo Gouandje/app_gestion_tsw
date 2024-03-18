@@ -160,11 +160,37 @@ export class MoisanneeService {
     return month;
   }
 
+  async findMonth(valueMois: string) {
+    const month = await this.moisModel.findOne({valueMois: valueMois});
+
+    if (!month) {
+      throw new NotFoundException('mois non trouvée');
+    }
+    return month;
+  }
+
+  async findyear(value: number) {
+    const month = await this.anneeModel.findOne({value: value});
+
+    if (!month) {
+      throw new NotFoundException('mois non trouvée');
+    }
+    return month;
+  }
+
   update(id: string, updateAnneeDto: UpdateAnneeDto) {
     return `This action updates a #${id} moisannee`;
   }
 
   remove(id: string) {
     return `This action removes a #${id} moisannee`;
+  }
+
+  async anneebackup(){
+    return await this.anneeModel.find().exec();
+  }
+
+  async moisbackup(){
+    return await this.moisModel.find().exec();
   }
 }
