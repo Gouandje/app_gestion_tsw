@@ -29,6 +29,12 @@ export class WeekendyController {
     return this.weekendyService.createVenteDocteur(createWeekendyDto);
   }
 
+  @Get('suppressiondirecte/:bureauId')
+  suppressiondirecte(@Param('bureauId') bureauId: string) {
+    
+    return this.weekendyService.suppressiondirecte(bureauId);
+  }
+
   @Get('allWeekendydoctor/:bureauId')
   findAllVenteDocteur(@Param('bureauId') bureauId: string) {
     

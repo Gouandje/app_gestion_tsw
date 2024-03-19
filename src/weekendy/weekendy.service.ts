@@ -49,6 +49,7 @@ export class WeekendyService {
     // console.log(createWeekendyDto);
     const weekendproduct = [];
     const payload = {...createWeekendyDto};
+    const taux = await this.tauxservice.findAll();
     for(let i=0; i<createWeekendyDto.items.length; i++){
 
       const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
@@ -74,275 +75,570 @@ export class WeekendyService {
     };    
     const alreadyExists = await this.weekendyModel.findOne({ bureauId: createWeekendyDto.bureauId,
       mois: createWeekendyDto.mois, }).lean();
-      if(alreadyExists){
+    if(alreadyExists){
         console.log('alreadyExists', alreadyExists);
         throw new ConflictException(`Pour ce Bureau il existe déjà un Monthending pour ce mois et pour cette année dans la base de données`);
-      }else{
+    }else{
+      const weekendy = await  this.weekendyModel.create(createdDataDto);
+      if(weekendy){
+        
+        const bureau = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
+        const zoneca = await this.zoneservice.findzonecabyZone(bureau.zoneId, createWeekendyDto.annee);
+        const zonecamois = await this.zoneservice.findzonecamoisbyZone(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
 
-        const weekendy = await  this.weekendyModel.create(createdDataDto);
-    if(weekendy){
-      
-      const bureau = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
-      const zoneca = await this.zoneservice.findzonecabyZone(bureau.zoneId, createWeekendyDto.annee);
-      const zonecamois = await this.zoneservice.findzonecamoisbyZone(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
-
-      const tauxzone = await this.tauxzoneservice.findByzone(bureau.zoneId);
-
-      // section prime and ca
-      if(bureau.sectionId !=""){
-        const sectionca = await this.sectionservice.findsectioncabySection(bureau.sectionId, createWeekendyDto.annee);
-        const sectioncamois = await this.sectionservice.findsectioncamoisbySection(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
-        const tauxsection = await this.tauxzoneservice.findBysection(bureau.sectionId);
-
-        if(sectionca !=null && sectioncamois !=null){
-          const updateDatasectionca ={
-            sectionId: bureau.sectionId,
-            casection: (createWeekendyDto.caTotal + sectionca.casection),
-            annee: createWeekendyDto.annee
-          }; 
-  
-          const updateDatasectioncamois ={
-            sectionId: bureau.sectionId,
-            casection:(createWeekendyDto.caTotal + sectioncamois.casection),
-            mois: createWeekendyDto.mois,
-            annee: createWeekendyDto.annee
-          };
-          await this.sectionservice.updatesectionca(sectionca._id.toString('hex'), updateDatasectionca);
-          await this.sectionservice.updateprimechefsection(sectioncamois._id.toString('hex'), updateDatasectioncamois);
-  
+        const tauxzone = await this.tauxzoneservice.findByzone(bureau.zoneId);
+        const paysinfobyagence = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
+        const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
+        const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, createWeekendyDto.annee)
+       
+          // recuperation des managers du bureau ou hcef
+          const managersbureau = await this.affectationservice.findManager_bureau(createWeekendyDto.bureauId);
+          const primesz = await this.zoneservice.findprimesz(bureau.zoneId, createWeekendyDto.mois, createWeekendyDto.annee);
+          
+          const sectionca = await this.sectionservice.findsectioncabySection(bureau.sectionId, createWeekendyDto.annee);
+          const sectioncamois = await this.sectionservice.findsectioncamoisbySection(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
+          const tauxsection = await this.tauxzoneservice.findBysection(bureau.sectionId);
           const primecs = await this.sectionservice.findprimechefsection(bureau.sectionId, createWeekendyDto.mois, createWeekendyDto.annee);
-  
-          if(primecs !=null){
-            const updateDataprimecs ={
-              sectionId: bureau.sectionId,
-              casection:(createWeekendyDto.caTotal + primecs.casection),
+
+        // bureau n'ayant pas de zone ni de section
+        if(bureau.sectionId =="" && bureau.zoneId ==""){
+          for(let i=0; i < createWeekendyDto.items.length; i++){
+            const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
+            const productPrice = await this.produitService.findOne(createWeekendyDto.items[i].productId);
+            const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createWeekendyDto.items[i].productId,  annee: createWeekendyDto.annee}).exec();
+    
+            if(produitvendupays == null){
+              const createdproduitvenduDto = {
+                paysId: bureau.countryId,
+                productId: createWeekendyDto.items[i].productId,
+                quantity: createWeekendyDto.items[i].quantity,
+                annee: createWeekendyDto.annee,
+                chiffreaffaire: createWeekendyDto.items[i].quantity*productPrice.price
+              };
+    
+              await this.produitvendupaysModel.create(createdproduitvenduDto);
+    
+            }else{
+              const updatedproduitvenduDto = {
+                paysId: bureau.countryId,
+                productId: createWeekendyDto.items[i].productId,
+                quantity: produitvendupays.quantity + createWeekendyDto.items[i].quantity,
+                annee: createWeekendyDto.annee,
+                chiffreaffaire: produitvendupays.chiffreaffaire + createWeekendyDto.items[i].quantity*productPrice.price 
+              };
+              await this.produitvendupaysModel.findByIdAndUpdate({_id: produitvendupays._id}, updatedproduitvenduDto, {new: true}).lean();
+            }
+    
+            if(product !=null){
+              const updatedStockagence = {
+              quantity: product.quantitytotalenmagasin - (createWeekendyDto.items[i].quantity)
+              };
+              const updatestockagence: UpdateStockagenceDto = {
+                agenceId:createWeekendyDto.bureauId,
+                productId: createWeekendyDto.items[i].productId,
+                quantity: product.quantity - createWeekendyDto.items[i].quantity,
+                quantitytotalenmagasin: product.quantitytotalenmagasin
+            };
+            await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
+          }
+          }
+          if(managersbureau.length == 0){
+
+            const createSalaireDto = {
+              bureauId:createWeekendyDto.bureauId,
+              salaire_agent: createWeekendyDto.caTotal*taux[0].taux_salaire_agent/100,
+              salaire_formateur: createWeekendyDto.caTotal*taux[0].taux_formateur/100,
+              salaire_total_manager: (createWeekendyDto.caTotal*taux[0].taux_salaire_mgr/100)*(managersbureau.length),
+              motant_total: 0,
               mois: createWeekendyDto.mois,
               annee: createWeekendyDto.annee,
-              Chefsectionprime: (createWeekendyDto.caTotal*tauxsection.taux_section/100 + primecs.Chefsectionprime),
+              chiffreDaf: createWeekendyDto.caTotal,
+              montant_bank:createWeekendyDto.TotaltoBank,
+              chargeBureau:createWeekendyDto.chargebureauTotal,
+              date_paiment: createWeekendyDto.createdAt,
+            };
+      
+            this.salaireService.create(createSalaireDto);
+          }else{
+            
+            const createSalaireDto = {
+              bureauId:createWeekendyDto.bureauId,
+              salaire_agent: createWeekendyDto.caTotal*taux[0].taux_salaire_agent/100,
+              salaire_formateur: createWeekendyDto.caTotal*taux[0].taux_formateur/100,
+              salaire_total_manager: (createWeekendyDto.caTotal*taux[0].taux_salaire_mgr/100)*(managersbureau.length),
+              motant_total: createWeekendyDto.caTotal*taux[0].taux_salaire_agent/100 + createWeekendyDto.caTotal*taux[0].taux_formateur/100 + (createWeekendyDto.caTotal*taux[0].taux_salaire_mgr/100)*(managersbureau.length),
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              chiffreDaf: createWeekendyDto.caTotal,
+              montant_bank:createWeekendyDto.TotaltoBank,
+              chargeBureau:createWeekendyDto.chargebureauTotal,
+              date_paiment: createWeekendyDto.createdAt,
+            };
+      
+            this.salaireService.create(createSalaireDto);
+
+          }
+        
+          if(getPaysCaMois !=null){
+            const upadateinfopaysCaMois = {
+              countryId: paysinfobyagence.countryId,
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal + getPaysCaMois.caTotal
+            };
+            await this.payscaservice.updateCaPaysMois(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
+          }else{
+    
+            const infoCapays = {
+              countryId: paysinfobyagence.countryId,
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal
+            };
+    
+            await this.payscaservice.create(infoCapays)
+          }
+    
+          if(getPaysCaAnnee !=null){
+            const upadateinfopaysCaYear = {
+              countryId: paysinfobyagence.countryId,
+              year: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal + getPaysCaAnnee.caTotal
+            };
+            await this.payscaservice.updateyear(getPaysCaAnnee._id.toString('hex'), upadateinfopaysCaYear);
+          }else{
+    
+            const infoCapaysYear = {
+              countryId: paysinfobyagence.countryId,
+              year: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal
+            };
+    
+            await this.payscaservice.createCaPaysYear(infoCapaysYear)
+          }
+
+          return weekendy;
+
+        }else if(bureau.sectionId =="" && bureau.zoneId !=""){
+
+          if(zoneca !=null && zonecamois !=null){
+            const updateDatazoneca ={
+              zoneId: bureau.zoneId,
+              cazone:(createWeekendyDto.caTotal + zoneca.cazone),
+              annee: createWeekendyDto.annee
             }; 
     
-            await this.sectionservice.updateprimechefsection(primecs._id.toString('hex'),updateDataprimecs);
-  
+            const updateDatazonecamois ={
+              zoneId: bureau.zoneId,
+              cazone:(createWeekendyDto.caTotal + zonecamois.cazone),
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee
+            };
+            await this.zoneservice.updatezoneca(zoneca._id.toString('hex'),updateDatazoneca);
+            await this.zoneservice.updatezonecamois(zonecamois._id.toString('hex'), updateDatazonecamois);
+    
+            // prime du superviseur de zone
+            if(primesz !=null){
+              const updateDataprimesz ={
+                zoneId: bureau.zoneId,
+                cazone:(createWeekendyDto.caTotal + primesz.cazone),
+                mois: createWeekendyDto.mois,
+                annee: createWeekendyDto.annee,
+                primesz: (createWeekendyDto.caTotal*tauxzone.taux_zone/100 + primesz.primesz),
+              }; 
+      
+              await this.zoneservice.updateprimesz(primesz._id.toString('hex'),updateDataprimesz);
+    
+            }else{
+    
+              const createDataprime ={
+                zoneId: bureau.zoneId,
+                cazone:createWeekendyDto.caTotal,
+                mois:createWeekendyDto.mois,
+                annee: createWeekendyDto.annee,
+                primesz: createWeekendyDto.caTotal*tauxzone.taux_zone/100,
+              }; 
+              await this.zoneservice.createprimesz(createDataprime);
+    
+            }
+    
+          }else{
+            const createDatazoneca ={
+              zoneId: bureau.zoneId,
+              cazone:createWeekendyDto.caTotal,
+              annee: createWeekendyDto.annee
+            }; 
+            await this.zoneservice.createzoneca(createDatazoneca);
+    
+            const createDatazonecamois ={
+              zoneId: bureau.zoneId,
+              cazone:createWeekendyDto.caTotal,
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee
+            }; 
+            await this.zoneservice.createzonecamois(createDatazonecamois);
+            
+            const createDataprime ={
+              zoneId: bureau.zoneId,
+              cazone:createWeekendyDto.caTotal,
+              mois:createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              primesz: createWeekendyDto.caTotal*tauxzone.taux_zone/100,
+            }; 
+    
+            await this.zoneservice.createprimesz(createDataprime);
+    
+    
           }
-          else{
-  
-            const createDataprimecs ={
+          // produits vendus
+          for(let i=0; i < createWeekendyDto.items.length; i++){
+            const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
+            const productPrice = await this.produitService.findOne(createWeekendyDto.items[i].productId);
+            const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createWeekendyDto.items[i].productId,  annee: createWeekendyDto.annee}).exec();
+    
+            if(produitvendupays == null){
+              const createdproduitvenduDto = {
+                paysId: bureau.countryId,
+                productId: createWeekendyDto.items[i].productId,
+                quantity: createWeekendyDto.items[i].quantity,
+                annee: createWeekendyDto.annee,
+                chiffreaffaire: createWeekendyDto.items[i].quantity*productPrice.price
+              };
+    
+              await this.produitvendupaysModel.create(createdproduitvenduDto);
+    
+            }else{
+              const updatedproduitvenduDto = {
+                paysId: bureau.countryId,
+                productId: createWeekendyDto.items[i].productId,
+                quantity: produitvendupays.quantity + createWeekendyDto.items[i].quantity,
+                annee: createWeekendyDto.annee,
+                chiffreaffaire: produitvendupays.chiffreaffaire + createWeekendyDto.items[i].quantity*productPrice.price 
+              };
+              await this.produitvendupaysModel.findByIdAndUpdate({_id: produitvendupays._id}, updatedproduitvenduDto, {new: true}).lean();
+            }
+    
+            if(product !=null){
+              const updatedStockagence = {
+              quantity: product.quantitytotalenmagasin - (createWeekendyDto.items[i].quantity)
+              };
+              const updatestockagence: UpdateStockagenceDto = {
+                agenceId:createWeekendyDto.bureauId,
+                productId: createWeekendyDto.items[i].productId,
+                quantity: product.quantity - createWeekendyDto.items[i].quantity,
+                quantitytotalenmagasin: product.quantitytotalenmagasin
+            };
+            await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
+          }
+          }
+          // reccupere les managers du bureau
+    
+          const createSalaireDto = {
+            bureauId:createWeekendyDto.bureauId,
+            salaire_agent: createWeekendyDto.caTotal*taux[0].taux_salaire_agent/100,
+            salaire_formateur: createWeekendyDto.caTotal*taux[0].taux_formateur/100,
+            salaire_total_manager: (createWeekendyDto.caTotal*taux[0].taux_salaire_mgr/100)*(managersbureau.length),
+            motant_total: createWeekendyDto.caTotal*taux[0].taux_salaire_agent/100 + createWeekendyDto.caTotal*taux[0].taux_formateur/100 + (createWeekendyDto.caTotal*taux[0].taux_salaire_mgr/100)*(managersbureau.length),
+            mois: createWeekendyDto.mois,
+            annee: createWeekendyDto.annee,
+            chiffreDaf: createWeekendyDto.caTotal,
+            montant_bank:createWeekendyDto.TotaltoBank,
+            chargeBureau:createWeekendyDto.chargebureauTotal,
+            date_paiment: createWeekendyDto.createdAt,
+          };
+    
+          this.salaireService.create(createSalaireDto);
+    
+          if(getPaysCaMois !=null){
+            const upadateinfopaysCaMois = {
+              countryId: paysinfobyagence.countryId,
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal + getPaysCaMois.caTotal
+            };
+            await this.payscaservice.updateCaPaysMois(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
+          }else{
+    
+            const infoCapays = {
+              countryId: paysinfobyagence.countryId,
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal
+            };
+    
+            await this.payscaservice.create(infoCapays)
+          }
+    
+          if(getPaysCaAnnee !=null){
+            const upadateinfopaysCaYear = {
+              countryId: paysinfobyagence.countryId,
+              year: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal + getPaysCaAnnee.caTotal
+            };
+            await this.payscaservice.updateyear(getPaysCaAnnee._id.toString('hex'), upadateinfopaysCaYear);
+          }else{
+    
+            const infoCapaysYear = {
+              countryId: paysinfobyagence.countryId,
+              year: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal
+            };
+    
+            await this.payscaservice.createCaPaysYear(infoCapaysYear)
+          }
+          return weekendy;
+
+        }
+        // sinon la section et la zone existe pour le bureau
+        else{
+          // traitement des information de la section 
+          if(sectionca !=null && sectioncamois !=null){
+            const updateDatasectionca ={
+              sectionId: bureau.sectionId,
+              casection: (createWeekendyDto.caTotal + sectionca.casection),
+              annee: createWeekendyDto.annee
+            }; 
+    
+            const updateDatasectioncamois ={
+              sectionId: bureau.sectionId,
+              casection:(createWeekendyDto.caTotal + sectioncamois.casection),
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee
+            };
+            await this.sectionservice.updatesectionca(sectionca._id.toString('hex'), updateDatasectionca);
+            await this.sectionservice.updateprimechefsection(sectioncamois._id.toString('hex'), updateDatasectioncamois);
+    
+    
+            if(primecs !=null){
+              const updateDataprimecs ={
+                sectionId: bureau.sectionId,
+                casection:(createWeekendyDto.caTotal + primecs.casection),
+                mois: createWeekendyDto.mois,
+                annee: createWeekendyDto.annee,
+                Chefsectionprime: (createWeekendyDto.caTotal*tauxsection.taux_section/100 + primecs.Chefsectionprime),
+              }; 
+      
+              await this.sectionservice.updateprimechefsection(primecs._id.toString('hex'),updateDataprimecs);
+    
+            }
+            else{
+    
+              const createDataprimecs ={
+                sectionId: bureau.sectionId,
+                casection: createWeekendyDto.caTotal,
+                Chefsectionprime:createWeekendyDto.caTotal*tauxsection.taux_section/100,
+                mois:createWeekendyDto.mois,
+                annee: createWeekendyDto.annee,
+              }; 
+              await this.sectionservice.createprimechefsection(createDataprimecs);
+    
+            }
+    
+          }else{
+            const createDatasectionca ={
+              sectionId: bureau.sectionId,
+              casection:createWeekendyDto.caTotal,
+              annee: createWeekendyDto.annee
+            }; 
+            await this.sectionservice.createcasection(createDatasectionca);
+    
+            const createDatasectioncamois ={
+              sectionId: bureau.sectionId,
+              casection:createWeekendyDto.caTotal,
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee
+            }; 
+            await this.sectionservice.createcasection(createDatasectioncamois);
+            
+            const createDataprime ={
               sectionId: bureau.sectionId,
               casection: createWeekendyDto.caTotal,
               Chefsectionprime:createWeekendyDto.caTotal*tauxsection.taux_section/100,
               mois:createWeekendyDto.mois,
               annee: createWeekendyDto.annee,
             }; 
-            await this.sectionservice.createprimechefsection(createDataprimecs);
-  
+    
+            await this.sectionservice.createprimechefsection(createDataprime);
+    
           }
-  
-        }else{
-          const createDatasectionca ={
-            sectionId: bureau.sectionId,
-            casection:createWeekendyDto.caTotal,
-            annee: createWeekendyDto.annee
-          }; 
-          await this.sectionservice.createcasection(createDatasectionca);
-  
-          const createDatasectioncamois ={
-            sectionId: bureau.sectionId,
-            casection:createWeekendyDto.caTotal,
+          // fin des traitements liés à la section
+
+          // traitement de la zone du bureau
+          if(zoneca !=null && zonecamois !=null){
+            const updateDatazoneca ={
+              zoneId: bureau.zoneId,
+              cazone:(createWeekendyDto.caTotal + zoneca.cazone),
+              annee: createWeekendyDto.annee
+            }; 
+
+            const updateDatazonecamois ={
+              zoneId: bureau.zoneId,
+              cazone:(createWeekendyDto.caTotal + zonecamois.cazone),
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee
+            };
+            await this.zoneservice.updatezoneca(zoneca._id.toString('hex'),updateDatazoneca);
+            await this.zoneservice.updatezonecamois(zonecamois._id.toString('hex'), updateDatazonecamois);
+
+            if(primesz !=null){
+              const updateDataprimesz ={
+                zoneId: bureau.zoneId,
+                cazone:(createWeekendyDto.caTotal + primesz.cazone),
+                mois: createWeekendyDto.mois,
+                annee: createWeekendyDto.annee,
+                primesz: (createWeekendyDto.caTotal*tauxzone.taux_zone/100 + primesz.primesz),
+              }; 
+      
+              await this.zoneservice.updateprimesz(primesz._id.toString('hex'),updateDataprimesz);
+
+            }else{
+
+              const createDataprime ={
+                zoneId: bureau.zoneId,
+                cazone:createWeekendyDto.caTotal,
+                mois:createWeekendyDto.mois,
+                annee: createWeekendyDto.annee,
+                primesz: createWeekendyDto.caTotal*tauxzone.taux_zone/100,
+              }; 
+              await this.zoneservice.createprimesz(createDataprime);
+
+            }
+
+          }else{
+            const createDatazoneca ={
+              zoneId: bureau.zoneId,
+              cazone:createWeekendyDto.caTotal,
+              annee: createWeekendyDto.annee
+            }; 
+            await this.zoneservice.createzoneca(createDatazoneca);
+
+            const createDatazonecamois ={
+              zoneId: bureau.zoneId,
+              cazone:createWeekendyDto.caTotal,
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee
+            }; 
+            await this.zoneservice.createzonecamois(createDatazonecamois);
+            
+            const createDataprime ={
+              zoneId: bureau.zoneId,
+              cazone:createWeekendyDto.caTotal,
+              mois:createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              primesz: createWeekendyDto.caTotal*tauxzone.taux_zone/100,
+            }; 
+
+            await this.zoneservice.createprimesz(createDataprime);
+
+
+          }
+              
+          // produits vendus
+          for(let i=0; i < createWeekendyDto.items.length; i++){
+            const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
+            const productPrice = await this.produitService.findOne(createWeekendyDto.items[i].productId);
+            const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createWeekendyDto.items[i].productId,  annee: createWeekendyDto.annee}).exec();
+
+            if(produitvendupays == null){
+              const createdproduitvenduDto = {
+                paysId: bureau.countryId,
+                productId: createWeekendyDto.items[i].productId,
+                quantity: createWeekendyDto.items[i].quantity,
+                annee: createWeekendyDto.annee,
+                chiffreaffaire: createWeekendyDto.items[i].quantity*productPrice.price
+              };
+
+              await this.produitvendupaysModel.create(createdproduitvenduDto);
+
+            }else{
+              const updatedproduitvenduDto = {
+                paysId: bureau.countryId,
+                productId: createWeekendyDto.items[i].productId,
+                quantity: produitvendupays.quantity + createWeekendyDto.items[i].quantity,
+                annee: createWeekendyDto.annee,
+                chiffreaffaire: produitvendupays.chiffreaffaire + createWeekendyDto.items[i].quantity*productPrice.price 
+              };
+              await this.produitvendupaysModel.findByIdAndUpdate({_id: produitvendupays._id}, updatedproduitvenduDto, {new: true}).lean();
+            }
+
+            if(product !=null){
+              const updatedStockagence = {
+              quantity: product.quantitytotalenmagasin - (createWeekendyDto.items[i].quantity)
+              };
+              const updatestockagence: UpdateStockagenceDto = {
+                agenceId:createWeekendyDto.bureauId,
+                productId: createWeekendyDto.items[i].productId,
+                quantity: product.quantity - createWeekendyDto.items[i].quantity,
+                quantitytotalenmagasin: product.quantitytotalenmagasin
+              };
+              await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
+
+            }
+          }
+          // reccupere les managers du bureau
+
+          const createSalaireDto = {
+            bureauId:createWeekendyDto.bureauId,
+            salaire_agent: createWeekendyDto.caTotal*taux[0].taux_salaire_agent/100,
+            salaire_formateur: createWeekendyDto.caTotal*taux[0].taux_formateur/100,
+            salaire_total_manager: (createWeekendyDto.caTotal*taux[0].taux_salaire_mgr/100)*(managersbureau.length),
+            motant_total: createWeekendyDto.caTotal*taux[0].taux_salaire_agent/100 + createWeekendyDto.caTotal*taux[0].taux_formateur/100 + (createWeekendyDto.caTotal*taux[0].taux_salaire_mgr/100)*(managersbureau.length),
             mois: createWeekendyDto.mois,
-            annee: createWeekendyDto.annee
-          }; 
-          await this.sectionservice.createcasection(createDatasectioncamois);
-          
-          const createDataprime ={
-            sectionId: bureau.sectionId,
-            casection: createWeekendyDto.caTotal,
-            Chefsectionprime:createWeekendyDto.caTotal*tauxsection.taux_section/100,
-            mois:createWeekendyDto.mois,
             annee: createWeekendyDto.annee,
-          }; 
-  
-          await this.sectionservice.createprimechefsection(createDataprime);
-  
-        }
-
-      }
-
-      // zone prime and ca
-      if(zoneca !=null && zonecamois !=null){
-        const updateDatazoneca ={
-          zoneId: bureau.zoneId,
-          cazone:(createWeekendyDto.caTotal + zoneca.cazone),
-          annee: createWeekendyDto.annee
-        }; 
-
-        const updateDatazonecamois ={
-          zoneId: bureau.zoneId,
-          cazone:(createWeekendyDto.caTotal + zonecamois.cazone),
-          mois: createWeekendyDto.mois,
-          annee: createWeekendyDto.annee
-        };
-        await this.zoneservice.updatezoneca(zoneca._id.toString('hex'),updateDatazoneca);
-        await this.zoneservice.updatezonecamois(zonecamois._id.toString('hex'), updateDatazonecamois);
-
-        const primesz = await this.zoneservice.findprimesz(bureau.zoneId, createWeekendyDto.mois, createWeekendyDto.annee);
-
-        if(primesz !=null){
-          const updateDataprimesz ={
-            zoneId: bureau.zoneId,
-            cazone:(createWeekendyDto.caTotal + primesz.cazone),
-            mois: createWeekendyDto.mois,
-            annee: createWeekendyDto.annee,
-            primesz: (createWeekendyDto.caTotal*tauxzone.taux_zone/100 + primesz.primesz),
-          }; 
-  
-          await this.zoneservice.updateprimesz(primesz._id.toString('hex'),updateDataprimesz);
-
-        }else{
-
-          const createDataprime ={
-            zoneId: bureau.zoneId,
-            cazone:createWeekendyDto.caTotal,
-            mois:createWeekendyDto.mois,
-            annee: createWeekendyDto.annee,
-            primesz: createWeekendyDto.caTotal*tauxzone.taux_zone/100,
-          }; 
-          await this.zoneservice.createprimesz(createDataprime);
-
-        }
-
-      }else{
-        const createDatazoneca ={
-          zoneId: bureau.zoneId,
-          cazone:createWeekendyDto.caTotal,
-          annee: createWeekendyDto.annee
-        }; 
-        await this.zoneservice.createzoneca(createDatazoneca);
-
-        const createDatazonecamois ={
-          zoneId: bureau.zoneId,
-          cazone:createWeekendyDto.caTotal,
-          mois: createWeekendyDto.mois,
-          annee: createWeekendyDto.annee
-        }; 
-        await this.zoneservice.createzonecamois(createDatazonecamois);
-        
-        const createDataprime ={
-          zoneId: bureau.zoneId,
-          cazone:createWeekendyDto.caTotal,
-          mois:createWeekendyDto.mois,
-          annee: createWeekendyDto.annee,
-          primesz: createWeekendyDto.caTotal*tauxzone.taux_zone/100,
-        }; 
-
-        await this.zoneservice.createprimesz(createDataprime);
-
-
-      }
-      for(let i=0; i < createWeekendyDto.items.length; i++){
-        const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
-        const productPrice = await this.produitService.findOne(createWeekendyDto.items[i].productId);
-        const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createWeekendyDto.items[i].productId,  annee: createWeekendyDto.annee}).exec();
-
-        if(produitvendupays == null){
-          const createdproduitvenduDto = {
-            paysId: bureau.countryId,
-            productId: createWeekendyDto.items[i].productId,
-            quantity: createWeekendyDto.items[i].quantity,
-            annee: createWeekendyDto.annee,
-            chiffreaffaire: createWeekendyDto.items[i].quantity*productPrice.price
+            chiffreDaf: createWeekendyDto.caTotal,
+            montant_bank:createWeekendyDto.TotaltoBank,
+            chargeBureau:createWeekendyDto.chargebureauTotal,
+            date_paiment: createWeekendyDto.createdAt,
           };
 
-          await this.produitvendupaysModel.create(createdproduitvenduDto);
+          this.salaireService.create(createSalaireDto);
 
-        }else{
-          const updatedproduitvenduDto = {
-            paysId: bureau.countryId,
-            productId: createWeekendyDto.items[i].productId,
-            quantity: produitvendupays.quantity + createWeekendyDto.items[i].quantity,
-            annee: createWeekendyDto.annee,
-            chiffreaffaire: produitvendupays.chiffreaffaire + createWeekendyDto.items[i].quantity*productPrice.price 
-          };
-          await this.produitvendupaysModel.findByIdAndUpdate({_id: produitvendupays._id}, updatedproduitvenduDto, {new: true}).lean();
+          const paysinfobyagence = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
+
+          const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
+          const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, createWeekendyDto.annee)
+          if(getPaysCaMois !=null){
+            const upadateinfopaysCaMois = {
+              countryId: paysinfobyagence.countryId,
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal + getPaysCaMois.caTotal
+            };
+            await this.payscaservice.updateCaPaysMois(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
+          }else{
+
+            const infoCapays = {
+              countryId: paysinfobyagence.countryId,
+              mois: createWeekendyDto.mois,
+              annee: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal
+            };
+
+            await this.payscaservice.create(infoCapays)
+          }
+
+          if(getPaysCaAnnee !=null){
+            const upadateinfopaysCaYear = {
+              countryId: paysinfobyagence.countryId,
+              year: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal + getPaysCaAnnee.caTotal
+            };
+            await this.payscaservice.updateyear(getPaysCaAnnee._id.toString('hex'), upadateinfopaysCaYear);
+          }else{
+
+            const infoCapaysYear = {
+              countryId: paysinfobyagence.countryId,
+              year: createWeekendyDto.annee,
+              caTotal: createWeekendyDto.caTotal
+            };
+
+            await this.payscaservice.createCaPaysYear(infoCapaysYear)
+          }
+
         }
-
-        if(product !=null){
-          const updatedStockagence = {
-           quantity: product.quantitytotalenmagasin - (createWeekendyDto.items[i].quantity)
-          };
-          const updatestockagence: UpdateStockagenceDto = {
-            agenceId:createWeekendyDto.bureauId,
-            productId: createWeekendyDto.items[i].productId,
-            quantity: product.quantity - createWeekendyDto.items[i].quantity,
-            quantitytotalenmagasin: product.quantitytotalenmagasin
-         };
-         await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
-      }
-      }
-      const managersbureau = await this.affectationservice.findManager_bureau(createWeekendyDto.bureauId);
-
-      const taux = await this.tauxservice.findAll();
-      const createSalaireDto = {
-        bureauId:createWeekendyDto.bureauId,
-        salaire_agent: createWeekendyDto.caTotal*taux[0].taux_salaire_agent/100,
-        salaire_formateur: createWeekendyDto.caTotal*taux[0].taux_formateur/100,
-        salaire_total_manager: (createWeekendyDto.caTotal*taux[0].taux_salaire_mgr/100)*(managersbureau.length),
-        motant_total: createWeekendyDto.caTotal*taux[0].taux_salaire_agent/100 + createWeekendyDto.caTotal*taux[0].taux_formateur/100 + (createWeekendyDto.caTotal*taux[0].taux_salaire_mgr/100)*(managersbureau.length),
-        mois: createWeekendyDto.mois,
-        annee: createWeekendyDto.annee,
-        chiffreDaf: createWeekendyDto.caTotal,
-        montant_bank:createWeekendyDto.TotaltoBank,
-        chargeBureau:createWeekendyDto.chargebureauTotal,
-        date_paiment: createWeekendyDto.createdAt,
-      };
-
-      this.salaireService.create(createSalaireDto);
-
-      const paysinfobyagence = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
-
-      const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
-      const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, createWeekendyDto.annee)
-      if(getPaysCaMois !=null){
-        const upadateinfopaysCaMois = {
-          countryId: paysinfobyagence.countryId,
-          mois: createWeekendyDto.mois,
-          annee: createWeekendyDto.annee,
-          caTotal: createWeekendyDto.caTotal + getPaysCaMois.caTotal
-        };
-        await this.payscaservice.updateCaPaysMois(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
-      }else{
-
-        const infoCapays = {
-          countryId: paysinfobyagence.countryId,
-          mois: createWeekendyDto.mois,
-          annee: createWeekendyDto.annee,
-          caTotal: createWeekendyDto.caTotal
-        };
-
-        await this.payscaservice.create(infoCapays)
-      }
-
-      if(getPaysCaAnnee !=null){
-        const upadateinfopaysCaYear = {
-          countryId: paysinfobyagence.countryId,
-          year: createWeekendyDto.annee,
-          caTotal: createWeekendyDto.caTotal + getPaysCaAnnee.caTotal
-        };
-        await this.payscaservice.updateyear(getPaysCaAnnee._id.toString('hex'), upadateinfopaysCaYear);
-      }else{
-
-        const infoCapaysYear = {
-          countryId: paysinfobyagence.countryId,
-          year: createWeekendyDto.annee,
-          caTotal: createWeekendyDto.caTotal
-        };
-
-        await this.payscaservice.createCaPaysYear(infoCapaysYear)
+        return weekendy;
       }
     }
-    // console.log(weekendy);
-    return weekendy;
-
-      }
   }
 // modification directe
   async weekendiestockagence(){
@@ -684,6 +980,15 @@ export class WeekendyService {
 
   async weekendybackup(){
     return this.weekendyModel.find().exec();
+  }
+
+  async suppressiondirecte(id: string) {
+
+    const weekedy = await this.weekendyModel.findOne({bureauId: id}).exec();           
+    if (weekedy !=null) {
+      await this.weekendyModel.findByIdAndRemove({_id: weekedy._id});
+    }
+    return 'supprimé weekedy';
   }
 
   
