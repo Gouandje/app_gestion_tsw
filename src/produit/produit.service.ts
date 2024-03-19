@@ -28,8 +28,7 @@ export class ProduitService {
   }
 
   async findAll(): Promise<Products[]> {
-    const products = await this.productModel.find().sort({updated: 'desc'}).exec();
-    console.log('produits',products);
+    const products = await this.productModel.find().sort({updated: 'asc'}).exec();
     return products;
   }
 
