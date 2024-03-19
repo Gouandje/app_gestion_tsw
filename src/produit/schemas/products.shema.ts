@@ -28,5 +28,12 @@ export class Products {
         description: 'The status of the product',
     })
     disponibilite: string;
+
+    @Prop({required: false})
+    @ApiProperty({
+        example: '31-01-2023',
+        description: 'The update date of the product',
+    })
+    updated: string;
 }
 export const ProductsSchema = SchemaFactory.createForClass(Products);

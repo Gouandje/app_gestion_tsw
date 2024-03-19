@@ -28,8 +28,8 @@ export class ProduitService {
   }
 
   async findAll(): Promise<Products[]> {
-    const products = await this.productModel.find().exec();
-    console.log(products);
+    const products = await this.productModel.find().sort({updated: 'desc'}).exec();
+    console.log('produits',products);
     return products;
   }
 
@@ -44,8 +44,14 @@ export class ProduitService {
 
   async update(productId: string, updateProduitDto: UpdateProduitDto) {
     const product = await this.findOne(productId);
+    const updateData = {
+      name: updateProduitDto.name,
+      price: updateProduitDto.price,
+      disponibilite: updateProduitDto.disponibilite,
+      updated: Date.now()
+    }
 
-    const updatedProduct = this.productModel.findOneAndUpdate({_id: productId }, updateProduitDto, {
+    const updatedProduct = this.productModel.findOneAndUpdate({_id: productId }, {$set: updateData}, {
       new: true,
     }).exec();
 

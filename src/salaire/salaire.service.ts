@@ -46,7 +46,6 @@ export class SalaireService {
   }
 
   async findAll(bureauId: string) {
-    console.log(bureauId);
     const salaires = await this.salaireModel.find({bureauId: bureauId}).populate('bureauId').populate('mois').populate('annee').exec();
     return salaires;
   }

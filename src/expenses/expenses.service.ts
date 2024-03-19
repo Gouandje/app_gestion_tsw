@@ -86,7 +86,7 @@ export class ExpensesService {
 
     // console.log('date',expenses[i].toString().split('T')[0]);
     // }
-    console.log('data',expenses)
+    // console.log('data',expenses)
     return expenses;
   }
 
