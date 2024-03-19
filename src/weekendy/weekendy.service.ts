@@ -83,30 +83,18 @@ export class WeekendyService {
       if(weekendy){
         
         const bureau = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
-        const zoneca = await this.zoneservice.findzonecabyZone(bureau.zoneId, createWeekendyDto.annee);
-        const zonecamois = await this.zoneservice.findzonecamoisbyZone(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
-
-        const tauxzone = await this.tauxzoneservice.findByzone(bureau.zoneId);
-        const paysinfobyagence = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
-        const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
-        const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, createWeekendyDto.annee)
        
-          // recuperation des managers du bureau ou hcef
+        // bureau n'ayant pas ni de zone ni de section
+        if(bureau.sectionId == "" && bureau.zoneId == "" ){
           const managersbureau = await this.affectationservice.findManager_bureau(createWeekendyDto.bureauId);
-          const primesz = await this.zoneservice.findprimesz(bureau.zoneId, createWeekendyDto.mois, createWeekendyDto.annee);
-          
-          const sectionca = await this.sectionservice.findsectioncabySection(bureau.sectionId, createWeekendyDto.annee);
-          const sectioncamois = await this.sectionservice.findsectioncamoisbySection(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
-          const tauxsection = await this.tauxzoneservice.findBysection(bureau.sectionId);
-          const primecs = await this.sectionservice.findprimechefsection(bureau.sectionId, createWeekendyDto.mois, createWeekendyDto.annee);
-
-        // bureau n'ayant pas de zone ni de section
-        if(bureau.sectionId =="" && bureau.zoneId ==""){
+          const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(bureau.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
+          const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(bureau.countryId, createWeekendyDto.annee)
+         
           for(let i=0; i < createWeekendyDto.items.length; i++){
             const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
             const productPrice = await this.produitService.findOne(createWeekendyDto.items[i].productId);
             const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createWeekendyDto.items[i].productId,  annee: createWeekendyDto.annee}).exec();
-    
+          
             if(produitvendupays == null){
               const createdproduitvenduDto = {
                 paysId: bureau.countryId,
@@ -181,7 +169,7 @@ export class WeekendyService {
         
           if(getPaysCaMois !=null){
             const upadateinfopaysCaMois = {
-              countryId: paysinfobyagence.countryId,
+              countryId: bureau.countryId,
               mois: createWeekendyDto.mois,
               annee: createWeekendyDto.annee,
               caTotal: createWeekendyDto.caTotal + getPaysCaMois.caTotal
@@ -190,7 +178,7 @@ export class WeekendyService {
           }else{
     
             const infoCapays = {
-              countryId: paysinfobyagence.countryId,
+              countryId: bureau.countryId,
               mois: createWeekendyDto.mois,
               annee: createWeekendyDto.annee,
               caTotal: createWeekendyDto.caTotal
@@ -201,7 +189,7 @@ export class WeekendyService {
     
           if(getPaysCaAnnee !=null){
             const upadateinfopaysCaYear = {
-              countryId: paysinfobyagence.countryId,
+              countryId: bureau.countryId,
               year: createWeekendyDto.annee,
               caTotal: createWeekendyDto.caTotal + getPaysCaAnnee.caTotal
             };
@@ -209,7 +197,7 @@ export class WeekendyService {
           }else{
     
             const infoCapaysYear = {
-              countryId: paysinfobyagence.countryId,
+              countryId: bureau.countryId,
               year: createWeekendyDto.annee,
               caTotal: createWeekendyDto.caTotal
             };
@@ -219,7 +207,27 @@ export class WeekendyService {
 
           return weekendy;
 
-        }else if(bureau.sectionId =="" && bureau.zoneId !=""){
+        }
+        // bureau ayant une zone ma pas de section
+        else if(bureau.sectionId == "" && bureau.zoneId !=""){
+
+          const zoneca = await this.zoneservice.findzonecabyZone(bureau.zoneId, createWeekendyDto.annee);
+          const zonecamois = await this.zoneservice.findzonecamoisbyZone(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
+  
+          const tauxzone = await this.tauxzoneservice.findByzone(bureau.zoneId);
+          const paysinfobyagence = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
+          const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
+          const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, createWeekendyDto.annee)
+         
+            // recuperation des managers du bureau ou hcef
+            const managersbureau = await this.affectationservice.findManager_bureau(createWeekendyDto.bureauId);
+            const primesz = await this.zoneservice.findprimesz(bureau.zoneId, createWeekendyDto.mois, createWeekendyDto.annee);
+            
+            // const sectionca = await this.sectionservice.findsectioncabySection(bureau.sectionId, createWeekendyDto.annee);
+            // const sectioncamois = await this.sectionservice.findsectioncamoisbySection(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
+            // const tauxsection = await this.tauxzoneservice.findBysection(bureau.sectionId);
+            // const primecs = await this.sectionservice.findprimechefsection(bureau.sectionId, createWeekendyDto.mois, createWeekendyDto.annee);
+  
 
           if(zoneca !=null && zonecamois !=null){
             const updateDatazoneca ={
@@ -391,6 +399,23 @@ export class WeekendyService {
         }
         // sinon la section et la zone existe pour le bureau
         else{
+          const zoneca = await this.zoneservice.findzonecabyZone(bureau.zoneId, createWeekendyDto.annee);
+          const zonecamois = await this.zoneservice.findzonecamoisbyZone(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
+  
+          const tauxzone = await this.tauxzoneservice.findByzone(bureau.zoneId);
+          const paysinfobyagence = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
+          const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
+          const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, createWeekendyDto.annee)
+         
+            // recuperation des managers du bureau ou hcef
+            const managersbureau = await this.affectationservice.findManager_bureau(createWeekendyDto.bureauId);
+            const primesz = await this.zoneservice.findprimesz(bureau.zoneId, createWeekendyDto.mois, createWeekendyDto.annee);
+            
+            const sectionca = await this.sectionservice.findsectioncabySection(bureau.sectionId, createWeekendyDto.annee);
+            const sectioncamois = await this.sectionservice.findsectioncamoisbySection(bureau.zoneId, createWeekendyDto.annee, createWeekendyDto.mois);
+            const tauxsection = await this.tauxzoneservice.findBysection(bureau.sectionId);
+            const primecs = await this.sectionservice.findprimechefsection(bureau.sectionId, createWeekendyDto.mois, createWeekendyDto.annee);
+  
           // traitement des information de la section 
           if(sectionca !=null && sectioncamois !=null){
             const updateDatasectionca ={
@@ -593,10 +618,10 @@ export class WeekendyService {
 
           this.salaireService.create(createSalaireDto);
 
-          const paysinfobyagence = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
+          // const paysinfobyagence = await this.agenceservice.findbureau(createWeekendyDto.bureauId);
 
-          const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
-          const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, createWeekendyDto.annee)
+          // const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(paysinfobyagence.countryId, createWeekendyDto.mois,createWeekendyDto.annee);
+          // const getPaysCaAnnee = await this.payscaservice.findOnePaysCaYearExist(paysinfobyagence.countryId, createWeekendyDto.annee)
           if(getPaysCaMois !=null){
             const upadateinfopaysCaMois = {
               countryId: paysinfobyagence.countryId,
