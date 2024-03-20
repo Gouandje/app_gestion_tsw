@@ -55,7 +55,7 @@ export class WeekendyService {
       const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
       console.log('valeur', Number(product.quantity) -Number( createWeekendyDto.items[i].quantity));
       const value = Number(product.quantity) -Number( createWeekendyDto.items[i].quantity);
-      if(createWeekendyDto.items[i].quantity <= product.quantity){
+      if(value >=0){
         weekendproduct.push(createWeekendyDto.items[i]);
       }else{
         const produitindispo = await this.produitService.findOne(createWeekendyDto.items[i].productId);
