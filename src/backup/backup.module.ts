@@ -109,12 +109,12 @@ import { MailerModule } from '@nestjs-modules/mailer';
   imports:[
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.gmail.com',
+        host: 'mail.aidteck.com',
         port: 465,
         secure: true, // true for 465, false for other ports
         auth: {
-          user: 'gouandje@gmail.com', // adresse e-mail Gmail
-          pass: 'Gbbs@1990', // mot de passe Gmail
+          user: 'gouandje.pdg@aidteck.com', // adresse e-mail Gmail
+          pass: 'k$Q2crBkDC0Z', // mot de passe Gmail
         },
       },
     }),
