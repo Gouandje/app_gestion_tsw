@@ -46,6 +46,11 @@ export class WeekendyController {
     return this.weekendyService.findAll(bureauId);
   }
 
+  @Get('Weekendies')
+  weekendies() {
+    return this.weekendyService.weekendybackup();
+  }
+
   
   // @Get('allWeekendiesForstock')
   // findWeekendiesForstock() {

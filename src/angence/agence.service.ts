@@ -59,7 +59,7 @@ export class AgenceService {
   async findAllagenceByCountry(id: string){
     const agences = await this.agenceModel.find({countryId: id})
                               .populate('countryId')
-                              .populate('zoneId')
+                              // .populate('zoneId')
                               // .populate('sectionId')
                               .exec();
     return agences;
@@ -73,7 +73,7 @@ export class AgenceService {
   async findAllagenceByZone(id: string): Promise<Agence[]> {
     const agences = await this.agenceModel.find({zoneId: id})
                               .populate('countryId')
-                              .populate('zoneId')
+                              // .populate('zoneId')
                               // .populate('sectionId')
                               .exec();
     return agences;
