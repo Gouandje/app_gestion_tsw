@@ -12,4 +12,11 @@ export class BackupController {
     return await this.backupService.processDataAndSendEmail();
     
   }
+
+  @Post('sendMail')
+  async sendEmail(@Body() body: any) {
+    const { destination, subject, message } = body;
+    await this.backupService.sendEmail(destination, subject, message);
+    return 'E-mail envoyé avec succès';
+  }
 }

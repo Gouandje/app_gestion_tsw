@@ -103,9 +103,21 @@ import { Primesz, PrimeszSchema } from 'src/zone/schemas/primesz.schema';
 import { Zone, ZoneSchema } from 'src/zone/schemas/zone.schema';
 import { Zoneca, ZonecaSchema } from 'src/zone/schemas/zoneca.schema';
 import { Zonecamois, ZonecamoisSchema } from 'src/zone/schemas/zonecamois.schema';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports:[
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: 'gouandje@gmail.com', // adresse e-mail Gmail
+          pass: 'Gbbs@1990', // mot de passe Gmail
+        },
+      },
+    }),
     UserModule,
     ManagerModule, 
     ProduitModule, 
