@@ -92,7 +92,7 @@ return tauxsection;
   }
 
   async findBysection(id: string) {
-    const taux = await this.tauxsectionModel.findOne({zoneId:id})
+    const taux = await this.tauxsectionModel.findOne({sectionId:id})
                   .populate('zoneId').populate('sectionId').exec();
     if (!taux) {
       throw new NotFoundException('section non trouvée');
