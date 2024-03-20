@@ -53,7 +53,7 @@ export class WeekendyService {
     for(let i=0; i<createWeekendyDto.items.length; i++){
 
       const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
-      if(createWeekendyDto.items[i].quantity < product.quantity || createWeekendyDto.items[i].quantity == product.quantity){
+      if(product.quantity - createWeekendyDto.items[i].quantity >= 0){
         weekendproduct.push(createWeekendyDto.items[i]);
       }else{
         const produitindispo = await this.produitService.findOne(createWeekendyDto.items[i].productId);
