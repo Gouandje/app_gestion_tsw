@@ -20,6 +20,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     )
   ],
   controllers: [CongeController],
-  providers: [CongeService]
+  providers: [CongeService],
+  exports: [CongeService]
 })
 export class CongeModule {}

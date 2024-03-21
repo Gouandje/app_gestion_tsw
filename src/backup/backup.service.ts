@@ -79,6 +79,38 @@ import { Stock, StockDocument } from 'src/stock/schemas/stock.schema';
 import { Superviseurzone, SuperviseurzoneDocument } from 'src/superviseurzone/schemas/superviseurzone.schema';
 import { User, UserDocument } from 'src/user/schemas/user.schema';
 import { MailerService } from '@nestjs-modules/mailer';
+import { AffectationService } from 'src/affectation/affectation.service';
+import { AgenceService } from 'src/angence/agence.service';
+import { AssignmentService } from 'src/assignment/assignment.service';
+import { CaisseService } from 'src/caisse/caisse.service';
+import { ChefsectionService } from 'src/chefsection/chefsection.service';
+import { CongeService } from 'src/conge/conge.service';
+import { EmployerService } from 'src/employer/employer.service';
+import { EntrepotService } from 'src/entrepot/entrepot.service';
+import { ExpensesService } from 'src/expenses/expenses.service';
+import { ManagerService } from 'src/manager/manager.service';
+import { MoisanneeService } from 'src/moisannee/moisannee.service';
+import { MouvementstockService } from 'src/mouvementstock/mouvementstock.service';
+import { MvtStockService } from 'src/mvt-stock/mvt-stock.service';
+import { PatientService } from 'src/patient/patient.service';
+import { PaysService } from 'src/pays/pays.service';
+import { PayscaService } from 'src/paysca/paysca.service';
+import { ProduitService } from 'src/produit/produit.service';
+import { ProduitendommageService } from 'src/produitendommage/produitendommage.service';
+import { RoleService } from 'src/role/role.service';
+import { SalaireService } from 'src/salaire/salaire.service';
+import { SalaireManagerService } from 'src/salaire_manager/salaire_manager.service';
+import { SectionService } from 'src/section/section.service';
+import { StockPaysService } from 'src/stock-pays/stock-pays.service';
+import { StockService } from 'src/stock/stock.service';
+import { StockagenceService } from 'src/stockagence/stockagence.service';
+import { SuperviseurzoneService } from 'src/superviseurzone/superviseurzone.service';
+import { TauxService } from 'src/taux/taux.service';
+import { TauxzoneService } from 'src/tauxzone/tauxzone.service';
+import { UserService } from 'src/user/user.service';
+import { WeekendyService } from 'src/weekendy/weekendy.service';
+import { ZoneService } from 'src/zone/zone.service';
+import { MailService } from './mail.service';
 
 
 const exec = util.promisify(childProcess.exec);
@@ -88,188 +120,187 @@ const exec = util.promisify(childProcess.exec);
 export class BackupService {
   
   constructor(
-    @InjectModel(Affectation.name) private readonly affectationModel: Model<AffectationDocument>,
-    @InjectModel(Agence.name) private readonly agenceModel: Model<AgenceDocument>,
-    @InjectModel(Weekendy.name) private readonly weekendyModel: Model<WeekendyDocument>,
-    @InjectModel(Produitvendupays.name) private readonly produitvendupaysModel: Model<ProduitvendupaysDocument>,
-    @InjectModel(Produitvendubureau.name) private readonly produitvendubureauModel: Model<ProduitvendubureauDocument>,
-    @InjectModel(WeekendyDocteur.name) private readonly weekendyDocteurModel: Model<WeekendyDocteurDocument>,
-    @InjectModel(Manager.name) private readonly managerModel: Model<ManagerDocument>,
-    @InjectModel(Products.name) private readonly productModel: Model<ProductsDocument>,
-    @InjectModel(Zone.name) private readonly zoneModel: Model<ZoneDocument>,
-    @InjectModel(Zoneca.name) private readonly zonecaModel: Model<ZonecaDocument>,
-    @InjectModel(Zonecamois.name) private readonly zonecamoisModel: Model<ZonecamoisDocument>,
-    @InjectModel(Primesz.name) private readonly primeszModel: Model<PrimeszDocument>,
-    @InjectModel(Section.name) private readonly sectionModel: Model<SectionDocument>,
-    @InjectModel(Chefsectionprime.name) private readonly chefsectionprimeModel: Model<ChefsectionprimeDocument>,
-    @InjectModel(Sectionca.name) private readonly sectioncaModel: Model<SectioncaDocument>,
-    @InjectModel(Sectioncamois.name) private readonly sectioncamoisModel: Model<SectioncamoisDocument>,
-    @InjectModel(Tauxzone.name) private readonly tauxzoneModel: Model<TauxzoneDocument>,
-    @InjectModel(Tauxsection.name) private readonly tauxsectionModel: Model<TauxsectionDocument>,
-    @InjectModel(Taux.name) private readonly tauxModel: Model<TauxDocument>,
-    @InjectModel(Paysca.name) private readonly payscaModel: Model<PayscaDocument>,
-    @InjectModel(Payscayear.name) private readonly payscayearModel: Model<PayscayearDocument>,
-    @InjectModel(Stockagence.name) private readonly stockagenceModel: Model<StockagenceDocument>,
-    @InjectModel(MvtStockagencePays.name) private readonly mvtstockagencepaysModel: Model<MvtStockagencePaysDocument>,
-    @InjectModel(Salaire.name) private readonly salaireModel: Model<SalaireDocument>,
-    @InjectModel(SalaireManager.name) private readonly salairemanagerModel: Model<SalaireManagerDocument>,
-    @InjectModel(CotisationPaye.name) private readonly cotisationpayModel: Model<CotisationPayeDocument>,
-    @InjectModel(DetteBureau.name) private readonly dettebureauModel: Model<DetteBureauDocument>,
-    @InjectModel(Remboursement.name) private readonly remboursementModel: Model<RemboursementDocument>,
-    @InjectModel(Chefsection.name) private readonly chefsectionModel: Model<ChefsectionDocument>,
-    @InjectModel(Mission.name) private readonly missionModel: Model<MissionDocument>,
-    @InjectModel(Caisse.name) private readonly caisseModel: Model<CaisseDocument>,
-    @InjectModel(Conge.name) private readonly congeModel: Model<CongeDocument>,
-    @InjectModel(Employer.name) private readonly employerModel: Model<EmployerDocument>,
-    @InjectModel(Entrepot.name) private readonly entrepotModel: Model<EntrepotDocument>,
-    @InjectModel(StockAlerteEntrepot.name) private readonly stockalertentrepotModel: Model<StockAlerteEntrepotDocument>,
-    @InjectModel(EntrepotOperation.name) private readonly entrepotoperationModel: Model<EntrepotOperationDocument>,
-    @InjectModel(SortieProduitEntrepot.name) private readonly sortieproduitentrepotModel: Model<SortieProduitEntrepotDocument>,
-    @InjectModel(EntrepotProduitStock.name) private readonly entrepotproduitstockModel: Model<EntrepotProduitStockDocument>,
-    @InjectModel(Expense.name) private readonly expenseModel: Model<ExpenseDocument>,
-    @InjectModel(Category.name) private readonly categoryModel: Model<CategoryDocument>,
-    @InjectModel(Annee.name) private readonly anneeModel: Model<AnneeDocument>, 
-    @InjectModel(Mois.name) private readonly moisModel: Model<MoisDocument>,
-    @InjectModel(Mouvementstock.name) private readonly mvtstockModel: Model<MouvementstockDocument>,
-    @InjectModel(Consignation.name) private readonly consignationModel: Model<ConsignationDocument>,
-    @InjectModel(MvtStockPaysEntrepot.name) private readonly mvtstockpaysentrepotModel: Model<MvtStockPaysEntrepotDocument>,
-    @InjectModel(Patient.name) private readonly patientModel: Model<PatientDocument>, 
-    @InjectModel(Patientdoctor.name) private readonly patientdoctorModel: Model<PatientdoctorDocument>,
-    @InjectModel(Patientkine.name) private readonly patienkineModel: Model<PatientkineDocument>,
-    @InjectModel(Caissekine.name) private readonly caissekineModel: Model<CaissekineDocument>,
-    @InjectModel(Caissekinesolde.name) private readonly caissekinesoldeModel: Model<CaissemachinesoldeDocument>,
-    @InjectModel(Caissemachine.name) private readonly caissemachineModel: Model<CaissemachineDocument>,
-    @InjectModel(Caissemachinesolde.name) private readonly caissemachinesoldeModel: Model<CaissemachinesoldeDocument>,
-    @InjectModel(Caissecarnet.name) private readonly caissecarnetModel: Model<CaissecarnetDocument>,
-    @InjectModel(Caissecarnetsolde.name) private readonly caissecarnetsoldeModel: Model<CaissecarnetsoldeDocument>,
-    @InjectModel(Demande.name) private readonly demandeModel: Model<DemandeDocument>,
-    @InjectModel(Seance.name) private readonly seanceModel: Model<SeanceDocument>,
-    @InjectModel(Pays.name) private readonly paysModel: Model<PaysDocument>,
-    @InjectModel(Produitendommage.name) private readonly productendoModel: Model<ProduitendommageDocument>,
-    @InjectModel(VenteProduitendommage.name) private readonly venteproductendoModel: Model<VenteProduitendommageDocument>,
-    @InjectModel(Produitendommagestock.name) private readonly productendostockModel: Model<ProduitendommagestockDocument>,
-    @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
-    @InjectModel(Stock.name) private readonly stockModel: Model<StockDocument>,
-    @InjectModel(StockPays.name) private readonly stockpaysModel: Model<StockDocument>,
-    @InjectModel(Superviseurzone.name) private readonly superviseurzoneModel: Model<SuperviseurzoneDocument>,
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    // @InjectModel(Affectation.name) private readonly affectationModel: Model<AffectationDocument>,
+    // @InjectModel(Agence.name) private readonly agenceModel: Model<AgenceDocument>,
+    // @InjectModel(Weekendy.name) private readonly weekendyModel: Model<WeekendyDocument>,
+    // @InjectModel(Produitvendupays.name) private readonly produitvendupaysModel: Model<ProduitvendupaysDocument>,
+    // @InjectModel(Produitvendubureau.name) private readonly produitvendubureauModel: Model<ProduitvendubureauDocument>,
+    // @InjectModel(WeekendyDocteur.name) private readonly weekendyDocteurModel: Model<WeekendyDocteurDocument>,
+    // @InjectModel(Manager.name) private readonly managerModel: Model<ManagerDocument>,
+    // @InjectModel(Products.name) private readonly productModel: Model<ProductsDocument>,
+    // @InjectModel(Zone.name) private readonly zoneModel: Model<ZoneDocument>,
+    // @InjectModel(Zoneca.name) private readonly zonecaModel: Model<ZonecaDocument>,
+    // @InjectModel(Zonecamois.name) private readonly zonecamoisModel: Model<ZonecamoisDocument>,
+    // @InjectModel(Primesz.name) private readonly primeszModel: Model<PrimeszDocument>,
+    // @InjectModel(Section.name) private readonly sectionModel: Model<SectionDocument>,
+    // @InjectModel(Chefsectionprime.name) private readonly chefsectionprimeModel: Model<ChefsectionprimeDocument>,
+    // @InjectModel(Sectionca.name) private readonly sectioncaModel: Model<SectioncaDocument>,
+    // @InjectModel(Sectioncamois.name) private readonly sectioncamoisModel: Model<SectioncamoisDocument>,
+    // @InjectModel(Tauxzone.name) private readonly tauxzoneModel: Model<TauxzoneDocument>,
+    // @InjectModel(Tauxsection.name) private readonly tauxsectionModel: Model<TauxsectionDocument>,
+    // @InjectModel(Taux.name) private readonly tauxModel: Model<TauxDocument>,
+    // @InjectModel(Paysca.name) private readonly payscaModel: Model<PayscaDocument>,
+    // @InjectModel(Payscayear.name) private readonly payscayearModel: Model<PayscayearDocument>,
+    // @InjectModel(Stockagence.name) private readonly stockagenceModel: Model<StockagenceDocument>,
+    // @InjectModel(MvtStockagencePays.name) private readonly mvtstockagencepaysModel: Model<MvtStockagencePaysDocument>,
+    // @InjectModel(Salaire.name) private readonly salaireModel: Model<SalaireDocument>,
+    // @InjectModel(SalaireManager.name) private readonly salairemanagerModel: Model<SalaireManagerDocument>,
+    // @InjectModel(CotisationPaye.name) private readonly cotisationpayModel: Model<CotisationPayeDocument>,
+    // @InjectModel(DetteBureau.name) private readonly dettebureauModel: Model<DetteBureauDocument>,
+    // @InjectModel(Remboursement.name) private readonly remboursementModel: Model<RemboursementDocument>,
+    // @InjectModel(Chefsection.name) private readonly chefsectionModel: Model<ChefsectionDocument>,
+    // @InjectModel(Mission.name) private readonly missionModel: Model<MissionDocument>,
+    // @InjectModel(Caisse.name) private readonly caisseModel: Model<CaisseDocument>,
+    // @InjectModel(Conge.name) private readonly congeModel: Model<CongeDocument>,
+    // @InjectModel(Employer.name) private readonly employerModel: Model<EmployerDocument>,
+    // @InjectModel(Entrepot.name) private readonly entrepotModel: Model<EntrepotDocument>,
+    // @InjectModel(StockAlerteEntrepot.name) private readonly stockalertentrepotModel: Model<StockAlerteEntrepotDocument>,
+    // @InjectModel(EntrepotOperation.name) private readonly entrepotoperationModel: Model<EntrepotOperationDocument>,
+    // @InjectModel(SortieProduitEntrepot.name) private readonly sortieproduitentrepotModel: Model<SortieProduitEntrepotDocument>,
+    // @InjectModel(EntrepotProduitStock.name) private readonly entrepotproduitstockModel: Model<EntrepotProduitStockDocument>,
+    // @InjectModel(Expense.name) private readonly expenseModel: Model<ExpenseDocument>,
+    // @InjectModel(Category.name) private readonly categoryModel: Model<CategoryDocument>,
+    // @InjectModel(Annee.name) private readonly anneeModel: Model<AnneeDocument>, 
+    // @InjectModel(Mois.name) private readonly moisModel: Model<MoisDocument>,
+    // @InjectModel(Mouvementstock.name) private readonly mvtstockModel: Model<MouvementstockDocument>,
+    // @InjectModel(Consignation.name) private readonly consignationModel: Model<ConsignationDocument>,
+    // @InjectModel(MvtStockPaysEntrepot.name) private readonly mvtstockpaysentrepotModel: Model<MvtStockPaysEntrepotDocument>,
+    // @InjectModel(Patient.name) private readonly patientModel: Model<PatientDocument>, 
+    // @InjectModel(Patientdoctor.name) private readonly patientdoctorModel: Model<PatientdoctorDocument>,
+    // @InjectModel(Patientkine.name) private readonly patienkineModel: Model<PatientkineDocument>,
+    // @InjectModel(Caissekine.name) private readonly caissekineModel: Model<CaissekineDocument>,
+    // @InjectModel(Caissekinesolde.name) private readonly caissekinesoldeModel: Model<CaissemachinesoldeDocument>,
+    // @InjectModel(Caissemachine.name) private readonly caissemachineModel: Model<CaissemachineDocument>,
+    // @InjectModel(Caissemachinesolde.name) private readonly caissemachinesoldeModel: Model<CaissemachinesoldeDocument>,
+    // @InjectModel(Caissecarnet.name) private readonly caissecarnetModel: Model<CaissecarnetDocument>,
+    // @InjectModel(Caissecarnetsolde.name) private readonly caissecarnetsoldeModel: Model<CaissecarnetsoldeDocument>,
+    // @InjectModel(Demande.name) private readonly demandeModel: Model<DemandeDocument>,
+    // @InjectModel(Seance.name) private readonly seanceModel: Model<SeanceDocument>,
+    // @InjectModel(Pays.name) private readonly paysModel: Model<PaysDocument>,
+    // @InjectModel(Produitendommage.name) private readonly productendoModel: Model<ProduitendommageDocument>,
+    // @InjectModel(VenteProduitendommage.name) private readonly venteproductendoModel: Model<VenteProduitendommageDocument>,
+    // @InjectModel(Produitendommagestock.name) private readonly productendostockModel: Model<ProduitendommagestockDocument>,
+    // @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
+    // @InjectModel(Stock.name) private readonly stockModel: Model<StockDocument>,
+    // @InjectModel(StockPays.name) private readonly stockpaysModel: Model<StockDocument>,
+    // @InjectModel(Superviseurzone.name) private readonly superviseurzoneModel: Model<SuperviseurzoneDocument>,
+    // @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly mailerService: MailerService,
-    // private readonly mailService: MailService,
-    // private weekendyservice: WeekendyService,
-    // private managerservice: ManagerService,
-    // private produitService: ProduitService,
-    // private agenceservice: AgenceService,
-    // private zoneservice: ZoneService,
-    // private sectionservice: SectionService,
-    // private tauxzoneservice: TauxzoneService,
-    // private tauxservice: TauxService,
-    // private payscaservice: PayscaService,
-    // private stockagenceService: StockagenceService,
-    // private affectationservice: AffectationService,
-    // private salaireService: SalaireService,
-    // private salairemanagerService: SalaireManagerService,
-    // private chefsectionService: ChefsectionService,
-    // private assignmentService: AssignmentService,
-    // private caisseService: CaisseService,
-    // private cotisationService: CotisationService,
-    // private congesservice: CongeService,
-    // private employerservice: EmployerService,
-    // private entrepotservice: EntrepotService,
-    // private expenseservice: ExpensesService,
-    // private moisannesservice: MoisanneeService,
-    // private mouvementstockservice: MouvementstockService,
-    // private mvtStockService: MvtStockService,
-    // private patientService: PatientService,
-    // private paysService: PaysService,
-    // private produitendommageService: ProduitendommageService,
-    // private roleService: RoleService,
-    // private stockService: StockService,
-    // private stockPaysService: StockPaysService,
-    // private superviseurzoneService: SuperviseurzoneService,
-    // private userService: UserService,
+    private readonly mailService: MailService,
+    private weekendyservice: WeekendyService,
+    private managerservice: ManagerService,
+    private produitService: ProduitService,
+    private agenceservice: AgenceService,
+    private zoneservice: ZoneService,
+    private sectionservice: SectionService,
+    private tauxzoneservice: TauxzoneService,
+    private tauxservice: TauxService,
+    private payscaservice: PayscaService,
+    private stockagenceService: StockagenceService,
+    private affectationservice: AffectationService,
+    private salaireService: SalaireService,
+    private salairemanagerService: SalaireManagerService,
+    private chefsectionService: ChefsectionService,
+    private assignmentService: AssignmentService,
+    private caisseService: CaisseService,
+    private congesservice: CongeService,
+    private employerservice: EmployerService,
+    private entrepotservice: EntrepotService,
+    private expenseservice: ExpensesService,
+    private moisannesservice: MoisanneeService,
+    private mouvementstockservice: MouvementstockService,
+    private mvtStockService: MvtStockService,
+    private patientService: PatientService,
+    private paysService: PaysService,
+    private produitendommageService: ProduitendommageService,
+    private roleService: RoleService,
+    private stockService: StockService,
+    private stockPaysService: StockPaysService,
+    private superviseurzoneService: SuperviseurzoneService,
+    private userService: UserService,
 
     ) {}
 
   async processDataAndSendEmail(){
     // Récupérer les données de la base de données
     try{
-        const collectionsData = await Promise.all([
-          this.affectationModel.find().exec(),
-          this.agenceModel.find().exec(),
-          this.weekendyModel.find().exec(),
-          this.produitvendupaysModel.find().exec(),
-          this.produitvendubureauModel.find().exec(),
-          this.weekendyDocteurModel.find().exec(),
-          this.managerModel.find().exec(),
-          this.productModel.find().exec(),
-          this.zoneModel.find().exec(),
-          this.zonecaModel.find().exec(),
-          this.zonecamoisModel.find().exec(),
-          this.primeszModel.find().exec(),
-          this.sectionModel.find().exec(),
-          this.chefsectionprimeModel.find().exec(),
-          this.sectioncaModel.find().exec(),
-          this.sectioncamoisModel.find().exec(),
-          this.tauxzoneModel.find().exec(),
-          this.tauxsectionModel.find().exec(),
-          this.tauxModel.find().exec(),
-          this.payscaModel.find().exec(),
-          this.payscayearModel.find().exec(),
-          this.stockagenceModel.find().exec(),
-          this.mvtstockagencepaysModel.find().exec(),
-          this.salaireModel.find().exec(),
-          this.salairemanagerModel.find().exec(),
-          this.cotisationpayModel.find().exec(),
-          this.dettebureauModel.find().exec(),
-          this.remboursementModel.find().exec(),
-          this.chefsectionModel.find().exec(),
-          this.missionModel.find().exec(),
-          this.caisseModel.find().exec(),
-          this.congeModel.find().exec(),
-          this.employerModel.find().exec(),
-          this.entrepotModel.find().exec(),
-          this.stockalertentrepotModel.find().exec(),
-          this.entrepotoperationModel.find().exec(),
-          this.sortieproduitentrepotModel.find().exec(),
-          this.entrepotproduitstockModel.find().exec(),
-          this.expenseModel.find().exec(),
-          this.categoryModel.find().exec(),
-          this.anneeModel.find().exec(),
-          this.moisModel.find().exec(),
-          this.mvtstockModel.find().exec(),
-          this.consignationModel.find().exec(),
-          this.mvtstockpaysentrepotModel.find().exec(),
-          this.patientModel.find().exec(),
-          this.patientdoctorModel.find().exec(),
-          this.patienkineModel.find().exec(),
-          this.caissekineModel.find().exec(),
-          this.caissekinesoldeModel.find().exec(),
-          this.caissemachineModel.find().exec(),
-          this.caissemachinesoldeModel.find().exec(),
-          this.caissecarnetModel.find().exec(),
-          this.caissecarnetsoldeModel.find().exec(),
-          this.demandeModel.find().exec(),
-          this.seanceModel.find().exec(),
-          this.paysModel.find().exec(),
-          this.productendoModel.find().exec(),
-          this.venteproductendoModel.find().exec(),
-          this.productendostockModel.find().exec(),
-          this.roleModel.find().exec(),
-          this.stockModel.find().exec(),
-          this.stockpaysModel.find().exec(),
-          this.superviseurzoneModel.find().exec(),
-          this.userModel.find().exec(),
-        ]);
+        // const collectionsData = await Promise.all([
+        //   this.affectationModel.find().exec(),
+        //   this.agenceModel.find().exec(),
+        //   this.weekendyModel.find().exec(),
+        //   this.produitvendupaysModel.find().exec(),
+        //   this.produitvendubureauModel.find().exec(),
+        //   this.weekendyDocteurModel.find().exec(),
+        //   this.managerModel.find().exec(),
+        //   this.productModel.find().exec(),
+        //   this.zoneModel.find().exec(),
+        //   this.zonecaModel.find().exec(),
+        //   this.zonecamoisModel.find().exec(),
+        //   this.primeszModel.find().exec(),
+        //   this.sectionModel.find().exec(),
+        //   this.chefsectionprimeModel.find().exec(),
+        //   this.sectioncaModel.find().exec(),
+        //   this.sectioncamoisModel.find().exec(),
+        //   this.tauxzoneModel.find().exec(),
+        //   this.tauxsectionModel.find().exec(),
+        //   this.tauxModel.find().exec(),
+        //   this.payscaModel.find().exec(),
+        //   this.payscayearModel.find().exec(),
+        //   this.stockagenceModel.find().exec(),
+        //   this.mvtstockagencepaysModel.find().exec(),
+        //   this.salaireModel.find().exec(),
+        //   this.salairemanagerModel.find().exec(),
+        //   this.cotisationpayModel.find().exec(),
+        //   this.dettebureauModel.find().exec(),
+        //   this.remboursementModel.find().exec(),
+        //   this.chefsectionModel.find().exec(),
+        //   this.missionModel.find().exec(),
+        //   this.caisseModel.find().exec(),
+        //   this.congeModel.find().exec(),
+        //   this.employerModel.find().exec(),
+        //   this.entrepotModel.find().exec(),
+        //   this.stockalertentrepotModel.find().exec(),
+        //   this.entrepotoperationModel.find().exec(),
+        //   this.sortieproduitentrepotModel.find().exec(),
+        //   this.entrepotproduitstockModel.find().exec(),
+        //   this.expenseModel.find().exec(),
+        //   this.categoryModel.find().exec(),
+        //   this.anneeModel.find().exec(),
+        //   this.moisModel.find().exec(),
+        //   this.mvtstockModel.find().exec(),
+        //   this.consignationModel.find().exec(),
+        //   this.mvtstockpaysentrepotModel.find().exec(),
+        //   this.patientModel.find().exec(),
+        //   this.patientdoctorModel.find().exec(),
+        //   this.patienkineModel.find().exec(),
+        //   this.caissekineModel.find().exec(),
+        //   this.caissekinesoldeModel.find().exec(),
+        //   this.caissemachineModel.find().exec(),
+        //   this.caissemachinesoldeModel.find().exec(),
+        //   this.caissecarnetModel.find().exec(),
+        //   this.caissecarnetsoldeModel.find().exec(),
+        //   this.demandeModel.find().exec(),
+        //   this.seanceModel.find().exec(),
+        //   this.paysModel.find().exec(),
+        //   this.productendoModel.find().exec(),
+        //   this.venteproductendoModel.find().exec(),
+        //   this.productendostockModel.find().exec(),
+        //   this.roleModel.find().exec(),
+        //   this.stockModel.find().exec(),
+        //   this.stockpaysModel.find().exec(),
+        //   this.superviseurzoneModel.find().exec(),
+        //   this.userModel.find().exec(),
+        // ]);
 
         // const donnees = 'collectionsData.json'
         // const donnees2 = 'collectionsData.xlsx'
-        // // await this.writeJSONToFile(collectionsData, donnees);
+        // await this.writeJSONToFile(collectionsData, donnees);
         // const fichierzipname = 'data1.zip';
        
         // const jsonFiles: string[] = [];
         // const collectionNames = ['affectation','agence', 'weekendy', 'produitvendupays', 'produitvendubureau','weekendyDocteur','manager', 'products','zone','zoneca','zonecamois','primesz','section','chefsectionprime','sectionca','sectioncamois','tauxzone','tauxsection','taux','paysca','payscayear','stockagence','mvtStockagencePays','salaire','salaireManager','cotisationPaye','detteBureau','remboursement','chefsection','mission','caisse','conge','employer','entrepot','stockAlerteEntrepot','entrepotOperation','sortieProduitEntrepot','entrepotProduitStock','expense','category','annee','mois','mouvementstock','consignation','mvtStockPaysEntrepot','patient','patientdoctor','patientkine','caissekine','caissekinesolde','caissemachine','caissemachinesolde','caissecarnet','caissecarnetsolde','demande','seance','pays','produitendommage','venteProduitendommage','produitendommagestock','role','stock','stockPays','superviseurzone', 'users'];
-        // // const contisation = await this.salairemanagerService.cotisationbackup();
-        // // const contisationpaye = await this.salairemanagerService.cotisationpayebackup();
+        // const contisation = await this.salairemanagerService.cotisationbackup();
+        // const contisationpaye = await this.salairemanagerService.cotisationpayebackup();
         // // const salairemanager = await this.salairemanagerService.salairemanagerbackup();
         // // const dettebureau = await this.salairemanagerService.dettebureaubackup();
         // // const remboursement = await this.salairemanagerService.remboursementbackup();
@@ -347,7 +378,7 @@ export class BackupService {
         // await this.sendEmail(zipFileName);
         // await this.sendEmail(fichierzipname);
 
-        return collectionsData;
+        // return collectionsData;
     } catch (error) {
       console.error('Une erreur s\'est produite:', error);
     }
@@ -423,5 +454,131 @@ export class BackupService {
       subject: subject,
       text: message,
     });
+  }
+
+
+  async backupdata(){
+      const contisation = await this.salairemanagerService.cotisationbackup();
+      const contisationpaye = await this.salairemanagerService.cotisationpayebackup();
+      const salairemanager = await this.salairemanagerService.salairemanagerbackup();
+      const dettebureau = await this.salairemanagerService.dettebureaubackup();
+      const remboursement = await this.salairemanagerService.remboursementbackup();
+      const section = await this.sectionservice.sectionbackup();
+      const chefsectionprime = await this.sectionservice.chefsectionprimebackup();
+      const sectionca = await this.sectionservice.sectioncabackup();
+      const sectioncamois = await this.sectionservice.sectioncamoisbackup();
+      const stock = await this.stockService.stockbackup();
+      const stockpay = await this.stockPaysService.stockpaybackup();
+      const stockagence = await this.stockagenceService.stockagencebackup();
+      const superviseurzone = await this.superviseurzoneService.superviserzonebackup();
+      const taux = await this.tauxservice.tauxbackup();
+      const tauxzone = await this.tauxzoneservice.tauzonebackup();
+      const tauxsection = await this.tauxzoneservice.tausectionbackup();
+      const users = await this.userService.userbackup();
+      const weekendies= await this.weekendyservice.weekendybackup();
+      const zones = await this.zoneservice.zonebackup();
+      const salaire = await this.salaireService.salairebackup();
+      const roles= await this.roleService.rolebackup();
+      const produits = await this.produitService.productsbackup();
+      const produitendommages = await this.produitendommageService.produitendommagesbackup();
+      const produitendommagesvendus = await this.produitendommageService.produitendovendubackup();
+      const produitendommagesstock = await this.produitendommageService.stockproduitendo();
+      const patients = await this.patientService.patientbackup();
+      const patientsdocteur = await this.patientService.patientdocteurbackup();
+      const patientskine = await this.patientService.patientkinebackup();
+      const caissekine = await this.patientService.caissekinebackup();
+      const soldecaissekine = await this.patientService.caissekinesoldebackup();
+      const caissemachine = await this.patientService.caissemachinebackup();
+      const caissemachinesolde = await this.patientService.caissemachinesoldebackup();
+      const caissecarnet = await this.patientService.caissecarnetbackup();
+      const caissecarnetsolde = await this.patientService.caissecarnetsoldebackup();
+      const demande = await this.patientService.demandebackup();
+      const seance = await this.patientService.seancebackup();
+      const pays = await this.paysService.paysbackup();
+      const paysca = await this.payscaservice.findAllCabackup();
+      const missions = await this.assignmentService.missionbackup();
+
+      const mvtstockpaysentrepot = await this.mvtStockService.mvtstockbackup();
+
+      const mouvementstockpaysbureau = await this.mouvementstockservice.mouvementstockbackup();
+      const consignation = await this.mouvementstockservice.consignationbackup();
+      const annee = await this.moisannesservice.anneebackup();
+      const mois = await this.moisannesservice.moisbackup();
+      const managers = await this.managerservice.managersbackup();
+      const caisse = await this.caisseService.caissebackup();
+      const expenses = await this.expenseservice.expensesbackup();
+      const categories = await this.expenseservice.categoriesbackup();
+      const entrepot = await this.entrepotservice.entrepotbackup();
+      const chefsections = await this.chefsectionService.chefsectionbackup();
+      const operationentrepot = await this.entrepotservice.operationentrepotbackup();
+      const stockentrepot = await this.entrepotservice.entrepotstockbackup();
+      const sortieentrepot = await this.entrepotservice.sortieentrepotbackup();
+      const stockalertentrepot = await this.entrepotservice.stockalertbackup();
+      const employer = await this.employerservice.employerbackup();
+      const conges = await this.congesservice.congebackup();
+      const agences = await this.agenceservice.bureaubackup();
+      const affectations  = await this.affectationservice.affectationbackup();
+      // console.log(collectionNames.length)
+
+      return {
+        contisation,
+        contisationpaye,
+        salairemanager,
+        dettebureau,
+        remboursement,
+        section,
+        chefsectionprime,
+        sectionca,
+        sectioncamois,
+        stock,
+        stockpay,
+        stockagence,
+        superviseurzone,
+        taux,
+        tauxzone,
+        tauxsection,
+        users,
+        weekendies,
+        zones,
+        salaire,
+        roles,
+        produits,
+        produitendommages,
+        produitendommagesvendus,
+        produitendommagesstock,
+        patients,
+        patientsdocteur,
+        patientskine,
+        caissekine,
+        soldecaissekine,
+        caissemachine,
+        caissemachinesolde,
+        caissecarnet,
+        caissecarnetsolde,
+        demande,
+        seance,
+        pays,
+        paysca,
+        missions,
+        mvtstockpaysentrepot,
+        mouvementstockpaysbureau,
+        consignation,
+        annee,
+        mois,
+        managers,
+        caisse,
+        expenses,
+        categories,
+        entrepot,
+        chefsections,
+        operationentrepot,
+        stockentrepot,
+        sortieentrepot,
+        stockalertentrepot,
+        employer,
+        conges,
+        agences,
+        affectations,
+      }
   }
 }

@@ -126,274 +126,274 @@ import { MailerModule } from '@nestjs-modules/mailer';
     AgenceModule, 
     PaysModule, 
     AuthModule, ExpensesModule, StockModule, AssignmentModule, TauxModule, AffectationModule, CotisationModule, SalaireManagerModule, StockagenceModule, MouvementstockModule, ZoneModule, SectionModule, EmployerModule, CongeModule, StockPaysModule, MvtStockModule, RoleModule, TauxzoneModule, SuperviseurzoneModule, ChefsectionModule, CaisseModule, EntrepotModule, PayscaModule, MoisanneeModule, PatientModule, DelecountryModule, ProduitendommageModule,
-    MongooseModule.forFeature(
-      [
+    // MongooseModule.forFeature(
+    //   [
         
-        {
-          name: Affectation.name,
-          schema: AffectationSchema
-        },
-        {
-          name: Agence.name,
-          schema: AgenceSchema
-        },
-        {
-          name: Weekendy.name,
-          schema: WeekendySchema
-        },
-        {
-          name: Produitvendupays.name,
-          schema: ProduitvendupaysSchema
-        },
-        {
-          name: Produitvendubureau.name,
-          schema: ProduitvendubureauSchema
-        },
-        {
-          name: WeekendyDocteur.name,
-          schema: WeekendyDocteurSchema
-        },
-        {
-          name: Manager.name,
-          schema: ManagerSchema
-        },
-        {
-          name: Products.name,
-          schema: ProductsSchema
-        },
+    //     {
+    //       name: Affectation.name,
+    //       schema: AffectationSchema
+    //     },
+    //     {
+    //       name: Agence.name,
+    //       schema: AgenceSchema
+    //     },
+    //     {
+    //       name: Weekendy.name,
+    //       schema: WeekendySchema
+    //     },
+    //     {
+    //       name: Produitvendupays.name,
+    //       schema: ProduitvendupaysSchema
+    //     },
+    //     {
+    //       name: Produitvendubureau.name,
+    //       schema: ProduitvendubureauSchema
+    //     },
+    //     {
+    //       name: WeekendyDocteur.name,
+    //       schema: WeekendyDocteurSchema
+    //     },
+    //     {
+    //       name: Manager.name,
+    //       schema: ManagerSchema
+    //     },
+    //     {
+    //       name: Products.name,
+    //       schema: ProductsSchema
+    //     },
 
-        {
-          name: Zone.name,
-          schema: ZoneSchema
-        },
-        {
-          name: Zoneca.name,
-          schema: ZonecaSchema
-        },
-        {
-          name: Zonecamois.name,
-          schema: ZonecamoisSchema
-        },
-        {
-          name: Primesz.name,
-          schema: PrimeszSchema
-        },
-        {
-          name: Section.name,
-          schema: SectionSchema
-        },
-        {
-          name: Chefsectionprime.name,
-          schema: ChefsectionprimeSchema
-        },
-        {
-          name: Sectionca.name,
-          schema: SectioncaSchema
-        },
-        {
-          name: Sectioncamois.name,
-          schema: SectioncamoisSchema
-        },
-        {
-          name: Tauxzone.name,
-          schema: TauxzoneSchema
-        },
-        {
-          name: Tauxsection.name,
-          schema: TauxsectionSchema
-        },
-        {
-          name: Taux.name,
-          schema: TauxSchema
-        },
-        {
-          name: Paysca.name,
-          schema: PayscaSchema
-        },
-        {
-          name: Payscayear.name,
-          schema: PayscayearSchema
-        },
-        {
-          name: Stockagence.name,
-          schema: StockagenceSchema
-        },
-        {
-          name: MvtStockagencePays.name,
-          schema: MvtStockagencePaysSchema
-        },
-        {
-          name: Salaire.name,
-          schema: SalaireSchema
-        },
-        {
-          name: SalaireManager.name,
-          schema: SalaireManagerSchema
-        },
-        {
-          name: CotisationPaye.name,
-          schema: CotisationPayeSchema
-        },
-        {
-          name: DetteBureau.name,
-          schema: DetteBureauSchema
-        },
-        {
-          name: Remboursement.name,
-          schema: RemboursementSchema
-        },
-        {
-          name: Chefsection.name,
-          schema: ChefsectionSchema
-        },
-        {
-          name: Mission.name,
-          schema: MissionSchema
-        },
-        {
-          name: Caisse.name,
-          schema: CaisseSchema
-        },
-        {
-          name: Conge.name,
-          schema: CongeSchema
-        },
-        {
-          name: Employer.name,
-          schema: EmployerSchema
-        },
-        {
-          name: Entrepot.name,
-          schema: EntrepotSchema
-        },
-        {
-          name: StockAlerteEntrepot.name,
-          schema: StockAlerteEntrepotSchema
-        },
-        {
-          name: EntrepotOperation.name,
-          schema: EntrepotOperationSchema
-        },
-        {
-          name: SortieProduitEntrepot.name,
-          schema: SortieProduitEntrepotSchema
-        },
-        {
-          name: EntrepotProduitStock.name,
-          schema: EntrepotProduitStockSchema
-        },
-        {
-          name: Expense.name,
-          schema: ExpenseSchema
-        },
-        {
-          name: Category.name,
-          schema: CategorySchema
-        },
-        {
-          name: Annee.name,
-          schema: AnneeSchema
-        },
+    //     {
+    //       name: Zone.name,
+    //       schema: ZoneSchema
+    //     },
+    //     {
+    //       name: Zoneca.name,
+    //       schema: ZonecaSchema
+    //     },
+    //     {
+    //       name: Zonecamois.name,
+    //       schema: ZonecamoisSchema
+    //     },
+    //     {
+    //       name: Primesz.name,
+    //       schema: PrimeszSchema
+    //     },
+    //     {
+    //       name: Section.name,
+    //       schema: SectionSchema
+    //     },
+    //     {
+    //       name: Chefsectionprime.name,
+    //       schema: ChefsectionprimeSchema
+    //     },
+    //     {
+    //       name: Sectionca.name,
+    //       schema: SectioncaSchema
+    //     },
+    //     {
+    //       name: Sectioncamois.name,
+    //       schema: SectioncamoisSchema
+    //     },
+    //     {
+    //       name: Tauxzone.name,
+    //       schema: TauxzoneSchema
+    //     },
+    //     {
+    //       name: Tauxsection.name,
+    //       schema: TauxsectionSchema
+    //     },
+    //     {
+    //       name: Taux.name,
+    //       schema: TauxSchema
+    //     },
+    //     {
+    //       name: Paysca.name,
+    //       schema: PayscaSchema
+    //     },
+    //     {
+    //       name: Payscayear.name,
+    //       schema: PayscayearSchema
+    //     },
+    //     {
+    //       name: Stockagence.name,
+    //       schema: StockagenceSchema
+    //     },
+    //     {
+    //       name: MvtStockagencePays.name,
+    //       schema: MvtStockagencePaysSchema
+    //     },
+    //     {
+    //       name: Salaire.name,
+    //       schema: SalaireSchema
+    //     },
+    //     {
+    //       name: SalaireManager.name,
+    //       schema: SalaireManagerSchema
+    //     },
+    //     {
+    //       name: CotisationPaye.name,
+    //       schema: CotisationPayeSchema
+    //     },
+    //     {
+    //       name: DetteBureau.name,
+    //       schema: DetteBureauSchema
+    //     },
+    //     {
+    //       name: Remboursement.name,
+    //       schema: RemboursementSchema
+    //     },
+    //     {
+    //       name: Chefsection.name,
+    //       schema: ChefsectionSchema
+    //     },
+    //     {
+    //       name: Mission.name,
+    //       schema: MissionSchema
+    //     },
+    //     {
+    //       name: Caisse.name,
+    //       schema: CaisseSchema
+    //     },
+    //     {
+    //       name: Conge.name,
+    //       schema: CongeSchema
+    //     },
+    //     {
+    //       name: Employer.name,
+    //       schema: EmployerSchema
+    //     },
+    //     {
+    //       name: Entrepot.name,
+    //       schema: EntrepotSchema
+    //     },
+    //     {
+    //       name: StockAlerteEntrepot.name,
+    //       schema: StockAlerteEntrepotSchema
+    //     },
+    //     {
+    //       name: EntrepotOperation.name,
+    //       schema: EntrepotOperationSchema
+    //     },
+    //     {
+    //       name: SortieProduitEntrepot.name,
+    //       schema: SortieProduitEntrepotSchema
+    //     },
+    //     {
+    //       name: EntrepotProduitStock.name,
+    //       schema: EntrepotProduitStockSchema
+    //     },
+    //     {
+    //       name: Expense.name,
+    //       schema: ExpenseSchema
+    //     },
+    //     {
+    //       name: Category.name,
+    //       schema: CategorySchema
+    //     },
+    //     {
+    //       name: Annee.name,
+    //       schema: AnneeSchema
+    //     },
        
-        {
-          name: Mois.name,
-          schema:MoisSchema
-        },
-        {
-          name: Mouvementstock.name,
-          schema: MouvementstockSchema
-        },
-        {
-          name: Consignation.name,
-          schema: ConsignationSchema
-        },
-        {
-          name: MvtStockPaysEntrepot.name,
-          schema: MvtStockPaysEntrepotSchema
-        },
-        {
-          name: Patient.name,
-          schema: PatientSchema
-        },
-        {
-          name: Patientdoctor.name,
-          schema: PatientdoctorSchema
-        },
-        {
-          name: Patientkine.name,
-          schema: PatientkineSchema
-        },
-        {
-          name: Caissekine.name,
-          schema: CaissekineSchema
-        },
-        {
-          name: Caissekinesolde.name,
-          schema: CaissekinesoldeSchema
-        },
-        {
-          name: Caissemachine.name,
-          schema: CaissemachineSchema
-        },
-        {
-          name: Caissemachinesolde.name,
-          schema: CaissemachinesoldeSchema
-        },
-        {
-          name: Caissecarnet.name,
-          schema: CaissecarnetSchema
-        },
-        {
-          name: Caissecarnetsolde.name,
-          schema: CaissecarnetsoldeSchema
-        },
-        {
-          name: Demande.name,
-          schema: DemandeSchema
-        },
-        {
-          name: Seance.name,
-          schema: SeanceSchema
-        },
-        {
-          name: Pays.name,
-          schema: PaysSchema
-        },
-        {
-          name: Produitendommage.name,
-          schema: ProduitendommageSchema
-        },
-        {
+    //     {
+    //       name: Mois.name,
+    //       schema:MoisSchema
+    //     },
+    //     {
+    //       name: Mouvementstock.name,
+    //       schema: MouvementstockSchema
+    //     },
+    //     {
+    //       name: Consignation.name,
+    //       schema: ConsignationSchema
+    //     },
+    //     {
+    //       name: MvtStockPaysEntrepot.name,
+    //       schema: MvtStockPaysEntrepotSchema
+    //     },
+    //     {
+    //       name: Patient.name,
+    //       schema: PatientSchema
+    //     },
+    //     {
+    //       name: Patientdoctor.name,
+    //       schema: PatientdoctorSchema
+    //     },
+    //     {
+    //       name: Patientkine.name,
+    //       schema: PatientkineSchema
+    //     },
+    //     {
+    //       name: Caissekine.name,
+    //       schema: CaissekineSchema
+    //     },
+    //     {
+    //       name: Caissekinesolde.name,
+    //       schema: CaissekinesoldeSchema
+    //     },
+    //     {
+    //       name: Caissemachine.name,
+    //       schema: CaissemachineSchema
+    //     },
+    //     {
+    //       name: Caissemachinesolde.name,
+    //       schema: CaissemachinesoldeSchema
+    //     },
+    //     {
+    //       name: Caissecarnet.name,
+    //       schema: CaissecarnetSchema
+    //     },
+    //     {
+    //       name: Caissecarnetsolde.name,
+    //       schema: CaissecarnetsoldeSchema
+    //     },
+    //     {
+    //       name: Demande.name,
+    //       schema: DemandeSchema
+    //     },
+    //     {
+    //       name: Seance.name,
+    //       schema: SeanceSchema
+    //     },
+    //     {
+    //       name: Pays.name,
+    //       schema: PaysSchema
+    //     },
+    //     {
+    //       name: Produitendommage.name,
+    //       schema: ProduitendommageSchema
+    //     },
+    //     {
          
-          name: VenteProduitendommage.name,
-          schema:VenteProduitendommageSchema
-        },
-        {
-          name: Produitendommagestock.name,
-          schema: ProduitendommagestockSchema
-        },
-        {
-          name: Role.name,
-          schema: RoleSchema
-        },
-        {
-          name: Stock.name,
-          schema: StockSchema
-        },
-        {
-          name: StockPays.name,
-          schema: StockPaysSchema
-        },
-        {
-          name: Superviseurzone.name,
-          schema: SuperviseurzoneSchema
-        },
-        { 
-          name: User.name, 
-          schema: UserSchema 
-        }
+    //       name: VenteProduitendommage.name,
+    //       schema:VenteProduitendommageSchema
+    //     },
+    //     {
+    //       name: Produitendommagestock.name,
+    //       schema: ProduitendommagestockSchema
+    //     },
+    //     {
+    //       name: Role.name,
+    //       schema: RoleSchema
+    //     },
+    //     {
+    //       name: Stock.name,
+    //       schema: StockSchema
+    //     },
+    //     {
+    //       name: StockPays.name,
+    //       schema: StockPaysSchema
+    //     },
+    //     {
+    //       name: Superviseurzone.name,
+    //       schema: SuperviseurzoneSchema
+    //     },
+    //     { 
+    //       name: User.name, 
+    //       schema: UserSchema 
+    //     }
 
-      ])
+    //   ])
   ],
   controllers: [BackupController],
   providers: [

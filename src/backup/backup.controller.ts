@@ -7,9 +7,15 @@ import { UpdateBackupDto } from './dto/update-backup.dto';
 export class BackupController {
   constructor(private readonly backupService: BackupService) {}
 
-  @Get('manual')
+  @Get('manualold')
   async manualBackup() {
     return await this.backupService.processDataAndSendEmail();
+    
+  }
+
+  @Get('manual')
+  async groupBackup() {
+    return await this.backupService.backupdata();
     
   }
 
