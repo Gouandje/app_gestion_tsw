@@ -56,9 +56,9 @@ export class StockPaysService {
 
   }
 
-  async updateStockpaysproduit(id: string, updateStockPaysDto: UpdateStockPaysDto){
+  async updateStockpaysproduit(id: string, updateStockPaysDto: any){
     
-    const product = await this.stockpaysModel.findOneAndUpdate({_id: id}, {$set:updateStockPaysDto}, {new: true}).exec();
+    const product = await this.stockpaysModel.findByIdAndUpdate({_id: id}, {$set:updateStockPaysDto}, {new: true}).exec();
 
     return product;
 
