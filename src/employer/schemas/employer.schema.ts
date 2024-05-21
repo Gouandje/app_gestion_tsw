@@ -53,6 +53,13 @@ export class Employer {
         example: '20-11-1989',
         description: 'The birthday of the employer',
     })
+    genre: string; 
+
+    @Prop({ required: true })
+    @ApiProperty({
+        example: '20-11-1989',
+        description: 'The birthday of the employer',
+    })
     num_piece: string; 
 
      @Prop({ required: true })
@@ -68,13 +75,6 @@ export class Employer {
         description: 'The birthday of the employer',
     })
     situation_matrimonial: string;
-
-    @Prop({ required: true })
-    @ApiProperty({
-        example: '20-11-1989',
-        description: 'The birthday of the manager',
-    })
-    ethnie: string;
 
     @Prop({ required: true })
     @ApiProperty({

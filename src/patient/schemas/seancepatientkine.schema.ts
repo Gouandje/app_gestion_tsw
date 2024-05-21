@@ -9,25 +9,18 @@ export type SeanceDocument = HydratedDocument<Seance>;
 @Schema()
 export class Seance {
     @Prop({type: MongooseSchema.Types.ObjectId, required: false, ref: Patientkine.name })
-    @ApiProperty({
-        example: '5efvbe54edfgjkhklh45',
-        description: 'The product id',
-    })
     patientkineId: string;
 
     @Prop({ required: true })
-    @ApiProperty({
-        example: '27-05-2023 12:00',
-        description: 'The date of Patientkine',
-    })
-    date_seance: string;
-
+    seance_title: string;
 
     @Prop({ required: true })
-    @ApiProperty({
-        example: 'sortie de caisse',
-        description: 'The date of caisse',
-    })
+    status_paid_seance: string;
+
+    @Prop({ required: false })
+    date_created_seance: string;
+
+    @Prop({ required: true })
     cout_seance: number;
 
  

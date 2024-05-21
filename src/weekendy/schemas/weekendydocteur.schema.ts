@@ -2,15 +2,14 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Schema as MongooseSchema } from "mongoose";
 import { Agence } from "src/angence/schemas/agence.schema";
+import { Employer } from "src/employer/schemas/employer.schema";
 import { Annee } from "src/moisannee/schemas/annee.schema";
 import { Mois } from "src/moisannee/schemas/mois.schema";
-import { Products } from "src/produit/schemas/products.shema";
 
 export type WeekendyDocteurDocument = HydratedDocument<WeekendyDocteur>;
 
 @Schema()
 export class WeekendyDocteur {
-
     
     @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Agence.name })
     @ApiProperty({
@@ -18,6 +17,13 @@ export class WeekendyDocteur {
         description: 'The office id ',
     })
     bureauId: string;
+    
+    @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Employer.name })
+    @ApiProperty({
+        example: '5efvbe54edfgbknjlh45',
+        description: 'The office id ',
+    })
+    doctorId: string;
 
     @ApiProperty()
     @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Mois.name })
@@ -45,14 +51,11 @@ export class WeekendyDocteur {
     })
     items: [
         {
-        quantity: {
-        type: Number,
-        }, 
-        productId: {
-        type: string,
-        ref: Products,
-      }
-    }];
+        quantity: number, 
+        productId: string,
+        name: string,
+       }
+      ];
   
     @ApiProperty()
     @Prop({ required: true, type: Number })

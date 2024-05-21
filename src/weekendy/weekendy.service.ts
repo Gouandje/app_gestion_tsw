@@ -76,7 +76,7 @@ export class WeekendyService {
       createdAt: createWeekendyDto.createdAt
     };    
     const alreadyExists = await this.weekendyModel.findOne({ bureauId: createWeekendyDto.bureauId,
-      mois: createWeekendyDto.mois, }).lean();
+      mois: createWeekendyDto.mois, annee:createdDataDto.annee}).lean();
     if(alreadyExists){
         console.log('alreadyExists', alreadyExists);
         throw new ConflictException(`Pour ce Bureau il existe déjà un Monthending pour ce mois et pour cette année dans la base de données`);
@@ -738,96 +738,106 @@ export class WeekendyService {
     // console.log(createWeekendyDto);
     const weekendproduct = [];
     for(let i=0; i<createDocteurWeekendyDto.items.length; i++){
-
       const product = await this.stockagenceService.findagenceproduit(createDocteurWeekendyDto.bureauId, createDocteurWeekendyDto.items[i].productId);
-      if(product !=null && createDocteurWeekendyDto.items[i].quantity <= product.quantity){
+      console.log('valeur', Number(product.quantity) -Number( createDocteurWeekendyDto.items[i].quantity));
+      const value = Number(product.quantity) -Number( createDocteurWeekendyDto.items[i].quantity);
+
+      if(value >=0){
         weekendproduct.push(createDocteurWeekendyDto.items[i]);
       }else{
         const produitindispo = await this.produitService.findOne(createDocteurWeekendyDto.items[i].productId);
         // console.log('produit rupture', produitindispo.name);
-        throw new BadRequestException('Echèc d\'enregistrement du weekendy: ' + ` ${produitindispo.name} ` + ' n\'est pas en stock suffisant dans ce bureau. La quantité disponible après weekendy du mois passé est: ' + `${product.quantity}` + ' la quantité renseignée est supérieure à celle disponible');
+        throw new BadRequestException('Echèc d\'enregistrement du weekendy ' + ` ${produitindispo.name} ` + ' n\'est pas en stock suffisant dans ce bureau. ');
       }
-
     }
     const createdDataDto = {
       bureauId: createDocteurWeekendyDto.bureauId,
+      doctorId: createDocteurWeekendyDto.doctorId,
       mois: createDocteurWeekendyDto.mois,
       annee: createDocteurWeekendyDto.annee,
       items: weekendproduct,
       caTotal:createDocteurWeekendyDto.caTotal,
       createdAt: createDocteurWeekendyDto.createdAt
     };
-    const weekendy = await  this.weekendyDocteurModel.create(createdDataDto);
-    if(weekendy){
-      const bureau = await this.agenceservice.findbureau(createDocteurWeekendyDto.bureauId);
+    const alreadyExists = await this.weekendyDocteurModel.findOne({ bureauId: createdDataDto.bureauId, doctorId: createdDataDto.doctorId,
+      mois: createdDataDto.mois, annee:createdDataDto.annee}).lean();
+      if(alreadyExists){
+        console.log('alreadyExists', alreadyExists);
+        throw new ConflictException(`Pour ce Bureau il existe déjà un Monthending pour ce mois et pour cette année dans la base de données`);
+      }else{
+      const weekendy = await  this.weekendyDocteurModel.create(createdDataDto);
+      if(weekendy){
+        const bureau = await this.agenceservice.findbureau(createDocteurWeekendyDto.bureauId);
 
-      for(let i=0; i < createDocteurWeekendyDto.items.length; i++){
+        for(let i=0; i < createDocteurWeekendyDto.items.length; i++){
 
-        const product = await this.stockagenceService.findagenceproduit(createDocteurWeekendyDto.bureauId, createDocteurWeekendyDto.items[i].productId);
-        const productPrice = await this.produitService.findOne(createDocteurWeekendyDto.items[i].productId);
-        const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createDocteurWeekendyDto.items[i].productId,  annee: createDocteurWeekendyDto.annee}).exec();
-        if(produitvendupays == null){
+          const product = await this.stockagenceService.findagenceproduit(createDocteurWeekendyDto.bureauId, createDocteurWeekendyDto.items[i].productId);
+          const productPrice = await this.produitService.findOne(createDocteurWeekendyDto.items[i].productId);
+          const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createDocteurWeekendyDto.items[i].productId,  annee: createDocteurWeekendyDto.annee}).exec();
+          if(produitvendupays == null){
 
-          const createdproduitvenduDto = {
-            paysId: bureau.countryId,
-            productId: createDocteurWeekendyDto.items[i].productId,
-            quantity: createDocteurWeekendyDto.items[i].quantity,
-            annee: createDocteurWeekendyDto.annee,
-            chiffreaffaire: createDocteurWeekendyDto.items[i].quantity*productPrice['price']
+            const createdproduitvenduDto = {
+              paysId: bureau.countryId,
+              productId: createDocteurWeekendyDto.items[i].productId,
+              quantity: createDocteurWeekendyDto.items[i].quantity,
+              annee: createDocteurWeekendyDto.annee,
+              chiffreaffaire: createDocteurWeekendyDto.items[i].quantity*productPrice['price']
+            };
+
+            await this.produitvendupaysModel.create(createdproduitvenduDto);
+
+          }else{
+            const updatedproduitvenduDto = {
+              paysId: bureau.countryId,
+              productId: createDocteurWeekendyDto.items[i].productId,
+              quantity: produitvendupays.quantity + createDocteurWeekendyDto.items[i].quantity,
+              annee: createDocteurWeekendyDto.annee,
+              chiffreaffaire: produitvendupays.chiffreaffaire + createDocteurWeekendyDto.items[i].quantity*productPrice.price
+            };
+            await this.produitvendupaysModel.findByIdAndUpdate({_id: produitvendupays._id}, updatedproduitvenduDto, {new: true}).lean();
+          }
+
+          if(product !=null){
+            const updatedStockagence = {
+            quantity: product.quantitytotalenmagasin - (createDocteurWeekendyDto.items[i].quantity)
+            };
+            console.log(product._id);
+            const updatestockagence: UpdateStockagenceDto = {
+              agenceId:createDocteurWeekendyDto.bureauId,
+              productId: createDocteurWeekendyDto.items[i].productId,
+              quantity: product.quantitytotalenmagasin - createDocteurWeekendyDto.items[i].quantity,
+              quantitytotalenmagasin: product.quantitytotalenmagasin
           };
-
-          await this.produitvendupaysModel.create(createdproduitvenduDto);
-
-        }else{
-          const updatedproduitvenduDto = {
-            paysId: bureau.countryId,
-            productId: createDocteurWeekendyDto.items[i].productId,
-            quantity: produitvendupays.quantity + createDocteurWeekendyDto.items[i].quantity,
-            annee: createDocteurWeekendyDto.annee,
-            chiffreaffaire: produitvendupays.chiffreaffaire + createDocteurWeekendyDto.items[i].quantity*productPrice.price
-          };
-          await this.produitvendupaysModel.findByIdAndUpdate({_id: produitvendupays._id}, updatedproduitvenduDto, {new: true}).lean();
+          await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
+          }
         }
+        
+        const paysinfobyagence = await this.agenceservice.findbureau(createDocteurWeekendyDto.bureauId);
 
-        if(product !=null){
-          const updatedStockagence = {
-           quantity: product.quantitytotalenmagasin - (createDocteurWeekendyDto.items[i].quantity)
-          };
-          console.log(product._id);
-          const updatestockagence: UpdateStockagenceDto = {
-            agenceId:createDocteurWeekendyDto.bureauId,
-            productId: createDocteurWeekendyDto.items[i].productId,
-            quantity: product.quantitytotalenmagasin - createDocteurWeekendyDto.items[i].quantity,
-            quantitytotalenmagasin: product.quantitytotalenmagasin
-         };
-         await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
-        }
-      }
-      
-      const paysinfobyagence = await this.agenceservice.findbureau(createDocteurWeekendyDto.bureauId);
-
-      const infoCapays = {
-        countryId: paysinfobyagence.countryId,
-        mois: createDocteurWeekendyDto.mois,
-        caTotal: createDocteurWeekendyDto.caTotal
-      };
-
-      const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(infoCapays.countryId, createDocteurWeekendyDto.mois, createDocteurWeekendyDto.annee);
-
-      if(getPaysCaMois !=null){
-        const upadateinfopaysCaMois = {
+        const infoCapays = {
           countryId: paysinfobyagence.countryId,
           mois: createDocteurWeekendyDto.mois,
-          caTotal: createDocteurWeekendyDto.caTotal + getPaysCaMois.caTotal
+          caTotal: createDocteurWeekendyDto.caTotal
         };
-        await this.payscaservice.updateyear(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
-      }else{
 
-        await this.payscaservice.create(infoCapays)
+        const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(infoCapays.countryId, createDocteurWeekendyDto.mois, createDocteurWeekendyDto.annee);
+
+        if(getPaysCaMois !=null){
+          const upadateinfopaysCaMois = {
+            countryId: paysinfobyagence.countryId,
+            mois: createDocteurWeekendyDto.mois,
+            caTotal: createDocteurWeekendyDto.caTotal + getPaysCaMois.caTotal
+          };
+          await this.payscaservice.updateyear(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
+        }else{
+
+          await this.payscaservice.create(infoCapays)
+        }
       }
+      return weekendy;
+
     }
     // console.log(weekendy);
-    return weekendy;
   }
 
 
@@ -862,6 +872,15 @@ export class WeekendyService {
   async findAllVenteDocteur(bureauId: string) {
     const weekendy = await this.weekendyDocteurModel
                                 .find({bureauId: bureauId})
+                                .populate('bureauId')
+                                .populate('mois')
+                                .populate('annee').exec();
+    return weekendy;
+  }
+
+  async findAllVenteByDocteur(doctorId: string) {
+    const weekendy = await this.weekendyDocteurModel
+                                .find({doctorId: doctorId})
                                 .populate('bureauId')
                                 .populate('mois')
                                 .populate('annee').exec();

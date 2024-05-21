@@ -13,6 +13,7 @@ import { AgenceService } from 'src/angence/agence.service';
 import { UpdateStockPaysDto } from 'src/stock-pays/dto/update-stock-pay.dto';
 import { UpdateStockagenceDto } from 'src/stockagence/dto/update-stockagence.dto';
 import { Consignation, ConsignationDocument } from './schemas/consignation.schema';
+import { ProduitService } from 'src/produit/produit.service';
 
 @Injectable()
 export class MouvementstockService {
@@ -21,6 +22,7 @@ export class MouvementstockService {
     @InjectModel(Mouvementstock.name) private readonly mvtstockModel: Model<MouvementstockDocument>,
     @InjectModel(Consignation.name) private readonly consignationModel: Model<ConsignationDocument>,
     private stockpaysService: StockPaysService,
+    private productService: ProduitService,
     private agenceStockService: StockagenceService,
     private agenceService: AgenceService
   ){}
@@ -284,13 +286,22 @@ export class MouvementstockService {
   }
 
   async findAllConsignation(id){
-    const consignations = await this.consignationModel.find({bureauId: id}).exec();
+    const consignations = await this.consignationModel.find({bureauId: id}).populate('items').exec();
     return consignations;
   }
 
   async findOneConsignation(id){
+    const response = [];
     const consignations = await this.consignationModel.findById(id).exec();
-    return consignations;
+    for(let i=0; i<consignations.items.length; i++){
+      const product = await this.productService.findOne(consignations.items[i].productId);
+      response.push([
+        product.name,
+        consignations.items[i].quantity,
+
+      ]); 
+    }
+    return {'response': response, 'date_sortie': consignations.date_sortie};
   }
 
   async mouvementstockbackup(){

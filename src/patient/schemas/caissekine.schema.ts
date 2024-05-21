@@ -29,13 +29,6 @@ export class Caissekine {
     })
     date: string;
 
-    @Prop({ required: true })
-    @ApiProperty({
-        example: 'sortie de caisse',
-        description: 'The date of caisse',
-    })
-    mois: string;
-
  
 }
 export const CaissekineSchema = SchemaFactory.createForClass(Caissekine);

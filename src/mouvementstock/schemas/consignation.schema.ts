@@ -20,21 +20,11 @@ export class Consignation {
         required: true 
     })
     items:[
-        {
-          name: {
-            type: string,
-            ref: Products,
-          },
-          quantity: {
-          type: Number,
-          default: 1,
-          }, 
-          productId: {
-          type: string,
-          ref: Products,
-      },
+      {
+        quantity: Number,
+        productId: string,
       
-    }];
+      }];
     
     @ApiProperty()
     @Prop({ required: true, type: String })

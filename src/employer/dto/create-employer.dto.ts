@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateEmployerDto {
      
     @ApiProperty({
         example: 'Kouassi',
-        description: 'The name of the agency',
+        description: 'The nom de l\'employé',
     })
     @IsString()
     @IsNotEmpty()
@@ -34,6 +34,13 @@ export class CreateEmployerDto {
     piece: string;
 
     @ApiProperty({
+        example: 'féminin',
+        description: 'The birthday of the manager',
+    })
+    @IsString()
+    genre: string;
+
+    @ApiProperty({
         example: 'CI0001112223',
         description: 'The birthday of the manager',
     })
@@ -49,28 +56,24 @@ export class CreateEmployerDto {
 
     @ApiProperty({
         example: '20-11-1989',
-        description: 'The birthday of the manager',
+        description: 'The birthday of the employee',
     })
-    ethnie: string;
-
-    @ApiProperty({
-        example: '20-11-1989',
-        description: 'The birthday of the manager',
-    })
+    @IsString()
     religion: string;
 
     @ApiProperty({
         example: '20-11-1989',
-        description: 'The birthday of the manager',
+        description: 'The birthday of the employee',
     })
-    maladie_exist: number;
+    @IsString()
+    maladie_exist: string;
 
     @ApiProperty({
         example: '20-11-1989',
         description: 'The birthday of the manager',
     })
+    @IsNumber()
     nbr_enfant: number;
-
 
     @ApiProperty({
         example: 'Superviseur zone manager',
@@ -95,11 +98,4 @@ export class CreateEmployerDto {
     @IsString()
     @IsNotEmpty()
     date_naiss: string;
-
-    @ApiProperty({
-        example: 'affecter',
-        description: 'The status of the manager',
-    })
-    @IsString()
-    status_mgr: string;
 }

@@ -33,6 +33,17 @@ export class EmployerService {
     return employer;
   }
 
+  async findAllDoctor() {
+    const doctors= [];
+    const doctor = await this.employerModel.find().exec();
+    for(let i=0; i<doctor.length; i++){
+      if(doctor[i].grade == 'Chef de service médical' || doctor[i].grade == 'Adjoint du Chef de service médical'){
+        doctors.push(doctor[i]);
+      }
+    }
+    return doctors;
+  }
+
   async findOne(id: string) {
     const employer = await this.employerModel.findById(id);
 

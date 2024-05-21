@@ -46,6 +46,11 @@ export class WeekendyController {
     return this.weekendyService.findAll(bureauId);
   }
 
+  @Get('allWeekendiesByDoctor/:doctorId')
+  findAllWeekendiesbydoctor(@Param('doctorId') doctorId: string){
+    return this.weekendyService.findAllVenteByDocteur(doctorId);
+  }
+
   @Get('Weekendies')
   weekendies() {
     return this.weekendyService.weekendybackup();

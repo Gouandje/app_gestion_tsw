@@ -7,6 +7,8 @@ import { CarnetDto } from './dto/carnet.dto';
 import { DemandeDto } from './dto/demande.dto';
 import { UpdateSeancePatientKineDto } from './dto/update-seance-kine.dto';
 import { CreateSeancePatientKineDto } from './dto/create-seance-kine.dto';
+import { FindSalaireDTO } from './dto/findsalaire.dto';
+import { SalairekineDTO } from './dto/salairekine.dto';
 
 @Controller('patient')
 export class PatientController {
@@ -42,9 +44,14 @@ export class PatientController {
     return this.patientService.findAllMachine();
   }
 
-  @Get('allpatientkine')
-  findAllPatientkine() {
-    return this.patientService.findAllPatientkine();
+  @Get('allpatientkine/:service')
+  findAllPatientkine(@Param('service') service: string) {
+    return this.patientService.findAllPatientkine(service);
+  }
+
+  @Get('allpatientkineEvent/:service')
+  findAllPatientkineEvent(@Param('service') service: string) {
+    return this.patientService.findAllPatientkineEvent(service);
   }
 
   @Get('allpatientdoctor/:service')
@@ -111,13 +118,43 @@ export class PatientController {
   }
 
 
-  @Patch('changeseancedemande/:id')
+  @Patch('updateSeance/:id')
   updateSeance(@Param('id') id: string, @Body() updateseancekine: UpdateSeancePatientKineDto) {
       return this.patientService.updateseance(id, updateseancekine);
   }
 
+  @Patch('payerSeance/:id')
+  payerSeance(@Param('id') id: string, @Body() updateseancekine: UpdateSeancePatientKineDto) {
+      return this.patientService.payerseance(id, updateseancekine);
+  }
 
-  @Delete('deletedemande/:id')
+  @Get('allcakine')
+    AllcaKine() {
+      return this.patientService.allCaKine();
+  }
+
+  @Get('singlecakine')
+    SinglecaKine(@Body() findsalaireDto: FindSalaireDTO) {
+      return this.patientService.CaMoisAnneeKine(findsalaireDto);
+  }
+
+  @Get('salairekine')
+    AllsalaireKine() {
+      return this.patientService.allSalaireKine();
+  }
+
+  @Post('salairekinemoisannee')
+    AllsalairemoisKine(@Body() findsalaireDto: FindSalaireDTO) {
+      return this.patientService.salaireMoisKine(findsalaireDto);
+  }
+
+  @Post('createsalairekine')
+  createSalaire(@Body() salairekineDto: SalairekineDTO){
+    return this.patientService.createSaliarekine(salairekineDto);
+  }
+
+
+  @Delete('deleteseance/:id')
   removeSeance(@Param('id') id: string) {
     return this.patientService.deleteseance(id);
   }

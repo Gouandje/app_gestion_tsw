@@ -19,9 +19,15 @@ import { Demande, DemandeDocument } from './schemas/demande.schema';
 import { Seance, SeanceDocument } from './schemas/seancepatientkine.schema';
 import { CreateSeancePatientKineDto } from './dto/create-seance-kine.dto';
 import { UpdateSeancePatientKineDto } from './dto/update-seance-kine.dto';
+import { FindSalaireDTO } from './dto/findsalaire.dto';
+import { SalaireKine, SalaireKineDocument } from './schemas/salairekine.schema';
 
 @Injectable()
 export class PatientService {
+  private months = [
+    'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+  ];
 
   constructor(
     @InjectModel(Patient.name) private readonly patientModel: Model<PatientDocument>, 
@@ -39,21 +45,28 @@ export class PatientService {
     @InjectModel(Caissecarnetsolde.name) private readonly caissecarnetsoldeModel: Model<CaissecarnetsoldeDocument>,
     @InjectModel(Demande.name) private readonly demandeModel: Model<DemandeDocument>,
     @InjectModel(Seance.name) private readonly seanceModel: Model<SeanceDocument>,
+    @InjectModel(SalaireKine.name) private readonly salairekineModel: Model<SalaireKineDocument>,
 
     ){}
 
   async create(createPatientDto: CreatePatientDto) {
     const createpatient = await this.patientModel.create(createPatientDto);
-    if(createPatientDto){
-    
+    if(createpatient){
       if(createPatientDto.service == "kinésithérapie"){
         const createpatienkine = await this.patienkineModel.create(createPatientDto);
+        return createpatienkine
       }else{
         const createpatientdoctor = await this.patientdoctorModel.create(createPatientDto);
+        return createpatientdoctor;
+      }
+    }else{
+      return {
+        message: 'Une erreur s\'est produit lors de l\'enregistrement',
+        status: 200
       }
     }
 
-    return createpatient;
+    
   }
 
   async createMachine(machineDto: MachineDto){
@@ -131,9 +144,21 @@ export class PatientService {
     return await this.caissemachineModel.find().populate('patientId').exec();
   }
 
-  async findAllPatientkine() {
-    const patientkine = await this.patienkineModel.find().populate('bureauId').exec();
+  async findAllPatientkine(param: string) {
+    const patientkine = await this.patienkineModel.find({service: param}).populate('bureauId').exec();
     return patientkine;
+  }
+
+  async findAllPatientkineEvent(param: string) {
+    const patients =[];
+    const patientkine = await this.patienkineModel.find({service: param}).exec();
+    for(let i=0; i<patientkine.length; i++){
+      patients.push({
+        id: patientkine[i]._id,
+        nom: patientkine[i].nom_prenom
+      });
+    }
+    return patients;
   }
 
   async findAllPatientdoctor(param: string) {
@@ -193,24 +218,140 @@ export class PatientService {
   
   async createseance(createPatientDto: CreateSeancePatientKineDto) {
     const createpatient = await this.seanceModel.create(createPatientDto);
-    
-
-    return createpatient;
+    if(createpatient.status_paid_seance == 'payé'){
+      const date = new Date(createpatient.date_created_seance);
+      const caissekineData = {
+        patientId: createPatientDto.patientkineId,
+        montant: createpatient.cout_seance,
+        date: createpatient.date_created_seance,
+      };
+      await this.caissekineModel.create(caissekineData);
+    }
+    return {createpatient, status: 200};
   }
 
   async findAllpatientkineseance(patientkineId:string) {
-    return await this.seanceModel.find({patientkineId:patientkineId}).populate('patientkineId').exec();
+    const seances =  await this.seanceModel.find({patientkineId:patientkineId}).populate('patientkineId').exec();
+    const seance = seances.sort((a, b) =>{
+      return a.seance_title.localeCompare(b.seance_title);
+    });
+    return seance
   }
 
   async updateseance(id, updateseancekine: UpdateSeancePatientKineDto) {
     const createpatient = await this.seanceModel.findByIdAndUpdate({_id: id},updateseancekine, {new: true}).lean();
-    
-
     return createpatient;
   }
 
-  async deleteseance(patientkineId) {
-    return await this.caissemachineModel.find({patientkineId:patientkineId}).populate('patientkineId').exec();
+  async payerseance(id, updateseancekine: UpdateSeancePatientKineDto) {
+    console.log(updateseancekine);
+    const updatepatient = await this.seanceModel.findByIdAndUpdate({_id: id},updateseancekine, {new: true}).lean();
+    console.log(updatepatient);
+    if(updatepatient){
+      const caissekineData = {
+        patientId: updateseancekine.patientkineId,
+        montant: updateseancekine.cout_seance,
+        date: updateseancekine.date_created_seance,
+      };
+      await this.caissekineModel.create(caissekineData);
+    }
+    return updatepatient;
+  }
+
+  async comptabiliseSoldeseance(seanceId, start, end){
+    const date = new Date(end);
+    const monthIndex = date.getMonth(); // Obtenir l'index du mois (0 pour janvier, 11 pour décembre)
+    const yearIndex = date.getFullYear(); 
+    // Obtenir le 20 du mois en cours
+    const currentMonth20th = new Date(date.getFullYear(), date.getMonth(), 20);
+
+    // Obtenir le 20 du mois précédent
+    const lastMonth20th = new Date(date.getFullYear(), date.getMonth() - 1, 20);
+
+    // return date >= lastMonth20th && date < currentMonth20th;
+    console.log(date, lastMonth20th, currentMonth20th );
+
+    const seance = await this.seanceModel.findById(seanceId).exec();
+    if(seance){
+      if(date >= lastMonth20th && date < currentMonth20th){
+        console.log('mois:', this.months[monthIndex])
+        const soldemois = await this.caissekinesoldeModel.findOne({mois: this.months[monthIndex], annee:  yearIndex}).exec();
+        console.log(soldemois);
+        if(soldemois == null){
+          const caItem = {
+            chiffreAff: seance.cout_seance,
+            mois: this.months[monthIndex],
+            annee: yearIndex
+          };
+  
+          return this.caissekinesoldeModel.create(caItem);
+  
+        }else{
+          const caItem = {
+            chiffreAff: soldemois.chiffreAff + seance.cout_seance,
+            mois: this.months[monthIndex],
+            annee: yearIndex
+          };
+  
+          return this.caissekinesoldeModel.findByIdAndUpdate({_id: soldemois._id }, caItem, {new: true}).lean();
+  
+        }
+
+      }else{
+        const soldemois = await this.caissekinesoldeModel.findOne({mois: this.months[monthIndex+1], annee:  yearIndex}).exec();
+        if(soldemois == null){
+          const caItem = {
+            chiffreAff: seance.cout_seance,
+            mois: this.months[monthIndex+1],
+            annee: yearIndex
+          };
+  
+          return this.caissekinesoldeModel.create(caItem);
+  
+        }else{
+          const caItem = {
+            chiffreAff: soldemois.chiffreAff + seance.cout_seance,
+            mois: this.months[monthIndex + 1],
+            annee: yearIndex
+          };
+  
+          return this.caissekinesoldeModel.findByIdAndUpdate({_id: soldemois._id }, caItem, {new: true}).lean();
+  
+        }
+
+      }
+
+    }    
+
+  }
+
+  async allCaKine(){
+    const cakine = await this.caissekinesoldeModel.find().exec();
+    return cakine;
+  }
+
+  async CaMoisAnneeKine(findSalaireDto: FindSalaireDTO){
+    const camoisannekine = await this.caissekinesoldeModel.findOne({mois:findSalaireDto.mois, annee: findSalaireDto.annee}).exec();
+    return camoisannekine;
+  }
+
+  async createSaliarekine(salairekineDto){
+    return this.salairekineModel.create({mois:salairekineDto.mois, annee: salairekineDto.annee});
+  }
+
+  async allSalaireKine(){
+    const cakine = await this.salairekineModel.find().exec();
+    return cakine;
+  }
+
+  async salaireMoisKine(findsalaireDto: FindSalaireDTO){
+    const cakine = await this.caissecarnetsoldeModel.findOne({mois:findsalaireDto.mois, annee: findsalaireDto.annee}).exec();
+    return cakine;
+  }
+
+  async deleteseance(id: string) {
+      return await this.seanceModel.findByIdAndRemove(id).exec();
+   
   }
 
   async patientbackup() {

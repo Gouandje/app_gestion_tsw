@@ -9,6 +9,11 @@ export class CreateDocteurWeekendyDto {
     @IsNotEmpty()
     bureauId: string;
 
+    @ApiProperty({ example: '5efvbe54edfgbknjlh45', description: 'The doctor id '})
+    @IsString()
+    @IsNotEmpty()
+    doctorId: string;
+
     @IsString()
     @IsNotEmpty()
     @ApiProperty({ description: 'Weekendy month' })

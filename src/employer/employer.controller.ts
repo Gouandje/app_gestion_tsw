@@ -17,6 +17,11 @@ export class EmployerController {
     return this.employerService.findAll();
   }
 
+  @Get('alldoctor')
+  findAllDoctor() {
+    return this.employerService.findAllDoctor();
+  }
+
   @Get('singleemployer/:id')
   findOne(@Param('id') id: string) {
     return this.employerService.findOne(id);

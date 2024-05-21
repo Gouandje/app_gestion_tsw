@@ -41,6 +41,7 @@ import { PatientModule } from './patient/patient.module';
 import { DelecountryModule } from './delecountry/delecountry.module';
 import { BackupModule } from './backup/backup.module';
 import { ProduitendommageModule } from './produitendommage/produitendommage.module';
+import { PlanningModule } from './planning/planning.module';
 
 @Module({
   imports: [
@@ -93,7 +94,8 @@ import { ProduitendommageModule } from './produitendommage/produitendommage.modu
     MoisanneeModule, 
     PatientModule, 
     DelecountryModule,
-    ProduitendommageModule
+    ProduitendommageModule,
+    PlanningModule
   ],
   controllers: [AppController],
   providers: [AppService],

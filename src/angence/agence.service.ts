@@ -639,7 +639,7 @@ export class AgenceService {
     if(agence.sectionId !=''){
       const agences = await this.agenceModel.findOne({bureau_name: name})
                                          .populate('countryId')
-                                         .populate('zoneId')
+                                        //  .populate('zoneId')
                                         //  .populate('sectionId')
                                          .exec();
       const section = await this.sectionService.findOne(agence.sectionId);
@@ -649,7 +649,7 @@ export class AgenceService {
     }else{
       const agences = await this.agenceModel.findOne({bureau_name: name})
                                             .populate('countryId')
-                                            .populate('zoneId')
+                                            // .populate('zoneId')
                                             .exec();
       return agences
     }
