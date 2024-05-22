@@ -28,6 +28,13 @@ export class Caissekinesolde {
     })
     annee: number;
 
+    @Prop({ required: true, default: 'mois en cour' })
+    @ApiProperty({
+        example: 'sortie de caisse',
+        description: 'The date of caisse',
+    })
+    status: string;
+
  
 }
 export const CaissekinesoldeSchema = SchemaFactory.createForClass(Caissekinesolde);

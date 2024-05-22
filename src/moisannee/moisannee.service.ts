@@ -47,6 +47,15 @@ export class MoisanneeService {
     return year;
   }
 
+  async findOnemois(mois: string) {
+    const month = await this.moisModel.findOne({valueMois: mois});
+
+    if (!month) {
+      throw new NotFoundException('mois non trouvée');
+    }
+    return month;
+  }
+
   async createmonth(createMoisDto: CreateMoisDto) {
     const alreadyExists = await this.moisModel.exists({valueMois: createMoisDto.valueMois}).lean();
     if(alreadyExists){

@@ -22,6 +22,48 @@ export class PayscaService {
     const weekendy = await  this.payscaModel.create(createPayscaDto);
   }
 
+  async createca(createPayscaDto: CreatePayscaDto) {
+    const weekendy = await  this.payscaModel.create(createPayscaDto);
+    const findcapaysYear = await this.payscayearModel.findOne({countryId: createPayscaDto.countryId, year: createPayscaDto.annee}).exec();
+    if(findcapaysYear == null){
+      await this.payscayearModel.create({countryId: createPayscaDto.countryId, year: createPayscaDto.annee, caTotal: createPayscaDto.caTotal});
+      return {
+        message: 'created',
+        status: 200
+      }
+    }else{
+      const updatePayscaDto = {
+        countryId: createPayscaDto.countryId,
+         year: createPayscaDto.annee, 
+         caTotal: findcapaysYear.caTotal + createPayscaDto.caTotal
+      };
+      const update = await this.payscayearModel.findByIdAndUpdate({_id: findcapaysYear._id}, updatePayscaDto, {new: true}).lean();
+
+      return {
+        message: 'created',
+        status: 200
+      }
+
+    }
+    
+  }
+
+  async updateCaPaysMoisDirect(id, createPayscaDto: CreatePayscaDto){
+    const update = await this.payscaModel.findByIdAndUpdate({_id: id}, createPayscaDto, {new: true}).lean();
+    const findcapaysYear = await this.payscayearModel.findOne({countryId: createPayscaDto.countryId, year: createPayscaDto.annee}).exec();
+    
+    const updatePayscaDto = {
+      countryId: createPayscaDto.countryId,
+       year: createPayscaDto.annee, 
+       caTotal: findcapaysYear.caTotal + createPayscaDto.caTotal
+    };
+    await this.payscayearModel.findByIdAndUpdate({_id: findcapaysYear._id}, updatePayscaDto, {new: true}).lean();
+    return {
+      message: 'created',
+      status: 200
+    };
+  }
+
   async findAll(query: QueryDto) {
     const result =[];
     const capays = await this.payscaModel.find({countryId: query.paysId, annee: query.anneeId}).populate('countryId').populate('mois').exec();
@@ -73,14 +115,14 @@ export class PayscaService {
     const cayear = await this.payscayearModel.findOne({countryId: id, year: year}).exec();
     return cayear;
   }
-  async updateCaPaysMois(id,upadateinfopaysCaMois){
+  async updateCaPaysMois(id, upadateinfopaysCaMois){
     const update = await this.payscaModel.findByIdAndUpdate({_id: id}, upadateinfopaysCaMois, {new: true}).lean();
     return update;
   }
 
   async createCaPaysYear(CapaysYear:any){
 
-    await this.payscayearModel.create(CapaysYear)
+    await this.payscayearModel.create(CapaysYear);
 
   }
 

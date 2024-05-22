@@ -21,6 +21,8 @@ import { CreateSeancePatientKineDto } from './dto/create-seance-kine.dto';
 import { UpdateSeancePatientKineDto } from './dto/update-seance-kine.dto';
 import { FindSalaireDTO } from './dto/findsalaire.dto';
 import { SalaireKine, SalaireKineDocument } from './schemas/salairekine.schema';
+import { UpdateSoldeKineStatusDTO } from './dto/updatesoldekinestatus.dto';
+import { SalairekineDTO } from './dto/salairekine.dto';
 
 @Injectable()
 export class PatientService {
@@ -244,9 +246,7 @@ export class PatientService {
   }
 
   async payerseance(id, updateseancekine: UpdateSeancePatientKineDto) {
-    console.log(updateseancekine);
     const updatepatient = await this.seanceModel.findByIdAndUpdate({_id: id},updateseancekine, {new: true}).lean();
-    console.log(updatepatient);
     if(updatepatient){
       const caissekineData = {
         patientId: updateseancekine.patientkineId,
@@ -266,15 +266,13 @@ export class PatientService {
     const currentMonth20th = new Date(date.getFullYear(), date.getMonth(), 20);
 
     // Obtenir le 20 du mois précédent
-    const lastMonth20th = new Date(date.getFullYear(), date.getMonth() - 1, 20);
+    const lastMonth21th = new Date(date.getFullYear(), date.getMonth() - 1, 21);
 
     // return date >= lastMonth20th && date < currentMonth20th;
-    console.log(date, lastMonth20th, currentMonth20th );
 
     const seance = await this.seanceModel.findById(seanceId).exec();
     if(seance){
-      if(date >= lastMonth20th && date < currentMonth20th){
-        console.log('mois:', this.months[monthIndex])
+      if(date >= lastMonth21th && date < currentMonth20th){
         const soldemois = await this.caissekinesoldeModel.findOne({mois: this.months[monthIndex], annee:  yearIndex}).exec();
         console.log(soldemois);
         if(soldemois == null){
@@ -284,7 +282,7 @@ export class PatientService {
             annee: yearIndex
           };
   
-          return this.caissekinesoldeModel.create(caItem);
+          return await this.caissekinesoldeModel.create(caItem);
   
         }else{
           const caItem = {
@@ -293,7 +291,7 @@ export class PatientService {
             annee: yearIndex
           };
   
-          return this.caissekinesoldeModel.findByIdAndUpdate({_id: soldemois._id }, caItem, {new: true}).lean();
+          return await this.caissekinesoldeModel.findByIdAndUpdate({_id: soldemois._id }, caItem, {new: true}).lean();
   
         }
 
@@ -306,7 +304,7 @@ export class PatientService {
             annee: yearIndex
           };
   
-          return this.caissekinesoldeModel.create(caItem);
+          return await this.caissekinesoldeModel.create(caItem);
   
         }else{
           const caItem = {
@@ -315,13 +313,21 @@ export class PatientService {
             annee: yearIndex
           };
   
-          return this.caissekinesoldeModel.findByIdAndUpdate({_id: soldemois._id }, caItem, {new: true}).lean();
+          return await this.caissekinesoldeModel.findByIdAndUpdate({_id: soldemois._id }, caItem, {new: true}).lean();
   
         }
-
       }
 
     }    
+
+  }
+
+  async updateStatusCaMoisKine(id:string, updatesoldekine: UpdateSoldeKineStatusDTO){
+    await this.caissekinesoldeModel.findByIdAndUpdate({_id: id }, updatesoldekine, {new: true}).lean();
+    return {
+      message: 'mois clôturé avec succès',
+      status: 200
+    }
 
   }
 
@@ -330,17 +336,42 @@ export class PatientService {
     return cakine;
   }
 
+  async allCaKineForCompta(){
+    const status = 'mois clôturé';
+    const cakine = await this.caissekinesoldeModel.find({status: status}).exec();
+    return cakine;
+  }
+
   async CaMoisAnneeKine(findSalaireDto: FindSalaireDTO){
     const camoisannekine = await this.caissekinesoldeModel.findOne({mois:findSalaireDto.mois, annee: findSalaireDto.annee}).exec();
     return camoisannekine;
   }
 
-  async createSaliarekine(salairekineDto){
-    return this.salairekineModel.create({mois:salairekineDto.mois, annee: salairekineDto.annee});
+  async createSaliarekine(salairekineDto: SalairekineDTO){
+    const salaireExist = await this.salairekineModel.findOne({employerId: salairekineDto.employerId, mois: salairekineDto.mois, annee: salairekineDto.annee}).exec();
+    if(salaireExist !=null){
+      return {
+        message: 'Le salaire pour cet employé a déjà été payé pour ce mois',
+        status: 403,
+        data: salaireExist
+      }
+    }else{
+      const createdSalaire = await this.salairekineModel.create(salairekineDto);
+      return {
+        message: 'Succès je création',
+        status: 200,
+        data: createdSalaire
+      }
+    }
   }
 
-  async allSalaireKine(){
-    const cakine = await this.salairekineModel.find().exec();
+  async allSalaireKine(id){
+    const cakine = await this.salairekineModel.find({employerId: id}).sort({ date_created: -1 }).exec();
+    return cakine;
+  }
+
+  async detailSalaireKine(id){
+    const cakine = await this.salairekineModel.findById(id).exec();
     return cakine;
   }
 

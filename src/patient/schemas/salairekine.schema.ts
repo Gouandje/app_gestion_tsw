@@ -7,10 +7,19 @@ export type SalaireKineDocument = HydratedDocument<SalaireKine>;
 @Schema()
 export class SalaireKine {
     @Prop({type: MongooseSchema.Types.ObjectId, required: false, ref: Employer.name })
-    enmployerId: string;
+    employerId: string;
 
     @Prop({ required: true })
-    salairekine: number;
+    salairebrut: number;
+
+    @Prop({ required: true })
+    dette: number;
+
+    @Prop({ required: true })
+    gratification: number;
+
+    @Prop({ required: true })
+    salairenet: number;
 
     @Prop({ required: true })
     mois: string;
@@ -18,6 +27,8 @@ export class SalaireKine {
     @Prop({ required: true })
     annee: number;
 
+    @Prop({required: true})
+    date_created: string;
  
 }
 export const SalaireKineSchema = SchemaFactory.createForClass(SalaireKine);

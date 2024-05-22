@@ -3,6 +3,7 @@ import { PayscaService } from './paysca.service';
 import { CreatePayscaDto } from './dto/create-paysca.dto';
 import { UpdatePayscaDto } from './dto/update-paysca.dto';
 import { QueryDto } from 'src/weekendy/dto/requete.dto';
+import { GetterCaPaysMoisAnneeDTO } from './dto/getterCaPaysMoisAnnee.dto';
 
 @Controller('paysca')
 export class PayscaController {
@@ -11,6 +12,16 @@ export class PayscaController {
   @Post('allCapays')
   findAll(@Body() query: QueryDto) {
     return this.payscaService.findAll(query);
+  }
+
+  @Post('createcamoisannepays')
+  createca(@Body() query: CreatePayscaDto) {
+    return this.payscaService.create(query);
+  }
+
+  @Patch('updatemoisannepays/:id')
+  updatecaYear(@Param('id') id: string, @Body() query: CreatePayscaDto) {
+    return this.payscaService.updateCaPaysMoisDirect(id, query);
   }
 
 
@@ -42,5 +53,12 @@ export class PayscaController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.payscaService.remove(id);
+  }
+
+  @Post('capaysmoisannee')
+  findOneCaPaysMoisAnnee(@Body() getterCaPaysMoisAnneedto: GetterCaPaysMoisAnneeDTO){
+    console.log(getterCaPaysMoisAnneedto);
+    return this.payscaService.findOnePaysCamoisExist(getterCaPaysMoisAnneedto.countryId, getterCaPaysMoisAnneedto.mois, getterCaPaysMoisAnneedto.annee);
+
   }
 }

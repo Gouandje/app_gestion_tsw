@@ -44,6 +44,17 @@ export class EmployerService {
     return doctors;
   }
 
+  async findAllKine() {
+    const kines= [];
+    const kine = await this.employerModel.find().exec();
+    for(let i=0; i<kine.length; i++){
+      if(kine[i].grade == 'Kinésithérapeutre' || kine[i].grade == 'Assistant(e) Kinésithérapeutre'){
+        kines.push(kine[i]);
+      }
+    }
+    return kines;
+  }
+
   async findOne(id: string) {
     const employer = await this.employerModel.findById(id);
 

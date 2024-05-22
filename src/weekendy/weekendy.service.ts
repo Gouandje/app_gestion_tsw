@@ -53,8 +53,7 @@ export class WeekendyService {
     for(let i=0; i<createWeekendyDto.items.length; i++){
 
       const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
-      console.log('valeur', Number(product.quantity) -Number( createWeekendyDto.items[i].quantity));
-      const value = Number(product.quantity) -Number( createWeekendyDto.items[i].quantity);
+      const value = Number(product.quantity) - Number( createWeekendyDto.items[i].quantity);
       if(value >=0){
         weekendproduct.push(createWeekendyDto.items[i]);
       }else{
@@ -737,9 +736,9 @@ export class WeekendyService {
   async createVenteDocteur(createDocteurWeekendyDto: CreateDocteurWeekendyDto){
     // console.log(createWeekendyDto);
     const weekendproduct = [];
+
     for(let i=0; i<createDocteurWeekendyDto.items.length; i++){
       const product = await this.stockagenceService.findagenceproduit(createDocteurWeekendyDto.bureauId, createDocteurWeekendyDto.items[i].productId);
-      console.log('valeur', Number(product.quantity) -Number( createDocteurWeekendyDto.items[i].quantity));
       const value = Number(product.quantity) -Number( createDocteurWeekendyDto.items[i].quantity);
 
       if(value >=0){
@@ -759,6 +758,7 @@ export class WeekendyService {
       caTotal:createDocteurWeekendyDto.caTotal,
       createdAt: createDocteurWeekendyDto.createdAt
     };
+
     const alreadyExists = await this.weekendyDocteurModel.findOne({ bureauId: createdDataDto.bureauId, doctorId: createdDataDto.doctorId,
       mois: createdDataDto.mois, annee:createdDataDto.annee}).lean();
       if(alreadyExists){

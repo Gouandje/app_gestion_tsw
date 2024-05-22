@@ -31,6 +31,11 @@ export class MoisanneeController {
     return this.moisanneeService.findOneannee(annee);
   }
 
+  @Get('singlemois/:mois')
+  findOneMois(@Param('mois') mois: string) {
+    return this.moisanneeService.findOnemois(mois);
+  }
+
 
   @Post('addmonth')
   createmonth(@Body() createMoisDto: CreateMoisDto) {

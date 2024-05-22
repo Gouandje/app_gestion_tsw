@@ -9,6 +9,7 @@ import { UpdateSeancePatientKineDto } from './dto/update-seance-kine.dto';
 import { CreateSeancePatientKineDto } from './dto/create-seance-kine.dto';
 import { FindSalaireDTO } from './dto/findsalaire.dto';
 import { SalairekineDTO } from './dto/salairekine.dto';
+import { UpdateSoldeKineStatusDTO } from './dto/updatesoldekinestatus.dto';
 
 @Controller('patient')
 export class PatientController {
@@ -133,15 +134,17 @@ export class PatientController {
       return this.patientService.allCaKine();
   }
 
-  @Get('singlecakine')
+  @Get('allcakineForCompta')
+    AllcaKineForCompta() {
+      return this.patientService.allCaKine();
+  }
+
+  @Post('singlecakine')
     SinglecaKine(@Body() findsalaireDto: FindSalaireDTO) {
       return this.patientService.CaMoisAnneeKine(findsalaireDto);
   }
 
-  @Get('salairekine')
-    AllsalaireKine() {
-      return this.patientService.allSalaireKine();
-  }
+ 
 
   @Post('salairekinemoisannee')
     AllsalairemoisKine(@Body() findsalaireDto: FindSalaireDTO) {
@@ -151,6 +154,22 @@ export class PatientController {
   @Post('createsalairekine')
   createSalaire(@Body() salairekineDto: SalairekineDTO){
     return this.patientService.createSaliarekine(salairekineDto);
+  }
+
+  @Get('allkineSalaire/:id')
+  getAllkineSalaire(@Param('id') id: string){
+    return this.patientService.allSalaireKine(id);
+  }
+
+  @Get('detailkineSalaire/:id')
+  getDetailkineSalaire(@Param('id') id: string){
+    return this.patientService.detailSalaireKine(id);
+  }
+
+
+  @Patch('updateStatusSoldekine/:id')
+  updateStatusSoldekine(@Param('id') id: string, @Body() updatesoldekine: UpdateSoldeKineStatusDTO){
+    return this.patientService.updateStatusCaMoisKine(id, updatesoldekine);
   }
 
 
