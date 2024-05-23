@@ -221,13 +221,13 @@ export class StockagenceService {
 
       const paysagence = await this.agengeService.findbureau(mvtStockagencepaysDto.agenceId);
       const stockProduitpays = await this.stockPaysService.findpaysproduit(mvtStockagencepaysDto.productId, paysagence.countryId);
-      const updateStockpays:UpdateStockPaysDto = {
+      const updateStockpays = {
         paysId: paysagence.countryId,
         productId: mvtStockagencepaysDto.productId,
         quantity: stockProduitpays.quantity + mvtStockagencepaysDto.quantity
 
       };
-      this.stockPaysService.updateStockpaysproduit(stockProduitpays._id.toString('hex'), updateStockpays);
+      await this.stockPaysService.updateStockpaysproduit(stockProduitpays._id.toString('hex'), updateStockpays);
 
     }
     return createmvtstockagencepays;

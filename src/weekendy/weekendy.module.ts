@@ -19,6 +19,7 @@ import { TauxzoneModule } from 'src/tauxzone/tauxzone.module';
 import { ZoneModule } from 'src/zone/zone.module';
 import { SectionModule } from 'src/section/section.module';
 import { SalaireManagerModule } from 'src/salaire_manager/salaire_manager.module';
+import { SalaireDoctor, SalaireDoctorSchema } from './schemas/salairedoctor.schema';
 
 @Module({
   
@@ -53,7 +54,13 @@ import { SalaireManagerModule } from 'src/salaire_manager/salaire_manager.module
         { 
           name: Produitvendupays.name, 
           schema: ProduitvendupaysSchema 
-        }
+        },
+
+        { 
+          name: SalaireDoctor.name, 
+          schema: SalaireDoctorSchema 
+        },
+        
       ]
       )
   ],

@@ -2,18 +2,33 @@ import { HydratedDocument,Schema as MongooseSchema } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Employer } from "src/employer/schemas/employer.schema";
 
-export type SalaireKineDocument = HydratedDocument<SalaireKine>;
+export type SalaireDoctorDocument = HydratedDocument<SalaireDoctor>;
 
 @Schema()
-export class SalaireKine {
+export class SalaireDoctor {
     @Prop({type: MongooseSchema.Types.ObjectId, required: false, ref: Employer.name })
     employerId: string;
 
     @Prop({ required: true })
-    chiffreAff:number;
+    chiffreAff: number;
+
+    @Prop({ required: true })
+    chiffAffkine: number;
+
+    @Prop({ required: true })
+    partcakine: number;
+
+    @Prop({ required: true })
+    venteAutrebureau: number;
+
+    @Prop({ required: true })
+    caTotal: number;
 
     @Prop({ required: true })
     pourcentage: number;
+
+    @Prop({ required: true })
+    salairebase: number;
 
     @Prop({ required: true })
     salairebrut: number;
@@ -37,4 +52,4 @@ export class SalaireKine {
     date_created: string;
  
 }
-export const SalaireKineSchema = SchemaFactory.createForClass(SalaireKine);
+export const SalaireDoctorSchema = SchemaFactory.createForClass(SalaireDoctor);

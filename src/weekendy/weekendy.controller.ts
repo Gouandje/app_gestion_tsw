@@ -6,6 +6,7 @@ import { Weekendy } from './schemas/weekendy.schema';
 import { Schema as MongooseSchema } from 'mongoose';
 import { CreateDocteurWeekendyDto } from './dto/create-docteur-weekendy.dto';
 import { QueryDto } from './dto/requete.dto';
+import { SalairekineDTO } from './dto/salairedoctor.dto';
 
 @Controller('weekendy')
 export class WeekendyController {
@@ -72,10 +73,26 @@ export class WeekendyController {
     return this.weekendyService.allGetAllProduitVendyPays(query);
   }
 
+  @Post('createsalairedoctor')
+  createSalaireDoctor(@Body() query: SalairekineDTO) {
+    console.log('query',query);
+    return this.weekendyService.createSalaireDoctor(query);
+  }
+
+  @Get('allsalairedoctor/:id')
+  allSalairebydoctor(@Param('id') id: string) {
+    return this.weekendyService.allGetAllSalaireByDoctor(id);
+  }
+
 
   @Get('singleWeekendy/:id')
   findOne(@Param('id') id: string) {
     return this.weekendyService.findOne(id);
+  }
+
+  @Get('findSingleByDocteur/:id')
+  findSingleByDocteur(@Param('id') id: string) {
+    return this.weekendyService.findSingleByDocteur(id);
   }
 
   @Patch('updateWeekendy/:id')

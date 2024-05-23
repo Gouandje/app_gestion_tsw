@@ -22,6 +22,8 @@ import { SectionService } from 'src/section/section.service';
 import { TauxzoneService } from 'src/tauxzone/tauxzone.service';
 import { QueryDto } from './dto/requete.dto';
 import { SalaireManagerService } from 'src/salaire_manager/salaire_manager.service';
+import { SalaireDoctor, SalaireDoctorDocument } from './schemas/salairedoctor.schema';
+import { SalairekineDTO } from './dto/salairedoctor.dto';
 
 @Injectable()
 export class WeekendyService {
@@ -31,6 +33,7 @@ export class WeekendyService {
     @InjectModel(Produitvendupays.name) private readonly produitvendupaysModel: Model<ProduitvendupaysDocument>,
     @InjectModel(Weekendy.name) private readonly produitvendubureauModel: Model<ProduitvendubureauDocument>,
     @InjectModel(WeekendyDocteur.name) private readonly weekendyDocteurModel: Model<WeekendyDocteurDocument>,
+    @InjectModel(SalaireDoctor.name) private readonly salaireDoctorModel: Model<SalaireDoctorDocument>,
     private produitService: ProduitService,
     private agenceservice: AgenceService,
     private zoneservice: ZoneService,
@@ -734,12 +737,12 @@ export class WeekendyService {
   }
 
   async createVenteDocteur(createDocteurWeekendyDto: CreateDocteurWeekendyDto){
-    // console.log(createWeekendyDto);
+    console.log(createDocteurWeekendyDto);
     const weekendproduct = [];
 
     for(let i=0; i<createDocteurWeekendyDto.items.length; i++){
       const product = await this.stockagenceService.findagenceproduit(createDocteurWeekendyDto.bureauId, createDocteurWeekendyDto.items[i].productId);
-      const value = Number(product.quantity) -Number( createDocteurWeekendyDto.items[i].quantity);
+      const value = Number(product.quantity) - Number( createDocteurWeekendyDto.items[i].quantity);
 
       if(value >=0){
         weekendproduct.push(createDocteurWeekendyDto.items[i]);
@@ -759,14 +762,15 @@ export class WeekendyService {
       createdAt: createDocteurWeekendyDto.createdAt
     };
 
+
     const alreadyExists = await this.weekendyDocteurModel.findOne({ bureauId: createdDataDto.bureauId, doctorId: createdDataDto.doctorId,
-      mois: createdDataDto.mois, annee:createdDataDto.annee}).lean();
-      if(alreadyExists){
-        console.log('alreadyExists', alreadyExists);
-        throw new ConflictException(`Pour ce Bureau il existe déjà un Monthending pour ce mois et pour cette année dans la base de données`);
-      }else{
-      const weekendy = await  this.weekendyDocteurModel.create(createdDataDto);
+      mois: createdDataDto.mois, annee:createdDataDto.annee}).exec();
+
+    if(alreadyExists == null){
+      const weekendy = await this.weekendyDocteurModel.create(createdDataDto);
+
       if(weekendy){
+
         const bureau = await this.agenceservice.findbureau(createDocteurWeekendyDto.bureauId);
 
         for(let i=0; i < createDocteurWeekendyDto.items.length; i++){
@@ -775,7 +779,6 @@ export class WeekendyService {
           const productPrice = await this.produitService.findOne(createDocteurWeekendyDto.items[i].productId);
           const produitvendupays = await this.produitvendupaysModel.findOne({paysId: bureau.countryId, productId: createDocteurWeekendyDto.items[i].productId,  annee: createDocteurWeekendyDto.annee}).exec();
           if(produitvendupays == null){
-
             const createdproduitvenduDto = {
               paysId: bureau.countryId,
               productId: createDocteurWeekendyDto.items[i].productId,
@@ -801,13 +804,12 @@ export class WeekendyService {
             const updatedStockagence = {
             quantity: product.quantitytotalenmagasin - (createDocteurWeekendyDto.items[i].quantity)
             };
-            console.log(product._id);
             const updatestockagence: UpdateStockagenceDto = {
               agenceId:createDocteurWeekendyDto.bureauId,
               productId: createDocteurWeekendyDto.items[i].productId,
-              quantity: product.quantitytotalenmagasin - createDocteurWeekendyDto.items[i].quantity,
+              quantity: product.quantity - createDocteurWeekendyDto.items[i].quantity,
               quantitytotalenmagasin: product.quantitytotalenmagasin
-          };
+            };
           await this.stockagenceService.updateagenceStock(product._id.toString('hex'),  updatestockagence);
           }
         }
@@ -817,29 +819,51 @@ export class WeekendyService {
         const infoCapays = {
           countryId: paysinfobyagence.countryId,
           mois: createDocteurWeekendyDto.mois,
+          annee: createDocteurWeekendyDto.annee,
           caTotal: createDocteurWeekendyDto.caTotal
         };
 
         const getPaysCaMois = await this.payscaservice.findOnePaysCamoisExist(infoCapays.countryId, createDocteurWeekendyDto.mois, createDocteurWeekendyDto.annee);
+        const getPaysCaYear = await this.payscaservice.findOnePaysCaYearExist(infoCapays.countryId, createDocteurWeekendyDto.annee);
+
 
         if(getPaysCaMois !=null){
           const upadateinfopaysCaMois = {
             countryId: paysinfobyagence.countryId,
             mois: createDocteurWeekendyDto.mois,
+            annee: createDocteurWeekendyDto.annee,
             caTotal: createDocteurWeekendyDto.caTotal + getPaysCaMois.caTotal
           };
-          await this.payscaservice.updateyear(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
+          await this.payscaservice.updateCaPaysMois(getPaysCaMois._id.toString('hex'), upadateinfopaysCaMois);
         }else{
 
           await this.payscaservice.create(infoCapays)
         }
+
+        if(getPaysCaYear !=null){
+          const upadateinfopaysCaYear = {
+            countryId: paysinfobyagence.countryId,
+            year: createDocteurWeekendyDto.annee,
+            caTotal: createDocteurWeekendyDto.caTotal + getPaysCaYear.caTotal
+          };
+          await this.payscaservice.updateyear(getPaysCaYear._id.toString('hex'), upadateinfopaysCaYear);
+        }else{
+
+          await this.payscaservice.createCaPaysYear(infoCapays)
+        }
+
+
+
       }
       return weekendy;
 
+
+    }else{
+
+      throw new ConflictException(`Pour ce docteur il existe déjà un Monthending pour ce mois et pour cette année dans la base de données`);
     }
     // console.log(weekendy);
   }
-
 
   async findAll(bureauId: string) {
     const weekendy = await this.weekendyModel
@@ -887,12 +911,49 @@ export class WeekendyService {
     return weekendy;
   }
 
+  async findSingleByDocteur(id: string) {
+    const weekendy = await this.weekendyDocteurModel
+                                .findById(id)
+                                .populate('bureauId')
+                                .populate('doctorId')
+                                .populate('mois')
+                                .populate('annee').exec();
+    return weekendy;
+  }
+
   async allGetAllProduitVendyPays(query: QueryDto){
     const result=[];
     // console.log('query', query);
     const ventes = await this.produitvendupaysModel.find({paysId: query.paysId, annee: query.anneeId}).populate('paysId').populate('productId').populate('annee').exec();
     // console.log('ventes',ventes);
     return ventes;                                               
+  }
+
+  async createSalaireDoctor(query: SalairekineDTO){
+    const salaireExist = await this.salaireDoctorModel.findOne({employerId: query.employerId, mois: query.mois, annee: query.annee}).exec();
+    if(salaireExist !=null){
+      return {
+        message: 'Le salaire pour cet employé a déjà été payé pour ce mois',
+        status: 403,
+        data: salaireExist
+      }
+    }else{
+      const createdSalaire = await this.salaireDoctorModel.create(query);
+      return {
+        message: 'Succès je création',
+        status: 200,
+        data: createdSalaire
+      }
+    }
+  }
+
+  async allGetAllSalaireByDoctor(id: string){
+      const salairesDoctor = await this.salaireDoctorModel.find({employerId: id});
+      return salairesDoctor;  
+  }
+
+  async findSigleDoctorSalary(id: string){
+    return await this.salaireDoctorModel.findById(id).exec();
   }
 
 

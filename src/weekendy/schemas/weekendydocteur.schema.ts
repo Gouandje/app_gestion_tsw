@@ -34,18 +34,6 @@ export class WeekendyDocteur {
     annee: string;
 
     @ApiProperty()
-    @Prop({ required: true, type: String })
-    periode_debut: string;
-
-    @ApiProperty()
-    @Prop({ required: true, type: String })
-    periode_fin: string;
-
-    // @ApiProperty()
-    // @Prop({ required: false })
-    // managers: Types.Array<Manager>;
-
-    @ApiProperty()
     @Prop({ 
         required: true 
     })
@@ -53,7 +41,6 @@ export class WeekendyDocteur {
         {
         quantity: number, 
         productId: string,
-        name: string,
        }
       ];
   

@@ -629,7 +629,7 @@ export class AgenceService {
   }
 
   async findbureau(bureauId: string) {
-    const agence = await this.agenceModel.findOne({_id: bureauId}).exec();
+    const agence = await this.agenceModel.findById(bureauId).exec();
     // console.log(agence);
     return agence;
   }
