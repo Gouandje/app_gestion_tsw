@@ -128,25 +128,25 @@ export class SalaireManagerService {
 
     const created = await this.dettebureauModel.create(detteBureaudto)
     if(created){
-      const findsalairemanager = await this.salairemanagerModel.find({salaireId: detteBureaudto.salaireId});
-      for(let i=0; i<findsalairemanager.length; i++){
-        const updateData: UpdateSalaireManagerDto = {
-          salaire_manager:findsalairemanager[i].salaire_manager,
-          dette_manager:findsalairemanager[i].dette_manager,
-          garantie_manager:findsalairemanager[i].garantie_manager,
-          mois:findsalairemanager[i].mois,
-          annee:findsalairemanager[i].annee,
-          managerId: findsalairemanager[i].managerId,
-          salaireId: findsalairemanager[i].salaireId,
-          salaire_net_manager: findsalairemanager[i].salaire_net_manager - Math.round(detteBureaudto.montantdette/findsalairemanager.length)
-        };
-        const updated = await this.salairemanagerModel.findByIdAndUpdate({_id: findsalairemanager[i]._id}, {$set: updateData }, { new: true }).exec();
+      // const findsalairemanager = await this.salairemanagerModel.find({salaireId: detteBureaudto.salaireId});
+      // for(let i=0; i<findsalairemanager.length; i++){
+      //   const updateData: UpdateSalaireManagerDto = {
+      //     salaire_manager:findsalairemanager[i].salaire_manager,
+      //     dette_manager:findsalairemanager[i].dette_manager,
+      //     garantie_manager:findsalairemanager[i].garantie_manager,
+      //     mois:findsalairemanager[i].mois,
+      //     annee:findsalairemanager[i].annee,
+      //     managerId: findsalairemanager[i].managerId,
+      //     salaireId: findsalairemanager[i].salaireId,
+      //     salaire_net_manager: findsalairemanager[i].salaire_net_manager - Math.round(detteBureaudto.montantdette/findsalairemanager.length)
+      //   };
+      //   const updated = await this.salairemanagerModel.findByIdAndUpdate({_id: findsalairemanager[i]._id}, {$set: updateData }, { new: true }).exec();
 
-        // const updated = await this.salairemanagerModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true, }).lean();
-        // console.log(updated);
-        // const updated = this.salairemanagerModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true}).lean();
+      //   // const updated = await this.salairemanagerModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true, }).lean();
+      //   // console.log(updated);
+      //   // const updated = this.salairemanagerModel.findByIdAndUpdate(findsalairemanager[i]._id, {$set: updateData}, {new: true}).lean();
 
-      }
+      // }
     
       return {status: 200, message: 'enregistrer avec succès'};
     }   
