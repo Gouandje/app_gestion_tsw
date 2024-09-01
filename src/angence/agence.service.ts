@@ -7,6 +7,9 @@ import { Model, Schema as MongooseSchema } from 'mongoose';
 import { SectionService } from 'src/section/section.service';
 import { PaysService } from 'src/pays/pays.service';
 import { ZoneService } from 'src/zone/zone.service';
+import { CreateAgenceLocationDto } from './dto/agence-location.dto';
+import { LocationAgence, LocationAgenceDocument } from './schemas/locationagence.schema';
+import { UpdateAgenceLocationDto } from './dto/update-agence-location.dto';
 
 
 @Injectable()
@@ -14,6 +17,7 @@ export class AgenceService {
   
   constructor(
     @InjectModel(Agence.name) private readonly agenceModel: Model<AgenceDocument>,
+    @InjectModel(LocationAgence.name) private readonly agencelocationModel: Model<LocationAgenceDocument>,
     private readonly countryService: PaysService,
     private readonly zoneService: ZoneService,
     private readonly sectionService: SectionService,
@@ -109,7 +113,6 @@ export class AgenceService {
         };
 
       }else{
-        console.log('test1', typeof findagence.zoneId);
         const zone = await this.zoneService.findOneZonebyId(findagence.zoneId);
         const section = await this.sectionService.findOne(findagence.sectionId);
         return {
@@ -622,7 +625,6 @@ export class AgenceService {
         sectionId: data[i].sectionId,
         bureau_name: data[i].bureau_name,
       }
-      console.log(updateData);
       const agency = await this.agenceModel.findByIdAndUpdate({_id: data[i]._id}, {$set: updateData }, { new: true }).exec();
     }
 
@@ -729,4 +731,45 @@ export class AgenceService {
   async bureaubackup(){
     return await this.agenceModel.find().exec();
   }
-}
+
+  async createAngenceLocation(createAgenceDto: CreateAgenceLocationDto){
+    const alreadyExists = await this.agencelocationModel.exists({ bureauId: createAgenceDto.bureauId }).lean();
+    if(alreadyExists){
+      throw new ConflictException(`la localisation de ce bureau existe déjà dans la base de données! Vous pouvez la modifier si possible`);
+    }
+    const createdAgenceLocation = await this.agencelocationModel.create(createAgenceDto);
+    return createdAgenceLocation
+  }
+
+  async findAllAgenceLocation(){
+    const agences = await this.agencelocationModel.find()
+                              .populate('bureauId')
+                              .exec();
+    return agences;
+  }
+
+  async updateagencelocation(id: string, updateAgenceDto: UpdateAgenceLocationDto) {
+    const agency = await this.agencelocationModel.findByIdAndUpdate({_id: id}, {$set: updateAgenceDto }, { new: true }).exec();
+    if (!agency) {
+      throw new NotFoundException(`The agency with id #${id} was not found.`);
+    }
+    return agency;
+    
+    
+  }
+
+  async findSingleBureauLocation(id: string){
+    const agence = await this.agencelocationModel.findById(id).populate('bureauId').exec();
+   return agence;
+  }
+
+  async removeagencelocation(id: string) {
+    // console.log('bureauId', bureauId);
+    await this.agencelocationModel.findByIdAndRemove(id).catch((err) => {
+      throw new BadRequestException(`une erreur c'est produite lors de la suppression`);
+    });
+
+    return {message: 'la location du bureau supprimé avec succès'};
+
+  }
+} 

@@ -274,7 +274,6 @@ export class PatientService {
     if(seance){
       if(date >= lastMonth21th && date < currentMonth20th){
         const soldemois = await this.caissekinesoldeModel.findOne({mois: this.months[monthIndex], annee:  yearIndex}).exec();
-        console.log(soldemois);
         if(soldemois == null){
           const caItem = {
             chiffreAff: seance.cout_seance,

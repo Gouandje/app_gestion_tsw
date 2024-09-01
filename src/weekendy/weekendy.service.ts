@@ -80,7 +80,6 @@ export class WeekendyService {
     const alreadyExists = await this.weekendyModel.findOne({ bureauId: createWeekendyDto.bureauId,
       mois: createWeekendyDto.mois, annee:createdDataDto.annee}).lean();
     if(alreadyExists){
-        console.log('alreadyExists', alreadyExists);
         throw new ConflictException(`Pour ce Bureau il existe déjà un Monthending pour ce mois et pour cette année dans la base de données`);
     }else{
       const weekendy = await  this.weekendyModel.create(createdDataDto);

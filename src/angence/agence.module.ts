@@ -7,6 +7,7 @@ import { Agence, AgenceSchema } from './schemas/agence.schema';
 import { PaysModule } from 'src/pays/pays.module';
 import { ZoneModule } from 'src/zone/zone.module';
 import { SectionModule } from 'src/section/section.module';
+import { LocationAgence, LocationAgenceSchema } from './schemas/locationagence.schema';
 
 @Module({
   
@@ -20,6 +21,10 @@ import { SectionModule } from 'src/section/section.module';
         { 
           name: Agence.name, 
           schema: AgenceSchema 
+        },
+        {
+          name: LocationAgence.name,
+          schema: LocationAgenceSchema
         }
       ]
       )
