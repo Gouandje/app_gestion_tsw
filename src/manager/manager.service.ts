@@ -727,10 +727,10 @@ export class ManagerService {
     const mgr: Manager = await this.managerModel
     .findByIdAndUpdate(managerId, { $set: updateManagerDto }, { new: true })
     .exec();
-  if (!mgr) {
-    throw new NotFoundException(`The manager nom trouvé.`);
-  }
-  return mgr;
+    if (!mgr) {
+      throw new NotFoundException(`The manager nom trouvé.`);
+    }
+    return mgr;
   }
 
   async remove(id: string) {

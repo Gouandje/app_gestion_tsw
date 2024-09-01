@@ -84,6 +84,11 @@ export class WeekendyController {
     return this.weekendyService.allGetAllSalaireByDoctor(id);
   }
 
+  @Get('findSingleSalaireByDocteur/:id')
+  singleSalaryDoctor(@Param('id') id: string){
+    return this.weekendyService.findSigleDoctorSalary(id)
+  }
+
 
   @Get('singleWeekendy/:id')
   findOne(@Param('id') id: string) {

@@ -92,9 +92,11 @@ export class ZoneService {
       })
       .lean();
   }
+  
   async findAllCaByZone(id: string){
     return this.zonecamoisModel.find({zoneId: id}).populate('mois').populate('annee').exec();
   }
+
 
   async updateprimesz(id: string, updateZoneDto: any) {
     return this.primeszModel
