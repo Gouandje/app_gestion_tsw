@@ -18,11 +18,10 @@ export class ZoneController {
     return this.zoneService.findAll();
   }
 
-  @Get('singlezone/:id')
+  @Get('allcabyzone/:id')
   findAllCaByZone(@Param('id') id: string) {
     return this.zoneService.findAllCaByZone(id);
   }
-
 
   @Get('singleeditzone/:id')
   findSingle(@Param('id') id: string) {
@@ -44,9 +43,8 @@ export class ZoneController {
     return this.zoneService.remove(id);
   }
 
-  @Get('allcabyzone/:id')
+  @Get('singlezone/:id')
   findOne(@Param('id') id: string) {
     return this.zoneService.findOne(id);
   }
-  
 }
