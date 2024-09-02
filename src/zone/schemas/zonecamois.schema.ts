@@ -3,6 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Schema as MongooseSchema } from "mongoose";
 import { Zone } from "./zone.schema";
 import { Annee } from "src/moisannee/schemas/annee.schema";
+import { Mois } from "src/moisannee/schemas/mois.schema";
 
 
 export type ZonecamoisDocument = HydratedDocument<Zonecamois>;
@@ -25,7 +26,7 @@ export class Zonecamois {
     })
     cazone: number;
 
-    @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Annee.name,
+    @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Mois.name,
     })
     @ApiProperty({
         example: 'Marcory Américain 1',
