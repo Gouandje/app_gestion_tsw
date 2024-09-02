@@ -94,55 +94,21 @@ export class ZoneService {
   }
 
   async findAllCaByZone(id: string) {
-    const cazoneMaxByMonthYear = await this.zonecamoisModel.aggregate([
-        { 
-            $match: { zoneId: id } 
-        },
-        { 
-            $lookup: {
-                from: 'mois', // Nom de la collection Mois (assurez-vous que c'est correct)
-                localField: 'mois',
-                foreignField: '_id',
-                as: 'mois'
-            }
-        },
-        { 
-            $lookup: {
-                from: 'annee', // Nom de la collection Annee (assurez-vous que c'est correct)
-                localField: 'annee',
-                foreignField: '_id',
-                as: 'annee'
-            }
-        },
-        {
-            $unwind: '$mois'
-        },
-        {
-            $unwind: '$annee'
-        },
-        {
-            $group: {
-                _id: {
-                    mois: '$mois._id',
-                    annee: '$annee._id',
-                },
-                maxCaZone: { $max: '$cazone' }
-            }
-        },
-        {
-            $sort: { '_id.annee': 1, '_id.mois': 1 } // Tri par année et mois
-        },
-        {
-            $project: {
-                _id: 0,
-                mois: '$_id.mois',
-                annee: '$_id.annee',
-                maxCaZone: 1
-            }
+    const results = await this.zonecamoisModel.aggregate([
+      { $match: { zoneId: id } },
+      { $lookup: { from: 'mois', localField: 'mois', foreignField: '_id', as: 'moisDetails' } },
+      { $lookup: { from: 'annees', localField: 'annee', foreignField: '_id', as: 'anneeDetails' } },
+      { $unwind: '$moisDetails' },
+      { $unwind: '$anneeDetails' },
+      { $group: {
+          _id: { mois: '$moisDetails.valueMois', annee: '$anneeDetails.annee' },
+          maxCazone: { $max: '$cazone' }
         }
-    ]).exec();
+      },
+      { $sort: { '_id.annee': 1, '_id.mois': 1 } }
+    ]);
 
-    return cazoneMaxByMonthYear;
+    return results;
 }
 
 
