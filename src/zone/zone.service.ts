@@ -92,9 +92,10 @@ export class ZoneService {
       })
       .lean();
   }
-  
+
   async findAllCaByZone(id: string){
-    return this.zonecamoisModel.find({zoneId: id}).populate('mois').populate('annee').exec();
+     const cazonebyid = await this.zonecamoisModel.find({zoneId: id}).populate('mois').populate('annee').exec();
+     return cazonebyid
   }
 
 
