@@ -93,24 +93,10 @@ export class ZoneService {
       .lean();
   }
 
-  async findAllCaByZone(id: string) {
-    const results = await this.zonecamoisModel.aggregate([
-      { $match: { zoneId: id } },
-      { $lookup: { from: 'mois', localField: 'mois', foreignField: '_id', as: 'moisDetails' } },
-      { $lookup: { from: 'annees', localField: 'annee', foreignField: '_id', as: 'anneeDetails' } },
-      { $unwind: '$moisDetails' },
-      { $unwind: '$anneeDetails' },
-      { $group: {
-          _id: { mois: '$moisDetails.valueMois', annee: '$anneeDetails.annee' },
-          maxCazone: { $max: '$cazone' }
-        }
-      },
-      { $sort: { '_id.annee': 1, '_id.mois': 1 } }
-    ]);
-
-    return results;
-}
-
+  async findAllCaByZone(id: string){
+     const cazonebyid = await this.zonecamoisModel.find({zoneId: id}).populate('mois').populate('annee').exec();
+     return cazonebyid
+  }
 
 
   async updateprimesz(id: string, updateZoneDto: any) {
