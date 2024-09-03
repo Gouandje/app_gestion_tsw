@@ -94,7 +94,7 @@ export class ZoneService {
   }
 
   async findAllCaByZone(id: string){
-     const cazonebyid = await this.zonecamoisModel.find({zoneId: id}).populate('mois').populate('annee').exec();
+     const cazonebyid = await this.zonecamoisModel.find({zoneId: id}).populate('mois').populate('annee').sort({ 'annee.value': -1, 'mois.valueMois': -1 }).exec();
      return cazonebyid
   }
 
