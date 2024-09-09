@@ -24,6 +24,11 @@ export class ManagerController {
     return this.managerService.findAll();
   }
 
+  @Get('allmanagera10')
+  findAllManagerA10() {
+    return this.managerService.findAllManagerA10();
+  }
+
   @Post('infomanager')
   getinmanager(@Body() infomanagerDto: InfoManagerDto){
     return this.managerService.findAllMnager(infomanagerDto);

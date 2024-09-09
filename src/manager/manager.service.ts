@@ -672,6 +672,12 @@ export class ManagerService {
     return manager;
   }
 
+  async findAllManagerA10() {
+    const grade: string = "Assistant Manager A10";
+    const manager = await this.managerModel.find({grade: grade}).exec();
+    return manager;
+  }
+
   async findAllMnager(infomanagerDto: InfoManagerDto){
     const results = await this.managerModel.find({telephone: infomanagerDto.nom}).exec();
     if(results.length>0){
