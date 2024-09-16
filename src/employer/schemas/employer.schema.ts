@@ -97,6 +97,27 @@ export class Employer {
     })
     nbr_enfant: number;
 
+    @Prop({ required: true })
+    @ApiProperty({
+        example: 'CDI',
+        description: 'type de contrat',
+    })
+    type_contrat: string;
+
+    @Prop({ required: true })
+    @ApiProperty({
+        example: '20-11-1989',
+        description: 'date de debut du contrat',
+    })
+    debut_contrat: string;
+
+    @Prop({ required: true })
+    @ApiProperty({
+        example: '20-11-1989',
+        description: 'date de fin du contrat',
+    })
+    fin_contrat: string;
+
     @Prop({ required: false, default: 'en service' })
     @ApiProperty({
         example: 'en service',

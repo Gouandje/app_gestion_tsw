@@ -98,4 +98,28 @@ export class CreateEmployerDto {
     @IsString()
     @IsNotEmpty()
     date_naiss: string;
+
+    @ApiProperty({
+        example: 'CDI',
+        description: 'Le type de contrat',
+    })
+    @IsString()
+    @IsNotEmpty()
+    type_contrat: string;
+
+    @ApiProperty({
+        example: '20-11-1989',
+        description: 'le debut du contrat',
+    })
+    @IsString()
+    @IsNotEmpty()
+    debut_contrat: string;
+
+    @ApiProperty({
+        example: '20-11-1989',
+        description: 'la fin du contrat',
+    })
+    @IsString()
+    @IsNotEmpty()
+    fin_contrat: string;
 }
