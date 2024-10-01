@@ -140,6 +140,13 @@ export class PayscaService {
     }
   }
 
+  async delete(id: string) {
+   
+    await this.payscaModel.findByIdAndRemove(id);
+      
+    
+  }
+
   async findAllCabackup() {
     const result = await this.payscayearModel.find().exec();
 

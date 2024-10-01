@@ -1088,6 +1088,45 @@ export class WeekendyService {
     return this.weekendyModel.find().exec();
   }
 
+  async getCombinedData() {
+    const weekendDoctors = await this.weekendyDocteurModel
+        .find()
+        .populate('bureauId')
+        .populate('doctorId')
+        .populate('mois')
+        .populate('annee')
+        .exec();
+
+    const weekends = await this.weekendyModel
+        .find()
+        .populate('bureauId')
+        .populate('mois')
+        .populate('annee')
+        .exec();
+
+    // Combiner les données selon votre logique
+    const combinedData = weekendDoctors.map((doctor) => {
+        const weekend = weekends.find((w) => w.bureauId === doctor.bureauId && w.mois === doctor.mois && w.annee === doctor.annee);
+
+        return {
+            doctorId: doctor.doctorId,
+            bureauId: doctor.bureauId,
+            mois: doctor.mois,
+            annee: doctor.annee,
+            doctorItems: doctor.items,
+            weekendItems: weekend ? weekend.items : [],
+            caTotal: doctor.caTotal,
+            TotaltoBank: weekend ? weekend.TotaltoBank : 0,
+            chargebureauTotal: weekend ? weekend.chargebureauTotal : 0,
+            primetrsportTotal: weekend ? weekend.primetrsportTotal : 0,
+            createdAt: doctor.createdAt,
+        };
+    });
+
+    return combinedData;
+
+  }
+
   async suppressiondirecte(id: string) {
 
     const weekedy = await this.weekendyModel.findOne({bureauId: id}).exec();           

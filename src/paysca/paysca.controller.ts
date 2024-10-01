@@ -55,6 +55,11 @@ export class PayscaController {
     return this.payscaService.remove(id);
   }
 
+  @Delete('supprimer/:id')
+  delete(@Param('id') id: string) {
+    return this.payscaService.delete(id);
+  }
+
   @Post('capaysmoisannee')
   findOneCaPaysMoisAnnee(@Body() getterCaPaysMoisAnneedto: GetterCaPaysMoisAnneeDTO){
     console.log(getterCaPaysMoisAnneedto);

@@ -57,6 +57,11 @@ export class WeekendyController {
     return this.weekendyService.weekendybackup();
   }
 
+  @Get('Cacombines')
+  getCombinedData() {
+      return this.weekendyService.getCombinedData();
+  }
+
   
   // @Get('allWeekendiesForstock')
   // findWeekendiesForstock() {
