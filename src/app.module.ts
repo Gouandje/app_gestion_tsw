@@ -50,17 +50,17 @@ import { CommisairecontrolModule } from './commisairecontrol/commisairecontrol.m
       load: configs,
       isGlobal: true,
     }),
-    // MongooseModule.forRoot(
-    //   // `mongodb://mongo:bhHE2GE2FBG-cb-CH2-16fGg5b4C3Hbf@monorail.proxy.rlwy.net:24357`,32188
+    MongooseModule.forRoot(
+      // `mongodb://mongo:bhHE2GE2FBG-cb-CH2-16fGg5b4C3Hbf@monorail.proxy.rlwy.net:24357`,32188
       
-    //   // `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_CLUSTER}.ftyqrzd.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`,
-    // `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASEPASSWORD}@${process.env.DATABASEHOST}:32188/${process.env.MONGODB_DATABASE}?authSource=admin`,
-    // ),
-    MongooseModule.forRootAsync({
-    inject: [DatabaseService],
-    imports: [DatabaseModule],
-    useFactory: (databaseService: DatabaseService) => databaseService.createMongooseOptions(),
-    }),
+      // `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_CLUSTER}.ftyqrzd.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`,
+    `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASEPASSWORD}@${process.env.DATABASEHOST}:32188/${process.env.MONGODB_DATABASE}?authSource=admin`,
+    ),
+    // MongooseModule.forRootAsync({
+    // inject: [DatabaseService],
+    // imports: [DatabaseModule],
+    // useFactory: (databaseService: DatabaseService) => databaseService.createMongooseOptions(),
+    // }),
     UserModule,
     ManagerModule, 
     ProduitModule, 
