@@ -16,11 +16,18 @@ import { AgenceModule } from 'src/angence/agence.module';
 import { Demande, DemandeSchema } from './schemas/demande.schema';
 import { Seance, SeanceSchema } from './schemas/seancepatientkine.schema';
 import { SalaireKine, SalaireKineSchema } from './schemas/salairekine.schema';
+import { PaysService } from 'src/pays/pays.service';
+import { PayscaService } from 'src/paysca/paysca.service';
+import { PaysModule } from 'src/pays/pays.module';
+import { MoisanneeModule } from 'src/moisannee/moisannee.module';
+import { PayscaModule } from 'src/paysca/paysca.module';
 
 @Module({
   imports:[
     HttpModule,
     AgenceModule,
+    PaysModule,
+    PayscaModule,
     MongooseModule.forFeature(
       [
         { 

@@ -10,6 +10,7 @@ import { CreateSeancePatientKineDto } from './dto/create-seance-kine.dto';
 import { FindSalaireDTO } from './dto/findsalaire.dto';
 import { SalairekineDTO } from './dto/salairekine.dto';
 import { UpdateSoldeKineStatusDTO } from './dto/updatesoldekinestatus.dto';
+import { CaKineDTO } from './dto/CaKine.dto';
 
 @Controller('patient')
 export class PatientController {
@@ -172,9 +173,13 @@ export class PatientController {
     return this.patientService.updateStatusCaMoisKine(id, updatesoldekine);
   }
 
-
   @Delete('deleteseance/:id')
   removeSeance(@Param('id') id: string) {
     return this.patientService.deleteseance(id);
+  }
+
+  @Post('createCakine')
+    CreateCmoisKine(@Body() cakineDto: CaKineDTO) {
+      return this.patientService.CreateCmoisKine(cakineDto);
   }
 }

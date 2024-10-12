@@ -128,6 +128,7 @@ export class PayscaService {
 
   async updateyear(id: string, updatePayscaDto: any) {
     const update = await this.payscayearModel.findByIdAndUpdate({_id: id}, updatePayscaDto, {new: true}).lean();
+    return update;
   }
 
   async remove(id: string) {

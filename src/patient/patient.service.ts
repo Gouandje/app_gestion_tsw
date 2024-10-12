@@ -23,6 +23,9 @@ import { FindSalaireDTO } from './dto/findsalaire.dto';
 import { SalaireKine, SalaireKineDocument } from './schemas/salairekine.schema';
 import { UpdateSoldeKineStatusDTO } from './dto/updatesoldekinestatus.dto';
 import { SalairekineDTO } from './dto/salairekine.dto';
+import { PaysService } from 'src/pays/pays.service';
+import { PayscaService } from 'src/paysca/paysca.service';
+import { CaKineDTO } from './dto/CaKine.dto';
 
 @Injectable()
 export class PatientService {
@@ -48,6 +51,8 @@ export class PatientService {
     @InjectModel(Demande.name) private readonly demandeModel: Model<DemandeDocument>,
     @InjectModel(Seance.name) private readonly seanceModel: Model<SeanceDocument>,
     @InjectModel(SalaireKine.name) private readonly salairekineModel: Model<SalaireKineDocument>,
+    private paysservice: PaysService,
+    private payscaService: PayscaService
 
     ){}
 
@@ -330,8 +335,60 @@ export class PatientService {
 
   }
 
+  async CreateCmoisKine(caKineDto: CaKineDTO){
+
+    const created = await this.caissekinesoldeModel.create(caKineDto);
+
+    if(created){
+      const pays = await this.paysservice.findAllCIV();
+      console.log(pays._id);
+      const getPaysCaMois = await this.payscaService.findOnePaysCamoisExist(pays._id.toString('hex'), caKineDto.mois,caKineDto.annee);
+
+      const getPaysCaAnnee = await this.payscaService.findOnePaysCaYearExist(pays._id.toString('hex'), caKineDto.annee);
+
+      if(getPaysCaMois ==null){
+        const createpaysCaMois = {
+          countryId: pays._id.toString('hex'),
+          mois: caKineDto.mois,
+          annee: caKineDto.annee,
+          caTotal: caKineDto.chiffreAff
+        };
+        await this.payscaService.create(createpaysCaMois);
+      }else{
+        console.log('Ca pays mois', getPaysCaMois)
+        const updatepaysCaMois = {
+          countryId: pays._id.toString('hex'),
+          mois: caKineDto.mois,
+          annee: caKineDto.annee,
+          caTotal: caKineDto.chiffreAff + getPaysCaMois.caTotal
+        }
+        await this.payscaService.updateCaPaysMois(getPaysCaMois._id, updatepaysCaMois);
+
+      }
+     
+      if(getPaysCaAnnee == null){
+        const createpaysCaAnnee = {
+          countryId:pays._id.toString('hex'),
+          year:caKineDto.annee,
+          caTotal:caKineDto.chiffreAff
+        };
+        await this.payscaService.createCaPaysYear(createpaysCaAnnee);
+      }else{
+        const updatepaysCaAnnee = {
+          countryId:pays._id.toString('hex'),
+          year: caKineDto.annee,
+          caTotal: caKineDto.chiffreAff + getPaysCaAnnee.caTotal
+        };
+        await this.payscaService.updateyear(getPaysCaAnnee._id.toString('hex'), updatepaysCaAnnee);
+      }
+    }
+
+    return created;
+
+  }
+
   async allCaKine(){
-    const cakine = await this.caissekinesoldeModel.find().exec();
+    const cakine = await this.caissekinesoldeModel.find().populate('annee').populate('mois').exec();
     return cakine;
   }
 
@@ -357,7 +414,7 @@ export class PatientService {
     }else{
       const createdSalaire = await this.salairekineModel.create(salairekineDto);
       return {
-        message: 'Succès je création',
+        message: 'Succès de création',
         status: 200,
         data: createdSalaire
       }
@@ -376,6 +433,11 @@ export class PatientService {
 
   async salaireMoisKine(findsalaireDto: FindSalaireDTO){
     const cakine = await this.caissecarnetsoldeModel.findOne({mois:findsalaireDto.mois, annee: findsalaireDto.annee}).exec();
+    return cakine;
+  }
+
+  async CaMoisKine(caKineDTO: CaKineDTO){
+    const cakine = await this.caissekinesoldeModel.create(caKineDTO);
     return cakine;
   }
 

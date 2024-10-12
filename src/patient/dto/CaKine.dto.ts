@@ -1,10 +1,14 @@
 import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsObject, IsString } from "class-validator";
 
-export class FindSalaireDTO{
+export class CaKineDTO{
+
+    @IsNumber()
+    chiffreAff: number;
+
     @IsNotEmpty()
     mois: string;
 
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
     annee: string;
 

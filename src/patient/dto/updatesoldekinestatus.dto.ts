@@ -7,8 +7,8 @@ export class UpdateSoldeKineStatusDTO {
     @IsString()
     mois: string;
 
-    @IsNumber()
-    annee: number;
+    @IsString()
+    annee: string;
 
     @IsString()
     status: string;

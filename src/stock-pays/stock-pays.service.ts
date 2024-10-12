@@ -44,6 +44,13 @@ export class StockPaysService {
     return products;
   }
 
+  async findSatusStock(countryId: string, productId: string){
+    const productpays = await this.stockpaysModel.find({paysId: countryId, productId:productId}).exec();
+    // for(let i=0; i<productpays.length; i++){
+    //   if(productpays[i].quantity <= productpays[i].)
+    // }
+  }
+
   async findOne(id: string) {
     return `This action returns a #${id} stockPay`;
   }

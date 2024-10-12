@@ -32,7 +32,7 @@ export class PaysService {
 
   async findAllCIV() {
     const nom_pays="Côte d'Ivoire"
-    const pays = await this.paysModel.find({country_name: nom_pays}).exec();
+    const pays = await this.paysModel.findOne({country_name: nom_pays}).exec();
     return pays;
   }
 
