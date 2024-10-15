@@ -25,7 +25,7 @@ export class SalairekineDTO{
     @IsString()
     mois: string;
 
-    @IsNumber()
+    @IsString()
     annee: string;
 
     @IsString()

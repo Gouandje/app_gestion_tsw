@@ -399,7 +399,7 @@ export class PatientService {
   }
 
   async CaMoisAnneeKine(findSalaireDto: FindSalaireDTO){
-    const camoisannekine = await this.caissekinesoldeModel.findOne({mois:findSalaireDto.mois, annee: findSalaireDto.annee}).exec();
+    const camoisannekine =await this.caissekinesoldeModel.findOne({mois:findSalaireDto.mois, annee: findSalaireDto.annee}).populate('mois').populate('annee').exec();
     return camoisannekine;
   }
 

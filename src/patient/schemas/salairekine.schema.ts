@@ -1,6 +1,8 @@
 import { HydratedDocument,Schema as MongooseSchema } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Employer } from "src/employer/schemas/employer.schema";
+import { Mois } from "src/moisannee/schemas/mois.schema";
+import { Annee } from "src/moisannee/schemas/annee.schema";
 
 export type SalaireKineDocument = HydratedDocument<SalaireKine>;
 
@@ -27,11 +29,13 @@ export class SalaireKine {
     @Prop({ required: true })
     salairenet: number;
 
-    @Prop({ required: true })
+    @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Mois.name
+    })
     mois: string;
 
-    @Prop({ required: true })
-    annee: number;
+    @Prop({type: MongooseSchema.Types.ObjectId, required: true, ref: Annee.name
+    })
+    annee: string;
 
     @Prop({required: true})
     date_created: string;
