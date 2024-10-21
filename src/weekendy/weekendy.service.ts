@@ -741,7 +741,7 @@ export class WeekendyService {
 
     for(let i=0; i<createDocteurWeekendyDto.items.length; i++){
       const product = await this.stockagenceService.findagenceproduit(createDocteurWeekendyDto.bureauId, createDocteurWeekendyDto.items[i].productId);
-      const value = Number(product.quantity) - Number( createDocteurWeekendyDto.items[i].quantity);
+      const value = Number(product.quantity) - Number(createDocteurWeekendyDto.items[i].quantity);
 
       if(value >=0){
         weekendproduct.push(createDocteurWeekendyDto.items[i]);

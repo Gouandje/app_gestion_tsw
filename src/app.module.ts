@@ -60,7 +60,7 @@ import { CommisairecontrolModule } from './commisairecontrol/commisairecontrol.m
     // inject: [DatabaseService],
     // imports: [DatabaseModule],
     // useFactory: (databaseService: DatabaseService) => databaseService.createMongooseOptions(),
-    }),
+    // }),
     UserModule,
     ManagerModule, 
     ProduitModule, 
