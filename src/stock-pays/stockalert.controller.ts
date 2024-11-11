@@ -19,7 +19,7 @@ export class StockAlertPaysController {
   
     @Get('singlestockalertpays/:id')
     findalertOne(@Param('id') id: string) {
-        return this.stockalertPaysService.findOne(id);
+        return this.stockalertPaysService.findsinglebyproduct(id);
     }
 
     @Patch('updatestockalertpays/:id')
