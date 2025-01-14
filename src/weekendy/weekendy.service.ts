@@ -53,18 +53,18 @@ export class WeekendyService {
     const weekendproduct = [];
     const payload = {...createWeekendyDto};
     const taux = await this.tauxservice.findAll();
-    for(let i=0; i<createWeekendyDto.items.length; i++){
-
-      const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
-      const value = Number(product.quantity) - Number( createWeekendyDto.items[i].quantity);
-      if(value >=0){
-        weekendproduct.push(createWeekendyDto.items[i]);
-      }else{
-        const produitindispo = await this.produitService.findOne(createWeekendyDto.items[i].productId);
-        // console.log('produit rupture', produitindispo.name);
-        throw new BadRequestException('Echèc d\'enregistrement du weekendy ' + ` ${produitindispo.name} ` + ' n\'est pas en stock suffisant dans ce bureau. ');
+    for (let i = 0; i < createWeekendyDto.items.length; i++) {
+      if (createWeekendyDto.items[i].quantity > 0) {
+        const product = await this.stockagenceService.findagenceproduit(createWeekendyDto.bureauId, createWeekendyDto.items[i].productId);
+        console.log(product);
+        const value = Number(product.quantity) - Number(createWeekendyDto.items[i].quantity);
+        if (value >= 0) {
+          weekendproduct.push(createWeekendyDto.items[i]);
+        } else {
+          const produitindispo = await this.produitService.findOne(createWeekendyDto.items[i].productId);
+          throw new BadRequestException('Echèc d\'enregistrement du weekendy ' + ` ${produitindispo.name} ` + ' n\'est pas en stock suffisant dans ce bureau. ');
+        }
       }
-
     }
     const createdDataDto = {
       bureauId: createWeekendyDto.bureauId,
