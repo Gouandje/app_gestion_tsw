@@ -46,8 +46,5 @@ export class Produitvendupays {
     })
     chiffreaffaire: number;
 
-    
-
-
 }
 export const ProduitvendupaysSchema = SchemaFactory.createForClass(Produitvendupays);

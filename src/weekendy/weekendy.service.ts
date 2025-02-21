@@ -1136,5 +1136,27 @@ export class WeekendyService {
     return 'supprimé weekedy';
   }
 
+  async getGroupedQuantities() {
+    return await this.weekendyModel.aggregate([
+      { 
+        $unwind: "$items" // Décompose les items pour travailler avec chaque produit individuellement
+      },
+      {
+        $group: {
+          _id: {
+            annee: "$annee",
+            mois: "$mois",
+            productId: "$items.productId",
+            productName: "$items.name"
+          },
+          totalQuantity: { $sum: "$items.quantity" } // Somme des quantités pour chaque produit
+        }
+      },
+      {
+        $sort: { "_id.annee": 1, "_id.mois": 1, "_id.productName": 1 } // Tri par année, mois et produit
+      }
+    ]).exec();
+  }
+
   
 }
