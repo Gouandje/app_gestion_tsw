@@ -62,6 +62,12 @@ export class WeekendyController {
       return this.weekendyService.getCombinedData();
   }
 
+  @Get('grouped-quantities')
+  async getGroupedQuantities() {
+    const data = await this.weekendyService.getGroupedQuantities();
+    return data;
+  }
+
   
   // @Get('allWeekendiesForstock')
   // findWeekendiesForstock() {
