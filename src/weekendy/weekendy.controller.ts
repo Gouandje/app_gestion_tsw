@@ -62,10 +62,9 @@ export class WeekendyController {
       return this.weekendyService.getCombinedData();
   }
 
-  @Get('grouped-quantities')
-  async getGroupedQuantities() {
-    const data = await this.weekendyService.getGroupedQuantities();
-    return data;
+  @Get('quantities/:yearId')
+  async getGroupedQuantitiesByYear(@Param('yearId') yearId: string) {
+    return await this.weekendyService.getGroupedQuantitiesByYear(yearId);
   }
 
   

@@ -1136,16 +1136,31 @@ export class WeekendyService {
     return 'supprimé weekedy';
   }
 
-  async getGroupedQuantities() {
+  async getGroupedQuantitiesByYear(yearId: string) {
     return await this.weekendyModel.aggregate([
       { 
+        $match: { annee: yearId } // Filtre uniquement les données de l'année demandée
+      },
+      { 
         $unwind: "$items" // Décompose les items pour travailler avec chaque produit individuellement
+      },
+      {
+        $lookup: {
+          from: "mois", // Nom de la collection des mois
+          localField: "mois", // Le champ `mois` de weekendyModel
+          foreignField: "_id", // Correspond à `_id` de `Mois`
+          as: "moisDetails"
+        }
+      },
+      { 
+        $unwind: "$moisDetails" // Évite d'avoir un tableau imbriqué
       },
       {
         $group: {
           _id: {
             annee: "$annee",
-            mois: "$mois",
+            moisId: "$moisDetails._id", // ID du mois
+            mois: "$moisDetails.valueMois", // Nom du mois
             productId: "$items.productId",
             productName: "$items.name"
           },
@@ -1153,10 +1168,11 @@ export class WeekendyService {
         }
       },
       {
-        $sort: { "_id.annee": 1, "_id.mois": 1, "_id.productName": 1 } // Tri par année, mois et produit
+        $sort: { "_id.moisId": 1, "_id.productName": 1 } // Tri par mois et produit
       }
     ]).exec();
-  }
+}
+
 
   
 }
